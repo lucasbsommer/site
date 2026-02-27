@@ -1,0 +1,69 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="Resources — Lucas Sommer" description="Free tools, frameworks, and guides from Lucas Sommer.">
+  <section class="resources container">
+    <h1>Resources</h1>
+    <p class="intro">Free tools and frameworks I've built or found useful.</p>
+
+    <ul class="resource-list">
+      <li>
+        <a href="/resources/ideation-flow">
+          <h3>Evaluating Ideas and Problems to Solve</h3>
+          <p>A framework for sizing opportunities by finding the biggest margin between what the market pays and what it costs you to deliver. Includes an interactive worksheet.</p>
+        </a>
+      </li>
+    </ul>
+  </section>
+</BaseLayout>
+
+<style>
+  .resources {
+    padding: 3rem 1.5rem 4rem;
+  }
+
+  .resources h1 {
+    margin-bottom: 0.5rem;
+  }
+
+  .intro {
+    color: var(--color-text-muted);
+    margin-bottom: 2.5rem;
+  }
+
+  .resource-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .resource-list a {
+    display: block;
+    padding: 1.25rem;
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    color: var(--color-text);
+    text-decoration: none;
+    transition: border-color 0.15s ease, background 0.15s ease;
+  }
+
+  .resource-list a:hover {
+    border-color: var(--color-accent);
+    background: #f8f9ff;
+    text-decoration: none;
+  }
+
+  .resource-list h3 {
+    font-size: 1rem;
+    margin-bottom: 0.35rem;
+    color: var(--color-accent);
+  }
+
+  .resource-list p {
+    font-size: 0.875rem;
+    color: var(--color-text-muted);
+    line-height: 1.6;
+  }
+</style>

@@ -27,6 +27,9 @@ const { title, description = "Lucas Sommer — builder, learner, writer." } = As
     <header class="site-header">
       <nav class="container">
         <a href="/" class="site-name">Lucas Sommer</a>
+        <div class="nav-links">
+          <a href="/resources">Resources</a>
+        </div>
       </nav>
     </header>
     <main>
@@ -62,6 +65,20 @@ const { title, description = "Lucas Sommer — builder, learner, writer." } = As
   .site-name:hover {
     color: var(--color-text);
     text-decoration: none;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 1.5rem;
+  }
+
+  .nav-links a {
+    font-size: 0.925rem;
+    color: var(--color-text-muted);
+  }
+
+  .nav-links a:hover {
+    color: var(--color-text);
   }
 
   .site-footer {

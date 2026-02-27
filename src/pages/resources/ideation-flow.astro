@@ -1,0 +1,518 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="Evaluating Ideas and Problems to Solve — Lucas Sommer" description="A framework and interactive worksheet for evaluating business ideas by sizing markets and finding the biggest margin opportunities.">
+  <article class="ideation container">
+
+    <h1>Evaluating Ideas and <span class="accent">Problems to Solve</span></h1>
+    <p class="subtitle">Before you worry about brand, price, or hustle — find the gap between what a problem costs the market and what it costs you to solve it. That gap is your business.</p>
+
+    <div class="principles">
+      <div class="principle">
+        <h3>Price ≠ Difficulty</h3>
+        <p>People paying a high price don't care how hard you worked. <strong>Hard work is not correlated with high price.</strong></p>
+      </div>
+      <div class="principle">
+        <h3>Seek the Margin</h3>
+        <p>Don't find the hardest problem — find the <strong>biggest margin between what the market pays and what it costs you to deliver.</strong></p>
+      </div>
+    </div>
+
+    <hr />
+
+    <h2>The Process</h2>
+
+    <div class="step">
+      <div class="step-number">1</div>
+      <div class="step-label">Start Here</div>
+      <h3>What problems can you actually solve?</h3>
+      <p>List every high-value thing you could deliver based on your skills, access, and knowledge. Your highest-value skill is often not the obvious one.</p>
+      <div class="hint">List 5–10 problems you've solved — for yourself, employers, or clients. Then ask: <strong>which of these does someone else desperately need solved?</strong></div>
+    </div>
+
+    <div class="step">
+      <div class="step-number">2</div>
+      <div class="step-label">Size the Pain</div>
+      <h3>How many people have this problem?</h3>
+      <p>A great solution to a tiny problem is still a tiny business. Get specific — industry, geography, company size, role.</p>
+      <div class="hint">Is it <strong>10,000 people or 10 million?</strong> Are they concentrated (easy to reach) or diffuse (expensive to reach)?</div>
+    </div>
+
+    <div class="step">
+      <div class="step-number">3</div>
+      <div class="step-label">Map the Alternatives</div>
+      <h3>How do they solve it today?</h3>
+      <p>Every problem already has a "solution" — even if it's painful, expensive, slow, or broken. Understanding it reveals your real competition.</p>
+      <div class="hint">Current solutions: <strong>doing nothing, hiring a firm, using software, hiring an employee, spreadsheets, or ignoring the problem.</strong> All have a price.</div>
+    </div>
+
+    <div class="step">
+      <div class="step-number">4</div>
+      <div class="step-label">Quantify the Market</div>
+      <h3>What are they paying for it today?</h3>
+      <p>This is the most important number. What does the market currently spend annually on this problem — in total? That's your TAM.</p>
+      <div class="hint"><strong>Number of people × what each pays per year.</strong> If 50K companies each spend $20K/yr, the TAM is $1B.</div>
+    </div>
+
+    <div class="step">
+      <div class="step-number">5</div>
+      <div class="step-label">Run the Math</div>
+      <h3>If you capture 1% — what's the business worth?</h3>
+      <p>Even 1% of a large market produces a meaningful business. Use this to pressure-test before spending a dollar building anything.</p>
+      <div class="formula-box">
+        TAM × 1% = Your Annual Revenue<br />
+        <span class="dim">× revenue multiple (2–5×) = Company Value</span><br />
+        <span class="dim">e.g. $500M TAM → $5M rev → $15M company at 3×</span>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-number">6</div>
+      <div class="step-label">Repeat</div>
+      <h3>Follow this process for every idea.</h3>
+      <p>Run every idea through steps 1–5. Don't fall in love with one before you've pressure-tested several. The best opportunity often isn't the one you started with — it's the one the math supports.</p>
+      <div class="hint">Compare your ideas side by side using the worksheet below. <strong>The numbers will tell you where to focus.</strong></div>
+    </div>
+
+    <div class="callout">
+      <p><strong>Don't let effort determine value.</strong> Instead, seek the biggest margin between what the market pays and what it costs you to deliver. Find where someone is already paying a lot for a bad solution. Show up there.</p>
+    </div>
+
+    <div class="compare">
+      <div class="compare-card wrong">
+        <div class="tag">Wrong</div>
+        <h3>"I'll work hard and justify the price over time."</h3>
+        <p>You're letting effort determine value. The market doesn't reward effort — it rewards solving problems people are already paying to avoid.</p>
+      </div>
+      <div class="compare-card right">
+        <div class="tag">Right</div>
+        <h3>"I'll find who's paying a lot for a problem I can solve cheaply."</h3>
+        <p>You're letting market signals tell you where to aim. Price follows the problem size — not your hours.</p>
+      </div>
+    </div>
+
+    <div class="worksheet">
+      <div class="ws-header">
+        <h2>Opportunity Worksheet</h2>
+        <div class="ws-controls">
+          <label>Capture %
+            <input type="number" id="capture" value="1" min="0.1" max="100" step="0.1" />
+          </label>
+          <label>Rev Multiple
+            <input type="number" id="multiple" value="3" min="1" max="20" step="0.5" />
+          </label>
+        </div>
+      </div>
+
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Problem I Can Solve</th>
+            <th class="hide-sm">Current Solution</th>
+            <th>How Many</th>
+            <th>Avg Price Paid</th>
+            <th class="computed-head">TAM</th>
+            <th class="computed-head">Revenue</th>
+            <th class="computed-head">Co. Value</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="ws-rows"></tbody>
+      </table>
+
+      <button class="add-btn" id="add-row-btn">+ Add Opportunity</button>
+
+      <div class="summary">
+        <div class="sum-card tam">
+          <div class="sum-label">Total Market Size</div>
+          <div class="sum-val" id="sum-tam">$—</div>
+          <div class="sum-sub">Sum of all TAMs</div>
+        </div>
+        <div class="sum-card rev">
+          <div class="sum-label">Revenue Potential</div>
+          <div class="sum-val" id="sum-rev">$—</div>
+          <div class="sum-sub" id="sum-rev-sub">At 1% capture</div>
+        </div>
+        <div class="sum-card val">
+          <div class="sum-label">Implied Company Value</div>
+          <div class="sum-val" id="sum-val">$—</div>
+          <div class="sum-sub" id="sum-val-sub">At 3× multiple</div>
+        </div>
+      </div>
+    </div>
+
+  </article>
+</BaseLayout>
+
+<style>
+  .ideation {
+    padding: 3rem 1.5rem 4rem;
+  }
+
+  .ideation h1 { margin-bottom: 12px; }
+  .accent { color: #b08d00; }
+  .ideation h2 { font-size: 1.25rem; margin: 3rem 0 1rem; }
+  .ideation h3 { font-size: 0.95rem; font-weight: 600; margin-bottom: 4px; }
+  .ideation p, .ideation li { font-size: 0.95rem; color: #444; }
+
+  .subtitle {
+    font-size: 1rem;
+    color: #666;
+    margin-bottom: 2rem;
+    max-width: 600px;
+  }
+
+  .principles {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 3rem;
+  }
+
+  .principle {
+    background: #f8f7f4;
+    border: 1px solid #e8e6e0;
+    border-radius: 8px;
+    padding: 1.25rem;
+  }
+
+  .principle h3 { color: #1a1a1a; margin-bottom: 0.5rem; }
+  .principle p { font-size: 0.875rem; color: #555; line-height: 1.6; }
+  .principle strong { color: #1a1a1a; }
+
+  hr { border: none; border-top: 1px solid #e8e6e0; margin: 3rem 0; }
+
+  /* Steps */
+  .step {
+    margin-bottom: 2rem;
+    padding-left: 3rem;
+    position: relative;
+  }
+
+  .step-number {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+    background: #f8f7f4;
+    border: 1.5px solid #d0cdc4;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: #666;
+  }
+
+  .step-label {
+    font-size: 0.688rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #999;
+    margin-bottom: 4px;
+  }
+
+  .step h3 { font-size: 1.125rem; margin-bottom: 0.5rem; }
+  .step p { margin-bottom: 0.5rem; }
+
+  .hint {
+    font-size: 0.8125rem;
+    color: #888;
+    font-style: italic;
+    border-left: 2px solid #e0ddd4;
+    padding-left: 0.75rem;
+    margin-top: 0.75rem;
+  }
+
+  .hint strong { color: #555; font-style: normal; }
+
+  .formula-box {
+    background: #fdfcf5;
+    border: 1px solid #e8e2c8;
+    border-radius: 6px;
+    padding: 1rem 1.25rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #7a6c00;
+    line-height: 1.8;
+    margin-top: 0.75rem;
+  }
+
+  .formula-box .dim { font-weight: 400; color: #999; font-size: 0.8125rem; }
+
+  /* Callout */
+  .callout {
+    background: #f8f7f4;
+    border-left: 3px solid #c8b830;
+    padding: 1.25rem 1.5rem;
+    margin: 3rem 0;
+    border-radius: 0 8px 8px 0;
+  }
+
+  .callout p { font-size: 0.95rem; color: #555; }
+  .callout strong { color: #1a1a1a; }
+
+  /* Compare cards */
+  .compare {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 3rem;
+  }
+
+  .compare-card { padding: 1.25rem; border-radius: 8px; border: 1px solid; }
+  .compare-card.wrong { background: #fef5f5; border-color: #f0d0d0; }
+  .compare-card.right { background: #f4faf5; border-color: #c0e0c8; }
+
+  .compare-card .tag {
+    font-size: 0.688rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+  }
+
+  .compare-card.wrong .tag { color: #c05050; }
+  .compare-card.right .tag { color: #308040; }
+  .compare-card h3 { font-size: 0.95rem; margin-bottom: 0.5rem; }
+  .compare-card.wrong h3 { color: #904050; }
+  .compare-card p { font-size: 0.8125rem; }
+
+  /* Worksheet */
+  .worksheet {
+    background: #fafaf8;
+    border: 1px solid #e8e6e0;
+    border-radius: 10px;
+    padding: 1.75rem;
+    margin-top: 3rem;
+  }
+
+  .ws-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .ws-header h2 { margin: 0; font-size: 1.25rem; }
+
+  .ws-controls { display: flex; gap: 1rem; }
+
+  .ws-controls label {
+    font-size: 0.688rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: #999;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .ws-controls input {
+    width: 4rem;
+    padding: 6px 8px;
+    border: 1px solid #d0cdc4;
+    border-radius: 4px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    text-align: center;
+    color: #1a1a1a;
+    background: #fff;
+  }
+
+  table { width: 100%; border-collapse: collapse; font-size: 0.875rem; }
+
+  :global(thead th) {
+    font-size: 0.688rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #999;
+    font-weight: 600;
+    text-align: left;
+    padding: 0.5rem 0.625rem;
+    border-bottom: 1.5px solid #d0cdc4;
+  }
+
+  :global(thead th.computed-head) { color: #8a7a00; }
+
+  :global(tbody td) {
+    padding: 0.5rem 0.625rem;
+    border-bottom: 1px solid #eae8e2;
+    vertical-align: top;
+  }
+
+  :global(tbody td.idx) { color: #bbb; font-size: 0.8125rem; width: 28px; }
+
+  :global(tbody td textarea),
+  :global(tbody td input[type="text"]) {
+    width: 100%;
+    border: none;
+    background: transparent;
+    font-family: inherit;
+    font-size: 0.875rem;
+    color: #1a1a1a;
+    resize: none;
+    outline: none;
+    line-height: 1.5;
+    min-height: 40px;
+  }
+
+  :global(tbody td textarea::placeholder),
+  :global(tbody td input::placeholder) { color: #ccc; }
+
+  :global(td.computed-cell) { background: #fdfcf5; }
+  :global(.computed-val) { font-weight: 700; font-size: 0.95rem; color: #7a6c00; }
+  :global(.computed-note) { font-size: 0.688rem; color: #bbb; }
+
+  :global(.del-btn) {
+    background: none;
+    border: none;
+    color: #ccc;
+    cursor: pointer;
+    font-size: 1.125rem;
+    padding: 4px 8px;
+  }
+
+  :global(.del-btn:hover) { color: #c05050; }
+
+  .add-btn {
+    margin-top: 0.75rem;
+    width: 100%;
+    background: #fff;
+    border: 1px dashed #d0cdc4;
+    border-radius: 6px;
+    color: #999;
+    font-size: 0.8125rem;
+    padding: 0.75rem;
+    cursor: pointer;
+    font-family: inherit;
+  }
+
+  .add-btn:hover { border-color: #999; color: #666; }
+
+  .summary {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 0.75rem;
+    margin-top: 1.25rem;
+  }
+
+  .sum-card {
+    background: #fff;
+    border: 1px solid #e8e6e0;
+    border-radius: 8px;
+    padding: 1rem;
+  }
+
+  .sum-label { font-size: 0.688rem; text-transform: uppercase; letter-spacing: 0.05em; color: #999; margin-bottom: 6px; }
+  .sum-val { font-size: 1.375rem; font-weight: 700; }
+  .sum-sub { font-size: 0.75rem; color: #bbb; margin-top: 2px; }
+  .sum-card.tam .sum-val { color: #1a1a1a; }
+  .sum-card.rev .sum-val { color: #308040; }
+  .sum-card.val .sum-val { color: #2080a0; }
+
+  @media (max-width: 640px) {
+    .principles, .compare, .summary { grid-template-columns: 1fr; }
+    table { font-size: 0.8125rem; }
+    :global(.hide-sm) { display: none; }
+  }
+</style>
+
+<script>
+  let n = 0;
+
+  function fmt(v: number): string {
+    if (!v || isNaN(v) || v === 0) return '—';
+    if (v >= 1e9) return '$' + (v/1e9).toFixed(1) + 'B';
+    if (v >= 1e6) return '$' + (v/1e6).toFixed(1) + 'M';
+    if (v >= 1e3) return '$' + (v/1e3).toFixed(0) + 'K';
+    return '$' + v.toFixed(0);
+  }
+
+  function parseNum(s: string): number {
+    s = (s||'').trim().toUpperCase().replace(/[$,]/g,'');
+    const m: Record<string, number> = { K: 1e3, M: 1e6, B: 1e9 };
+    const match = s.match(/^([\d.]+)([KMB])?$/);
+    if (match) return parseFloat(match[1]) * (m[match[2]] || 1);
+    return parseFloat(s) || 0;
+  }
+
+  function recalcRow(id: number) {
+    const countEl = document.getElementById('count-'+id) as HTMLInputElement | null;
+    const priceEl = document.getElementById('price-'+id) as HTMLInputElement | null;
+    const count = parseNum(countEl?.value || '');
+    const price = parseNum(priceEl?.value || '');
+    const tam = count * price;
+    const cap = (parseFloat((document.getElementById('capture') as HTMLInputElement).value) || 1) / 100;
+    const mul = parseFloat((document.getElementById('multiple') as HTMLInputElement).value) || 3;
+    const tamEl = document.getElementById('tam-'+id);
+    const revEl = document.getElementById('rev-'+id);
+    const valEl = document.getElementById('val-'+id);
+    const rawEl = document.getElementById('raw-'+id) as HTMLInputElement | null;
+    if (tamEl) tamEl.textContent = tam > 0 ? fmt(tam) : '—';
+    if (revEl) revEl.textContent = tam > 0 ? fmt(tam * cap) : '—';
+    if (valEl) valEl.textContent = tam > 0 ? fmt(tam * cap * mul) : '—';
+    if (rawEl) rawEl.value = String(tam);
+  }
+
+  function recalcAll() {
+    const cap = parseFloat((document.getElementById('capture') as HTMLInputElement).value) || 1;
+    const mul = parseFloat((document.getElementById('multiple') as HTMLInputElement).value) || 3;
+    document.getElementById('sum-rev-sub')!.textContent = 'At ' + cap + '% capture';
+    document.getElementById('sum-val-sub')!.textContent = 'At ' + mul + '× multiple';
+    let totalTam = 0;
+    for (let i = 1; i <= n; i++) {
+      if (document.getElementById('row-'+i)) {
+        recalcRow(i);
+        totalTam += parseFloat((document.getElementById('raw-'+i) as HTMLInputElement)?.value || '0') || 0;
+      }
+    }
+    const c = cap / 100;
+    document.getElementById('sum-tam')!.textContent = totalTam > 0 ? fmt(totalTam) : '$—';
+    document.getElementById('sum-rev')!.textContent = totalTam > 0 ? fmt(totalTam * c) : '$—';
+    document.getElementById('sum-val')!.textContent = totalTam > 0 ? fmt(totalTam * c * mul) : '$—';
+  }
+
+  function delRow(id: number) {
+    document.getElementById('row-'+id)?.remove();
+    recalcAll();
+  }
+
+  function addRow() {
+    n++;
+    const id = n;
+    const tr = document.createElement('tr');
+    tr.id = 'row-'+id;
+    tr.innerHTML = `
+      <td class="idx">${id}</td>
+      <td><textarea placeholder="Describe the problem…"></textarea></td>
+      <td class="hide-sm"><textarea placeholder="Current solution…"></textarea></td>
+      <td><input type="text" id="count-${id}" placeholder="e.g. 50K"></td>
+      <td><input type="text" id="price-${id}" placeholder="e.g. 20K"></td>
+      <td class="computed-cell"><div class="computed-val" id="tam-${id}">—</div><div class="computed-note">how many × price</div><input type="hidden" id="raw-${id}" value="0"></td>
+      <td class="computed-cell"><div class="computed-val" id="rev-${id}">—</div><div class="computed-note">revenue</div></td>
+      <td class="computed-cell"><div class="computed-val" id="val-${id}">—</div><div class="computed-note">value</div></td>
+      <td><button class="del-btn">×</button></td>
+    `;
+    tr.querySelector('.del-btn')!.addEventListener('click', () => delRow(id));
+    const countInput = tr.querySelector('#count-'+id)!;
+    const priceInput = tr.querySelector('#price-'+id)!;
+    countInput.addEventListener('input', () => { recalcRow(id); recalcAll(); });
+    priceInput.addEventListener('input', () => { recalcRow(id); recalcAll(); });
+    document.getElementById('ws-rows')!.appendChild(tr);
+  }
+
+  // Wire up controls
+  document.getElementById('capture')!.addEventListener('input', recalcAll);
+  document.getElementById('multiple')!.addEventListener('input', recalcAll);
+  document.getElementById('add-row-btn')!.addEventListener('click', addRow);
+
+  // Start with 3 rows
+  addRow(); addRow(); addRow();
+</script>
