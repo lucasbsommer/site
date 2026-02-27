@@ -1,0 +1,67 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="Lucas Sommer">
+  <section class="hero container">
+    <h1>Hey, I'm Lucas.</h1>
+    <p class="intro">
+      I'm a builder, learner, and writer. This is my corner of the internet where I share
+      what I've learned, what I'm working on, and resources I've found useful along the way.
+    </p>
+    <p class="sub">
+      More coming soon — I'm building this site out as a living knowledge base.
+    </p>
+  </section>
+
+  <section class="links container">
+    <h2>Find me elsewhere</h2>
+    <ul>
+      <li><a href="https://twitter.com/lucassommer" target="_blank" rel="noopener">Twitter / X</a></li>
+      <li><a href="https://linkedin.com/in/lucassommer" target="_blank" rel="noopener">LinkedIn</a></li>
+      <li><a href="https://github.com/lucassommer" target="_blank" rel="noopener">GitHub</a></li>
+    </ul>
+  </section>
+</BaseLayout>
+
+<style>
+  .hero {
+    padding: 4rem 1.5rem 3rem;
+  }
+
+  .hero h1 {
+    margin-bottom: 1rem;
+  }
+
+  .intro {
+    font-size: 1.125rem;
+    color: var(--color-text);
+    max-width: 560px;
+  }
+
+  .sub {
+    margin-top: 1rem;
+    color: var(--color-text-muted);
+    font-size: 0.95rem;
+  }
+
+  .links {
+    padding: 2rem 1.5rem 4rem;
+  }
+
+  .links h2 {
+    margin-bottom: 1rem;
+    font-size: 1.15rem;
+  }
+
+  .links ul {
+    list-style: none;
+    display: flex;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+  }
+
+  .links a {
+    font-size: 0.95rem;
+  }
+</style>

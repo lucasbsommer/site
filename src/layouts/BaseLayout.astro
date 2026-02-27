@@ -1,0 +1,74 @@
+---
+interface Props {
+  title: string;
+  description?: string;
+}
+
+const { title, description = "Lucas Sommer — builder, learner, writer." } = Astro.props;
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={description} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <title>{title}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <style>
+      @import '../styles/global.css';
+    </style>
+  </head>
+  <body>
+    <header class="site-header">
+      <nav class="container">
+        <a href="/" class="site-name">Lucas Sommer</a>
+      </nav>
+    </header>
+    <main>
+      <slot />
+    </main>
+    <footer class="site-footer">
+      <div class="container">
+        <p>&copy; {new Date().getFullYear()} Lucas Sommer</p>
+      </div>
+    </footer>
+  </body>
+</html>
+
+<style>
+  .site-header {
+    border-bottom: 1px solid var(--color-border);
+    padding: 1rem 0;
+  }
+
+  .site-header nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .site-name {
+    font-weight: 600;
+    font-size: 1.1rem;
+    color: var(--color-text);
+    text-decoration: none;
+  }
+
+  .site-name:hover {
+    color: var(--color-text);
+    text-decoration: none;
+  }
+
+  .site-footer {
+    margin-top: auto;
+    border-top: 1px solid var(--color-border);
+    padding: 2rem 0;
+    color: var(--color-text-muted);
+    font-size: 0.875rem;
+  }
+</style>
