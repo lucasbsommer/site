@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Lucas Sommer — Preview</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    /* Reset & Base */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --color-bg: #fafaf9;
+      --color-text: #1c1917;
+      --color-text-muted: #57534e;
+      --color-accent: #2563eb;
+      --color-accent-hover: #1d4ed8;
+      --color-border: #e7e5e4;
+      --color-surface: #ffffff;
+      --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      --max-width: 680px;
+    }
+
+    html {
+      font-family: var(--font-sans);
+      color: var(--color-text);
+      background-color: var(--color-bg);
+      line-height: 1.7;
+      font-size: 17px;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    a {
+      color: var(--color-accent);
+      text-decoration: none;
+      transition: color 0.15s ease;
+    }
+    a:hover {
+      color: var(--color-accent-hover);
+      text-decoration: underline;
+    }
+
+    h1, h2, h3, h4 { line-height: 1.3; font-weight: 600; }
+    h1 { font-size: 2rem; }
+    h2 { font-size: 1.5rem; }
+    h3 { font-size: 1.25rem; }
+    p + p { margin-top: 1rem; }
+
+    .container {
+      max-width: var(--max-width);
+      margin: 0 auto;
+      padding: 0 1.5rem;
+      width: 100%;
+    }
+
+    /* Header */
+    .site-header {
+      border-bottom: 1px solid var(--color-border);
+      padding: 1rem 0;
+    }
+    .site-header nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .site-name {
+      font-weight: 600;
+      font-size: 1.1rem;
+      color: var(--color-text);
+      text-decoration: none;
+    }
+    .site-name:hover { color: var(--color-text); text-decoration: none; }
+    .nav-links { display: flex; gap: 1.5rem; }
+    .nav-links a { font-size: 0.925rem; color: var(--color-text-muted); }
+    .nav-links a:hover { color: var(--color-text); }
+
+    /* Hero */
+    .hero { padding: 4rem 1.5rem 3rem; }
+    .hero h1 { margin-bottom: 1rem; }
+    .intro { font-size: 1.125rem; color: var(--color-text); max-width: 560px; }
+    .sub { margin-top: 1rem; color: var(--color-text-muted); font-size: 0.95rem; }
+
+    /* Links */
+    .links { padding: 2rem 1.5rem 4rem; }
+    .links h2 { margin-bottom: 1rem; font-size: 1.15rem; }
+    .links ul { list-style: none; display: flex; gap: 1.5rem; flex-wrap: wrap; }
+    .links a { font-size: 0.95rem; }
+
+    /* Footer */
+    .site-footer {
+      margin-top: auto;
+      border-top: 1px solid var(--color-border);
+      padding: 2rem 0;
+      color: var(--color-text-muted);
+      font-size: 0.875rem;
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <nav class="container">
+      <a href="/" class="site-name">Lucas Sommer</a>
+      <div class="nav-links">
+        <a href="/resources">Resources</a>
+      </div>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero container">
+      <h1>Hey, I'm Lucas.</h1>
+      <p class="intro">
+        I'm a builder, learner, and writer. This is my corner of the internet where I share
+        what I've learned, what I'm working on, and resources I've found useful along the way.
+      </p>
+      <p class="sub">
+        More coming soon — I'm building this site out as a living knowledge base.
+      </p>
+    </section>
+
+    <section class="links container">
+      <h2>Find me elsewhere</h2>
+      <ul>
+        <li><a href="https://twitter.com/lucasbsommer" target="_blank" rel="noopener">Twitter / X</a></li>
+        <li><a href="https://linkedin.com/in/lucasbsommer" target="_blank" rel="noopener">LinkedIn</a></li>
+        <li><a href="https://github.com/lucasbsommer" target="_blank" rel="noopener">GitHub</a></li>
+      </ul>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p>&copy; 2026 Lucas Sommer</p>
+    </div>
+  </footer>
+</body>
+</html>
