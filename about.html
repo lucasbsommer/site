@@ -331,10 +331,20 @@
       </section>
 
       <!-- Connect -->
-      <section class="bio-section" style="padding-bottom:4rem;">
+      <section class="bio-section">
         <h2>Connect</h2>
         <p>I'm most active on <a href="https://twitter.com/lucasbsommer" target="_blank">Twitter/X</a>. You can also find me on <a href="https://linkedin.com/in/lucasbsommer" target="_blank">LinkedIn</a> and <a href="https://github.com/lucasbsommer" target="_blank">GitHub</a>.</p>
       </section>
+
+      <!-- Email Capture -->
+      <div class="email-capture" style="margin-bottom:4rem;">
+        <h3>Follow the journey</h3>
+        <p class="capture-sub">I build in public across marketing, construction, wine, trading, and AI. Get updates when I ship something, learn something, or write something worth reading.</p>
+        <form class="email-form" onsubmit="event.preventDefault(); this.querySelector('button').textContent='Subscribed!'; this.querySelector('button').disabled=true;">
+          <input type="email" placeholder="you@example.com" required />
+          <button type="submit">Subscribe</button>
+        </form>
+      </div>
 
     </article>
   </main>

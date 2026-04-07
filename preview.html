@@ -559,6 +559,18 @@
 
     </div>
 
+    <!-- Email Capture -->
+    <div class="container" style="padding-bottom:2rem;">
+      <div class="email-capture" style="background:var(--color-surface); border:1px solid var(--color-border); border-radius:12px; padding:2rem;">
+        <h3 style="font-size:1.1rem; font-weight:700; margin-bottom:0.35rem;">Follow the journey</h3>
+        <p style="font-size:0.9rem; color:var(--color-text-muted); margin-bottom:1.25rem; line-height:1.6;">I build in public across marketing, construction, wine, trading, and AI. Get updates when I ship something, learn something, or write something worth reading.</p>
+        <form class="email-form" style="display:flex; gap:0.5rem;" onsubmit="event.preventDefault(); this.querySelector('button').textContent='Subscribed!'; this.querySelector('button').disabled=true;">
+          <input type="email" placeholder="you@example.com" required style="flex:1; padding:0.6rem 0.85rem; border:1px solid var(--color-border); border-radius:8px; font-family:inherit; font-size:0.9rem; color:var(--color-text); background:var(--color-bg); outline:none;" />
+          <button type="submit" style="padding:0.6rem 1.25rem; background:var(--color-accent); color:#fff; border:none; border-radius:8px; font-family:inherit; font-size:0.9rem; font-weight:600; cursor:pointer; white-space:nowrap;">Subscribe</button>
+        </form>
+      </div>
+    </div>
+
     <!-- Press -->
     <div class="container">
       <div class="section-header" style="padding-left:0;padding-right:0;">
