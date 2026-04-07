@@ -4,7 +4,7 @@ interface Props {
   description?: string;
 }
 
-const { title, description = "Lucas Sommer — serial entrepreneur, builder, investor." } = Astro.props;
+const { title, description = "Lucas Sommer — serial entrepreneur, builder, investor. Follow along as I build companies across marketing, construction, wine, fintech, and AI." } = Astro.props;
 ---
 
 <html lang="en">
@@ -24,7 +24,16 @@ const { title, description = "Lucas Sommer — serial entrepreneur, builder, inv
     <title>{title}</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+    <!-- Prevent flash of wrong theme -->
+    <script is:inline>
+      (function() {
+        var t = localStorage.getItem('theme');
+        if (t === 'light') document.documentElement.setAttribute('data-theme', 'light');
+        else if (t === 'dark') document.documentElement.removeAttribute('data-theme');
+        else if (window.matchMedia('(prefers-color-scheme: light)').matches) document.documentElement.setAttribute('data-theme', 'light');
+      })();
+    </script>
     <style>
       @import '../styles/global.css';
     </style>
@@ -32,20 +41,28 @@ const { title, description = "Lucas Sommer — serial entrepreneur, builder, inv
   <body>
     <header class="site-header">
       <nav class="container">
-        <a href="/" class="site-name">Lucas Sommer</a>
-        <button class="nav-toggle" aria-label="Menu">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
-        </button>
-        <div class="nav-links">
-          <a href="/projects">Projects</a>
-          <a href="/resources">Resources</a>
-          <a href="/about">About</a>
+        <a href="/" class="site-name">lucas sommer</a>
+        <div class="nav-right">
+          <div class="nav-links">
+            <a href="/projects">Projects</a>
+            <a href="/resources">Resources</a>
+            <a href="/about">About</a>
+          </div>
+          <button class="theme-toggle" aria-label="Toggle theme" title="Toggle theme">
+            <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+            <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+          </button>
+          <button class="nav-toggle" aria-label="Menu">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+          </button>
         </div>
       </nav>
     </header>
+
     <main>
       <slot />
     </main>
+
     <footer class="site-footer">
       <div class="container">
         <div class="footer-inner">
@@ -58,7 +75,22 @@ const { title, description = "Lucas Sommer — serial entrepreneur, builder, inv
         </div>
       </div>
     </footer>
+
     <script>
+      // Theme toggle
+      const toggle = document.querySelector('.theme-toggle');
+      toggle?.addEventListener('click', () => {
+        const isLight = document.documentElement.getAttribute('data-theme') === 'light';
+        if (isLight) {
+          document.documentElement.removeAttribute('data-theme');
+          localStorage.setItem('theme', 'dark');
+        } else {
+          document.documentElement.setAttribute('data-theme', 'light');
+          localStorage.setItem('theme', 'light');
+        }
+      });
+
+      // Mobile nav
       document.querySelector('.nav-toggle')?.addEventListener('click', () => {
         document.querySelector('.nav-links')?.classList.toggle('open');
       });
@@ -67,10 +99,17 @@ const { title, description = "Lucas Sommer — serial entrepreneur, builder, inv
 </html>
 
 <style>
-  /* Header */
+  /* ---- Header ---- */
   .site-header {
-    border-bottom: 1px solid var(--color-border);
-    padding: 1rem 0;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: var(--nav-bg);
+    backdrop-filter: saturate(180%) blur(12px);
+    -webkit-backdrop-filter: saturate(180%) blur(12px);
+    border-bottom: 1px solid var(--border);
+    padding: 0.75rem 0;
+    transition: background-color 0.2s ease, border-color 0.2s ease;
   }
 
   .site-header nav {
@@ -81,13 +120,18 @@ const { title, description = "Lucas Sommer — serial entrepreneur, builder, inv
 
   .site-name {
     font-weight: 700;
-    font-size: 1.1rem;
-    color: var(--color-text);
-    text-decoration: none;
+    font-size: 1rem;
+    color: var(--text-primary);
+    letter-spacing: -0.3px;
+    font-family: var(--font-mono);
   }
 
-  .site-name:hover {
-    color: var(--color-text);
+  .site-name:hover { color: var(--text-primary); }
+
+  .nav-right {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
   }
 
   .nav-links {
@@ -97,36 +141,60 @@ const { title, description = "Lucas Sommer — serial entrepreneur, builder, inv
   }
 
   .nav-links a {
-    font-size: 0.925rem;
-    color: var(--color-text-muted);
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+    transition: color 0.15s ease;
   }
 
-  .nav-links a:hover {
-    color: var(--color-text);
+  .nav-links a:hover { color: var(--text-primary); }
+
+  /* ---- Theme Toggle ---- */
+  .theme-toggle {
+    background: none;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    padding: 0.35rem;
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.15s ease, border-color 0.15s ease;
   }
 
-  /* Mobile nav toggle */
+  .theme-toggle:hover {
+    color: var(--text-primary);
+    border-color: var(--border-hover);
+  }
+
+  .theme-toggle svg { width: 16px; height: 16px; }
+
+  /* Show sun in dark mode, moon in light mode */
+  .icon-moon { display: none; }
+  [data-theme="light"] .icon-sun { display: none; }
+  [data-theme="light"] .icon-moon { display: block; }
+
+  /* ---- Mobile Nav ---- */
   .nav-toggle {
     display: none;
     background: none;
     border: none;
     cursor: pointer;
     padding: 0.25rem;
-    color: var(--color-text);
+    color: var(--text-primary);
   }
 
-  .nav-toggle svg {
-    width: 22px;
-    height: 22px;
-  }
+  .nav-toggle svg { width: 20px; height: 20px; }
 
-  /* Footer */
+  /* ---- Footer ---- */
   .site-footer {
     margin-top: auto;
-    border-top: 1px solid var(--color-border);
+    border-top: 1px solid var(--border);
     padding: 2rem 0;
-    color: var(--color-text-muted);
-    font-size: 0.85rem;
+    color: var(--text-tertiary);
+    font-size: 0.8125rem;
+    transition: border-color 0.2s ease;
   }
 
   .footer-inner {
@@ -141,29 +209,25 @@ const { title, description = "Lucas Sommer — serial entrepreneur, builder, inv
   }
 
   .footer-links a {
-    color: var(--color-text-muted);
-    font-size: 0.85rem;
+    color: var(--text-tertiary);
+    font-size: 0.8125rem;
   }
 
-  .footer-links a:hover {
-    color: var(--color-text);
-  }
+  .footer-links a:hover { color: var(--text-secondary); }
 
-  /* Mobile */
-  @media (max-width: 600px) {
-    .nav-toggle {
-      display: block;
-    }
+  /* ---- Mobile ---- */
+  @media (max-width: 640px) {
+    .nav-toggle { display: block; }
 
     .nav-links {
       display: none;
       position: absolute;
       top: 100%;
       right: 1.25rem;
-      background: var(--color-surface);
-      border: 1px solid var(--color-border);
-      border-radius: 10px;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+      background: var(--surface-1);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.2);
       flex-direction: column;
       padding: 0.5rem 0;
       gap: 0;
@@ -171,22 +235,16 @@ const { title, description = "Lucas Sommer — serial entrepreneur, builder, inv
       z-index: 100;
     }
 
-    .nav-links.open {
-      display: flex;
-    }
+    .nav-links.open { display: flex; }
 
     .nav-links a {
       padding: 0.65rem 1.25rem;
-      font-size: 0.95rem;
+      font-size: 0.9375rem;
     }
 
-    .nav-links a:hover {
-      background: var(--color-surface-hover);
-    }
+    .nav-links a:hover { background: var(--surface-2); }
 
-    .site-header nav {
-      position: relative;
-    }
+    .site-header nav { position: relative; }
 
     .footer-inner {
       flex-direction: column;

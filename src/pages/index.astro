@@ -2,30 +2,34 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 ---
 
-<BaseLayout title="Lucas Sommer — Serial Entrepreneur, Builder, Investor" description="I build things, learn in public, and share what works. Founder of Ad-Apt, Boss PDX, Grove Vineyard, IntraAlpha, and Onit. Featured in Forbes, NBC, Entrepreneur.com.">
+<BaseLayout title="Lucas Sommer — Serial Entrepreneur, Builder, Investor">
 
   <!-- Hero -->
   <section class="hero container">
-    <h1>I build things, learn in public, and share what works.</h1>
+    <div class="hero-badge">
+      <span class="badge-dot"></span>
+      Currently building
+    </div>
+    <h1 class="hero-title">I build things, learn in public, and share what works.</h1>
     <p class="hero-intro">
-      This is my home base — a living portfolio of everything I'm working on, thinking about, and building toward. Follow along with any project, or dig into resources I've made along the way.
+      Serial entrepreneur from Oregon. I've founded, scaled, and exited companies across marketing, construction, wine, fintech, and AI. This is my home base — follow along, grab resources, or dig into what I'm building.
     </p>
     <ul class="hero-social">
       <li>
         <a href="https://twitter.com/lucasbsommer" target="_blank" rel="noopener">
-          <svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
           Twitter
         </a>
       </li>
       <li>
         <a href="https://linkedin.com/in/lucasbsommer" target="_blank" rel="noopener">
-          <svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16"><path d="M20.5 2h-17A1.5 1.5 0 002 3.5v17A1.5 1.5 0 003.5 22h17a1.5 1.5 0 001.5-1.5v-17A1.5 1.5 0 0020.5 2zM8 19H5v-9h3zM6.5 8.25A1.75 1.75 0 118.3 6.5a1.78 1.78 0 01-1.8 1.75zM19 19h-3v-4.74c0-1.42-.6-1.93-1.38-1.93A1.74 1.74 0 0013 14.19V19h-3v-9h2.9v1.3a3.11 3.11 0 012.7-1.4c1.55 0 3.36.86 3.36 3.66z"/></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.5 2h-17A1.5 1.5 0 002 3.5v17A1.5 1.5 0 003.5 22h17a1.5 1.5 0 001.5-1.5v-17A1.5 1.5 0 0020.5 2zM8 19H5v-9h3zM6.5 8.25A1.75 1.75 0 118.3 6.5a1.78 1.78 0 01-1.8 1.75zM19 19h-3v-4.74c0-1.42-.6-1.93-1.38-1.93A1.74 1.74 0 0013 14.19V19h-3v-9h2.9v1.3a3.11 3.11 0 012.7-1.4c1.55 0 3.36.86 3.36 3.66z"/></svg>
           LinkedIn
         </a>
       </li>
       <li>
         <a href="https://github.com/lucasbsommer" target="_blank" rel="noopener">
-          <svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg>
           GitHub
         </a>
       </li>
@@ -54,18 +58,18 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   <section class="container">
     <div class="section-header">
       <h2>Projects</h2>
-      <span class="section-sub">What I'm building and exploring</span>
+      <span class="section-meta">What I'm building and exploring</span>
     </div>
     <div class="projects-grid">
 
       <a class="project-card" href="/projects/onit">
-        <div class="project-icon" style="background:#eff6ff; color:#2563eb;">On</div>
+        <div class="project-icon" style="background:var(--status-building-bg); color:var(--status-building-text);">On</div>
         <div class="project-body">
           <div class="project-top">
             <div class="project-name">Onit</div>
             <span class="project-status status-building">Building</span>
           </div>
-          <p class="project-desc">AI-powered marketing platform that handles strategy, execution, and reporting for businesses. Chat-based onboarding, 103-channel framework, built for scale.</p>
+          <p class="project-desc">AI-powered marketing platform that handles strategy, execution, and reporting. Chat-based onboarding, 103-channel framework, built for scale.</p>
           <div class="project-tags">
             <span class="tag">AI</span>
             <span class="tag">Marketing</span>
@@ -75,7 +79,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       </a>
 
       <a class="project-card" href="/projects/boss-pdx">
-        <div class="project-icon" style="background:#fef3c7; color:#a16207;">BP</div>
+        <div class="project-icon" style="background:var(--status-exploring-bg); color:var(--status-exploring-text);">BP</div>
         <div class="project-body">
           <div class="project-top">
             <div class="project-name">Boss PDX</div>
@@ -91,7 +95,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       </a>
 
       <a class="project-card" href="/projects/grove-vineyard">
-        <div class="project-icon" style="background:#ecfdf5; color:#059669;">GV</div>
+        <div class="project-icon" style="background:var(--status-active-bg); color:var(--status-active-text);">GV</div>
         <div class="project-body">
           <div class="project-top">
             <div class="project-name">Grove Vineyard</div>
@@ -107,13 +111,13 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       </a>
 
       <a class="project-card" href="/projects/ad-apt">
-        <div class="project-icon" style="background:#f5f3ff; color:#7c3aed;">Aa</div>
+        <div class="project-icon" style="background:rgba(124,58,237,0.12); color:#a78bfa;">Aa</div>
         <div class="project-body">
           <div class="project-top">
             <div class="project-name">Ad-Apt</div>
             <span class="project-status status-active">Active</span>
           </div>
-          <p class="project-desc">Digital marketing agency delivering real results: 400% ROAS for Payless, 7.2x ROAS for Teton Gravity Research, $1M+ new sales for True Blue Car Wash. Clients include Netflix, Circle K, and Benchmade Knives.</p>
+          <p class="project-desc">Digital marketing agency delivering 400% ROAS for Payless, 7.2x ROAS for Teton Gravity Research, $1M+ new sales for True Blue Car Wash. Clients include Netflix, Circle K, and Benchmade.</p>
           <div class="project-tags">
             <span class="tag">Agency</span>
             <span class="tag">Digital Marketing</span>
@@ -122,7 +126,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       </a>
 
       <a class="project-card" href="/projects/intraalpha">
-        <div class="project-icon" style="background:#fdf2f8; color:#db2777;">IA</div>
+        <div class="project-icon" style="background:rgba(219,39,119,0.12); color:#f472b6;">IA</div>
         <div class="project-body">
           <div class="project-top">
             <div class="project-name">IntraAlpha</div>
@@ -138,13 +142,13 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       </a>
 
       <a class="project-card" href="/projects/monkey-business">
-        <div class="project-icon" style="background:#f8f7f4; font-size:1.5rem;">&#x1F412;</div>
+        <div class="project-icon" style="background:var(--surface-2); font-size:1.35rem;">&#x1F412;</div>
         <div class="project-body">
           <div class="project-top">
             <div class="project-name">Monkey Business</div>
             <span class="project-status status-building">Writing</span>
           </div>
-          <p class="project-desc">A book on the entrepreneurial mindset. Why your brain is wired for survival, not business — and how to override the defaults. 20 chapters, written from experience.</p>
+          <p class="project-desc">A book on the entrepreneurial mindset. Why your brain is wired for survival, not business — and how to override the defaults. 20 chapters, from experience.</p>
           <div class="project-tags">
             <span class="tag">Book</span>
             <span class="tag">Mindset</span>
@@ -159,9 +163,11 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   <!-- Email Capture -->
   <section class="container">
     <div class="email-capture">
-      <h3>Follow the journey</h3>
-      <p>I build in public across marketing, construction, wine, trading, and AI. Get updates when I ship something, learn something, or write something worth reading.</p>
-      <form class="email-form" onsubmit="event.preventDefault(); this.querySelector('button').textContent='Subscribed!'; this.querySelector('button').disabled=true;">
+      <div class="email-header">
+        <h3>Get updates</h3>
+        <span class="email-meta">New projects, resources, and lessons shipped to your inbox.</span>
+      </div>
+      <form class="email-form" onsubmit="event.preventDefault(); this.querySelector('button').textContent='You\'re in'; this.querySelector('button').disabled=true;">
         <input type="email" placeholder="you@example.com" required />
         <button type="submit">Subscribe</button>
       </form>
@@ -188,23 +194,58 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 </BaseLayout>
 
 <style>
-  /* Hero */
+  /* ---- Hero ---- */
   .hero {
-    padding-top: 4.5rem;
+    padding-top: 5rem;
     padding-bottom: 2rem;
   }
 
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: var(--status-active-text);
+    background: var(--status-active-bg);
+    padding: 0.3rem 0.85rem 0.3rem 0.65rem;
+    border-radius: 9999px;
+    margin-bottom: 1.5rem;
+  }
+
+  .badge-dot {
+    width: 6px;
+    height: 6px;
+    background: var(--status-active-text);
+    border-radius: 50%;
+    animation: pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+
+  .hero-title {
+    font-size: 3rem;
+    font-weight: 800;
+    letter-spacing: -1.5px;
+    line-height: 1.0;
+    max-width: 700px;
+    margin-bottom: 1.25rem;
+  }
+
   .hero-intro {
-    font-size: 1.15rem;
-    color: var(--color-text-secondary);
+    font-size: 1.125rem;
+    color: var(--text-secondary);
     max-width: 600px;
-    line-height: 1.75;
+    line-height: 1.7;
   }
 
   .hero-social {
     display: flex;
     gap: 1.25rem;
-    margin-top: 1.5rem;
+    margin-top: 1.75rem;
     list-style: none;
   }
 
@@ -212,88 +253,92 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     display: flex;
     align-items: center;
     gap: 0.4rem;
-    font-size: 0.875rem;
-    color: var(--color-text-muted);
+    font-size: 0.8125rem;
+    color: var(--text-tertiary);
     font-weight: 500;
+    transition: color 0.15s ease;
   }
 
-  .hero-social a:hover { color: var(--color-text); }
-  .hero-social svg { width: 16px; height: 16px; }
+  .hero-social a:hover { color: var(--text-primary); }
+  .hero-social svg { width: 15px; height: 15px; }
 
   .hero-stats {
     display: flex;
     flex-wrap: wrap;
-    gap: 2rem;
-    margin-top: 2.25rem;
-    padding-top: 1.75rem;
-    border-top: 1px solid var(--color-border);
+    gap: 2.5rem;
+    margin-top: 2.5rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--border);
   }
 
   .stat-number {
     display: block;
     font-size: 1.5rem;
     font-weight: 800;
-    letter-spacing: -0.02em;
-    color: var(--color-text);
+    letter-spacing: -0.5px;
+    color: var(--text-primary);
+    font-family: var(--font-mono);
   }
 
   .stat-label {
     display: block;
-    font-size: 0.8rem;
-    color: var(--color-text-muted);
+    font-size: 0.75rem;
+    color: var(--text-tertiary);
     font-weight: 500;
+    margin-top: 0.15rem;
   }
 
-  /* Section headers */
+  /* ---- Section Headers ---- */
   .section-header {
     display: flex;
     align-items: baseline;
     justify-content: space-between;
-    padding: 3rem 0 1.25rem;
+    padding: 4rem 0 1.25rem;
   }
 
-  .section-sub {
-    font-size: 0.85rem;
-    color: var(--color-text-muted);
+  .section-meta {
+    font-size: 0.8125rem;
+    color: var(--text-tertiary);
   }
 
-  /* Project cards */
+  /* ---- Project Cards ---- */
   .projects-grid {
     display: flex;
     flex-direction: column;
-    gap: 1rem;
+    gap: 0.75rem;
     padding-bottom: 2rem;
   }
 
   .project-card {
-    background: var(--color-surface);
-    border: 1px solid var(--color-border);
+    background: var(--surface-1);
+    border: 1px solid var(--border);
     border-radius: var(--radius);
-    padding: 1.5rem;
-    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    padding: 1.35rem;
     display: flex;
-    gap: 1.25rem;
+    gap: 1.15rem;
     cursor: pointer;
     text-decoration: none;
     color: inherit;
+    transition: border-color 0.15s ease, background-color 0.15s ease;
   }
 
   .project-card:hover {
-    border-color: #d6d3d1;
-    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+    border-color: var(--border-hover);
+    background: var(--surface-2);
     color: inherit;
   }
 
   .project-icon {
-    width: 48px;
-    height: 48px;
+    width: 44px;
+    height: 44px;
     border-radius: 10px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1.35rem;
+    font-size: 1.1rem;
     font-weight: 700;
     flex-shrink: 0;
+    font-family: var(--font-mono);
   }
 
   .project-body {
@@ -306,70 +351,85 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     align-items: flex-start;
     justify-content: space-between;
     gap: 1rem;
-    margin-bottom: 0.2rem;
+    margin-bottom: 0.25rem;
   }
 
   .project-name {
-    font-size: 1.05rem;
-    font-weight: 650;
-    color: var(--color-text);
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    letter-spacing: -0.2px;
   }
 
   .project-status {
-    font-size: 0.7rem;
+    font-size: 0.6875rem;
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.05em;
-    padding: 0.2rem 0.55rem;
-    border-radius: 999px;
+    padding: 0.15rem 0.5rem;
+    border-radius: 9999px;
     flex-shrink: 0;
     margin-top: 2px;
   }
 
-  .status-active { background: #ecfdf5; color: #059669; }
-  .status-building { background: #eff6ff; color: #2563eb; }
-  .status-exploring { background: #fefce8; color: #a16207; }
+  .status-active {
+    background: var(--status-active-bg);
+    color: var(--status-active-text);
+  }
+
+  .status-building {
+    background: var(--status-building-bg);
+    color: var(--status-building-text);
+  }
+
+  .status-exploring {
+    background: var(--status-exploring-bg);
+    color: var(--status-exploring-text);
+  }
 
   .project-desc {
-    font-size: 0.9rem;
-    color: var(--color-text-muted);
-    line-height: 1.6;
-    margin-bottom: 0.85rem;
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+    line-height: 1.55;
+    margin-bottom: 0.75rem;
   }
 
   .project-tags {
     display: flex;
-    gap: 0.4rem;
+    gap: 0.35rem;
     flex-wrap: wrap;
   }
 
   .tag {
-    font-size: 0.7rem;
+    font-size: 0.6875rem;
     font-weight: 500;
-    color: var(--color-text-muted);
-    background: var(--color-surface-hover);
-    padding: 0.15rem 0.5rem;
-    border-radius: 4px;
+    color: var(--text-tertiary);
+    background: var(--surface-2);
+    padding: 0.1rem 0.45rem;
+    border-radius: var(--radius-xs);
+    transition: background-color 0.15s ease;
   }
 
-  /* Email capture */
+  /* ---- Email Capture ---- */
   .email-capture {
-    background: var(--color-surface);
-    border: 1px solid var(--color-border);
+    background: var(--surface-1);
+    border: 1px solid var(--border);
     border-radius: var(--radius);
-    padding: 2rem;
+    padding: 1.75rem;
     margin-bottom: 2rem;
+    transition: border-color 0.15s ease, background-color 0.15s ease;
   }
 
-  .email-capture h3 {
-    margin-bottom: 0.35rem;
+  .email-header {
+    margin-bottom: 1rem;
   }
 
-  .email-capture p {
-    font-size: 0.9rem;
-    color: var(--color-text-muted);
-    margin-bottom: 1.25rem;
-    line-height: 1.6;
+  .email-meta {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+    line-height: 1.5;
+    display: block;
+    margin-top: 0.25rem;
   }
 
   .email-form {
@@ -379,65 +439,87 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
   .email-form input {
     flex: 1;
-    padding: 0.6rem 0.85rem;
-    border: 1px solid var(--color-border);
-    border-radius: 8px;
+    padding: 0.55rem 0.85rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
     font-family: inherit;
-    font-size: 0.9rem;
-    color: var(--color-text);
-    background: var(--color-bg);
+    font-size: 0.875rem;
+    color: var(--text-primary);
+    background: var(--bg);
     outline: none;
+    transition: border-color 0.15s ease, background-color 0.15s ease;
+  }
+
+  .email-form input:focus {
+    border-color: var(--accent);
+  }
+
+  .email-form input::placeholder {
+    color: var(--text-tertiary);
   }
 
   .email-form button {
-    padding: 0.6rem 1.25rem;
-    background: var(--color-accent);
-    color: #fff;
+    padding: 0.55rem 1.15rem;
+    background: var(--accent);
+    color: #ffffff;
     border: none;
-    border-radius: 8px;
+    border-radius: var(--radius-sm);
     font-family: inherit;
-    font-size: 0.9rem;
+    font-size: 0.8125rem;
     font-weight: 600;
     cursor: pointer;
     white-space: nowrap;
+    transition: background-color 0.15s ease;
   }
 
-  /* Press */
+  .email-form button:hover {
+    background: var(--accent-hover);
+  }
+
+  /* ---- Press ---- */
   .press-bar {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.65rem;
-    padding-bottom: 4rem;
+    gap: 0.5rem;
+    padding-bottom: 5rem;
   }
 
   .press-item {
-    background: var(--color-surface);
-    border: 1px solid var(--color-border);
+    background: var(--surface-1);
+    border: 1px solid var(--border);
     border-radius: 6px;
-    padding: 0.45rem 0.85rem;
-    font-size: 0.8rem;
+    padding: 0.4rem 0.75rem;
+    font-size: 0.75rem;
     font-weight: 600;
-    color: var(--color-text-secondary);
+    color: var(--text-secondary);
+    transition: border-color 0.15s ease, background-color 0.15s ease;
   }
 
-  /* Mobile */
-  @media (max-width: 600px) {
-    .hero { padding-top: 3rem; padding-bottom: 1.5rem; }
-    .hero-intro { font-size: 1.05rem; }
+  /* ---- Mobile ---- */
+  @media (max-width: 640px) {
+    .hero { padding-top: 3.5rem; padding-bottom: 1.5rem; }
+    .hero-title { font-size: 2rem; letter-spacing: -0.75px; line-height: 1.05; }
+    .hero-intro { font-size: 1rem; }
     .hero-social { gap: 1rem; margin-top: 1.25rem; }
-    .hero-stats { gap: 1.5rem; }
 
-    .section-header { padding: 2.5rem 0 1rem; }
+    .hero-stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+    }
 
-    .projects-grid { gap: 0.75rem; }
-    .project-card { padding: 1.25rem; gap: 1rem; }
-    .project-icon { width: 42px; height: 42px; font-size: 1.1rem; border-radius: 8px; }
+    .section-header { padding-top: 3rem; }
+    .section-meta { display: none; }
+
+    .projects-grid { gap: 0.5rem; }
+    .project-card { padding: 1.15rem; gap: 0.85rem; }
+    .project-icon { width: 38px; height: 38px; font-size: 0.95rem; border-radius: 8px; }
     .project-top { flex-direction: column; gap: 0.25rem; }
     .project-status { align-self: flex-start; }
-    .project-desc { font-size: 0.875rem; margin-bottom: 0.75rem; }
+    .project-desc { font-size: 0.8125rem; }
 
-    .email-capture { padding: 1.5rem; }
+    .email-capture { padding: 1.35rem; }
     .email-form { flex-direction: column; }
-    .email-form button { padding: 0.7rem 1rem; }
+    .email-form button { padding: 0.65rem 1rem; }
   }
 </style>
