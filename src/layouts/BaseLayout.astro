@@ -28,10 +28,36 @@ const { title, description = "Lucas Sommer — serial entrepreneur, builder, inv
     <!-- Prevent flash of wrong theme -->
     <script is:inline>
       (function() {
+        var d = document.documentElement, s = d.style;
+        // Theme
         var t = localStorage.getItem('theme');
-        if (t === 'light') document.documentElement.setAttribute('data-theme', 'light');
-        else if (t === 'dark') document.documentElement.removeAttribute('data-theme');
-        else if (window.matchMedia('(prefers-color-scheme: light)').matches) document.documentElement.setAttribute('data-theme', 'light');
+        if (t === 'light') d.setAttribute('data-theme', 'light');
+        else if (!t && window.matchMedia('(prefers-color-scheme: light)').matches) d.setAttribute('data-theme', 'light');
+        // Accent
+        var accents = {
+          blue:    ['#3b82f6','#2563eb','rgba(59,130,246,0.1)','#60a5fa','#2563eb'],
+          violet:  ['#8b5cf6','#7c3aed','rgba(139,92,246,0.1)','#a78bfa','#7c3aed'],
+          emerald: ['#10b981','#059669','rgba(16,185,129,0.1)','#34d399','#059669'],
+          rose:    ['#f43f5e','#e11d48','rgba(244,63,94,0.1)','#fb7185','#e11d48'],
+          amber:   ['#f59e0b','#d97706','rgba(245,158,11,0.1)','#fbbf24','#d97706'],
+          cyan:    ['#06b6d4','#0891b2','rgba(6,182,212,0.1)','#22d3ee','#0891b2']
+        };
+        var a = accents[localStorage.getItem('accent')];
+        if (a) {
+          var isL = d.getAttribute('data-theme') === 'light';
+          s.setProperty('--accent', a[0]);
+          s.setProperty('--accent-hover', a[1]);
+          s.setProperty('--accent-soft', a[2]);
+          s.setProperty('--accent-text', isL ? a[4] : a[3]);
+        }
+        // Font size
+        var sizes = { compact: '14px', default: '15px', large: '17px' };
+        var fs = sizes[localStorage.getItem('fontSize')];
+        if (fs) s.fontSize = fs;
+        // Border radius
+        var radii = { sharp: ['4px','2px','1px'], default: ['12px','8px','4px'], round: ['20px','14px','8px'] };
+        var r = radii[localStorage.getItem('radius')];
+        if (r) { s.setProperty('--radius', r[0]); s.setProperty('--radius-sm', r[1]); s.setProperty('--radius-xs', r[2]); }
       })();
     </script>
     <style>
@@ -48,6 +74,9 @@ const { title, description = "Lucas Sommer — serial entrepreneur, builder, inv
             <a href="/resources">Resources</a>
             <a href="/about">About</a>
           </div>
+          <a href="/brand" class="nav-brand-link" aria-label="Brand settings" title="Brand settings">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="16" height="16"><path d="M12.22 2h-.44a2 2 0 00-2 2v.18a2 2 0 01-1 1.73l-.43.25a2 2 0 01-2 0l-.15-.08a2 2 0 00-2.73.73l-.22.38a2 2 0 00.73 2.73l.15.1a2 2 0 011 1.72v.51a2 2 0 01-1 1.74l-.15.09a2 2 0 00-.73 2.73l.22.38a2 2 0 002.73.73l.15-.08a2 2 0 012 0l.43.25a2 2 0 011 1.73V20a2 2 0 002 2h.44a2 2 0 002-2v-.18a2 2 0 011-1.73l.43-.25a2 2 0 012 0l.15.08a2 2 0 002.73-.73l.22-.39a2 2 0 00-.73-2.73l-.15-.08a2 2 0 01-1-1.74v-.5a2 2 0 011-1.74l.15-.09a2 2 0 00.73-2.73l-.22-.38a2 2 0 00-2.73-.73l-.15.08a2 2 0 01-2 0l-.43-.25a2 2 0 01-1-1.73V4a2 2 0 00-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
+          </a>
           <button class="theme-toggle" aria-label="Toggle theme" title="Toggle theme">
             <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
             <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
@@ -148,6 +177,23 @@ const { title, description = "Lucas Sommer — serial entrepreneur, builder, inv
   }
 
   .nav-links a:hover { color: var(--text-primary); }
+
+  /* ---- Brand/Settings Link ---- */
+  .nav-brand-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.35rem;
+    color: var(--text-tertiary);
+    border: 1px solid transparent;
+    border-radius: var(--radius-sm);
+    transition: color 0.15s ease, border-color 0.15s ease;
+  }
+
+  .nav-brand-link:hover {
+    color: var(--text-secondary);
+    border-color: var(--border);
+  }
 
   /* ---- Theme Toggle ---- */
   .theme-toggle {
