@@ -2,62 +2,442 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 ---
 
-<BaseLayout title="Lucas Sommer">
+<BaseLayout title="Lucas Sommer — Serial Entrepreneur, Builder, Investor" description="I build things, learn in public, and share what works. Founder of Ad-Apt, Boss PDX, Grove Vineyard, IntraAlpha, and Onit. Featured in Forbes, NBC, Entrepreneur.com.">
+
+  <!-- Hero -->
   <section class="hero container">
-    <h1>Hey, I'm Lucas.</h1>
-    <p class="intro">
-      I build things, learn in public, and share what works. This is my home base — a living portfolio of everything I'm working on, thinking about, and building toward.
+    <h1>I build things, learn in public, and share what works.</h1>
+    <p class="hero-intro">
+      This is my home base — a living portfolio of everything I'm working on, thinking about, and building toward. Follow along with any project, or dig into resources I've made along the way.
     </p>
+    <ul class="hero-social">
+      <li>
+        <a href="https://twitter.com/lucasbsommer" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+          Twitter
+        </a>
+      </li>
+      <li>
+        <a href="https://linkedin.com/in/lucasbsommer" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16"><path d="M20.5 2h-17A1.5 1.5 0 002 3.5v17A1.5 1.5 0 003.5 22h17a1.5 1.5 0 001.5-1.5v-17A1.5 1.5 0 0020.5 2zM8 19H5v-9h3zM6.5 8.25A1.75 1.75 0 118.3 6.5a1.78 1.78 0 01-1.8 1.75zM19 19h-3v-4.74c0-1.42-.6-1.93-1.38-1.93A1.74 1.74 0 0013 14.19V19h-3v-9h2.9v1.3a3.11 3.11 0 012.7-1.4c1.55 0 3.36.86 3.36 3.66z"/></svg>
+          LinkedIn
+        </a>
+      </li>
+      <li>
+        <a href="https://github.com/lucasbsommer" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg>
+          GitHub
+        </a>
+      </li>
+    </ul>
+    <div class="hero-stats">
+      <div class="stat">
+        <span class="stat-number">8+</span>
+        <span class="stat-label">Companies Founded</span>
+      </div>
+      <div class="stat">
+        <span class="stat-number">2</span>
+        <span class="stat-label">Acquisitions</span>
+      </div>
+      <div class="stat">
+        <span class="stat-number">15+</span>
+        <span class="stat-label">Years Building</span>
+      </div>
+      <div class="stat">
+        <span class="stat-number">400%+</span>
+        <span class="stat-label">Client ROAS</span>
+      </div>
+    </div>
   </section>
 
-  <section class="links container">
-    <h2>Find me elsewhere</h2>
-    <ul>
-      <li><a href="https://twitter.com/lucasbsommer" target="_blank" rel="noopener">Twitter / X</a></li>
-      <li><a href="https://linkedin.com/in/lucasbsommer" target="_blank" rel="noopener">LinkedIn</a></li>
-      <li><a href="https://github.com/lucasbsommer" target="_blank" rel="noopener">GitHub</a></li>
-    </ul>
+  <!-- Projects -->
+  <section class="container">
+    <div class="section-header">
+      <h2>Projects</h2>
+      <span class="section-sub">What I'm building and exploring</span>
+    </div>
+    <div class="projects-grid">
+
+      <a class="project-card" href="/projects/onit">
+        <div class="project-icon" style="background:#eff6ff; color:#2563eb;">On</div>
+        <div class="project-body">
+          <div class="project-top">
+            <div class="project-name">Onit</div>
+            <span class="project-status status-building">Building</span>
+          </div>
+          <p class="project-desc">AI-powered marketing platform that handles strategy, execution, and reporting for businesses. Chat-based onboarding, 103-channel framework, built for scale.</p>
+          <div class="project-tags">
+            <span class="tag">AI</span>
+            <span class="tag">Marketing</span>
+            <span class="tag">SaaS</span>
+          </div>
+        </div>
+      </a>
+
+      <a class="project-card" href="/projects/boss-pdx">
+        <div class="project-icon" style="background:#fef3c7; color:#a16207;">BP</div>
+        <div class="project-body">
+          <div class="project-top">
+            <div class="project-name">Boss PDX</div>
+            <span class="project-status status-active">Active</span>
+          </div>
+          <p class="project-desc">Full-service construction company in Portland. Residential and commercial projects, AI-assisted estimating, and a crew that gets it done.</p>
+          <div class="project-tags">
+            <span class="tag">Construction</span>
+            <span class="tag">Portland</span>
+            <span class="tag">Operations</span>
+          </div>
+        </div>
+      </a>
+
+      <a class="project-card" href="/projects/grove-vineyard">
+        <div class="project-icon" style="background:#ecfdf5; color:#059669;">GV</div>
+        <div class="project-body">
+          <div class="project-top">
+            <div class="project-name">Grove Vineyard</div>
+            <span class="project-status status-active">Active</span>
+          </div>
+          <p class="project-desc">Willamette Valley vineyard growing European clones of Pinot Noir and Chardonnay. A long-term land and agriculture play rooted in Oregon.</p>
+          <div class="project-tags">
+            <span class="tag">Wine</span>
+            <span class="tag">Agriculture</span>
+            <span class="tag">Oregon</span>
+          </div>
+        </div>
+      </a>
+
+      <a class="project-card" href="/projects/ad-apt">
+        <div class="project-icon" style="background:#f5f3ff; color:#7c3aed;">Aa</div>
+        <div class="project-body">
+          <div class="project-top">
+            <div class="project-name">Ad-Apt</div>
+            <span class="project-status status-active">Active</span>
+          </div>
+          <p class="project-desc">Digital marketing agency delivering real results: 400% ROAS for Payless, 7.2x ROAS for Teton Gravity Research, $1M+ new sales for True Blue Car Wash. Clients include Netflix, Circle K, and Benchmade Knives.</p>
+          <div class="project-tags">
+            <span class="tag">Agency</span>
+            <span class="tag">Digital Marketing</span>
+          </div>
+        </div>
+      </a>
+
+      <a class="project-card" href="/projects/intraalpha">
+        <div class="project-icon" style="background:#fdf2f8; color:#db2777;">IA</div>
+        <div class="project-body">
+          <div class="project-top">
+            <div class="project-name">IntraAlpha</div>
+            <span class="project-status status-exploring">Transitioning</span>
+          </div>
+          <p class="project-desc">Options and equities algo trading platform with a Discord community. Algorithmic strategies, market signals, and trading infrastructure.</p>
+          <div class="project-tags">
+            <span class="tag">Finance</span>
+            <span class="tag">Algo Trading</span>
+            <span class="tag">Discord</span>
+          </div>
+        </div>
+      </a>
+
+      <a class="project-card" href="/projects/monkey-business">
+        <div class="project-icon" style="background:#f8f7f4; font-size:1.5rem;">&#x1F412;</div>
+        <div class="project-body">
+          <div class="project-top">
+            <div class="project-name">Monkey Business</div>
+            <span class="project-status status-building">Writing</span>
+          </div>
+          <p class="project-desc">A book on the entrepreneurial mindset. Why your brain is wired for survival, not business — and how to override the defaults. 20 chapters, written from experience.</p>
+          <div class="project-tags">
+            <span class="tag">Book</span>
+            <span class="tag">Mindset</span>
+            <span class="tag">Entrepreneurship</span>
+          </div>
+        </div>
+      </a>
+
+    </div>
   </section>
+
+  <!-- Email Capture -->
+  <section class="container">
+    <div class="email-capture">
+      <h3>Follow the journey</h3>
+      <p>I build in public across marketing, construction, wine, trading, and AI. Get updates when I ship something, learn something, or write something worth reading.</p>
+      <form class="email-form" onsubmit="event.preventDefault(); this.querySelector('button').textContent='Subscribed!'; this.querySelector('button').disabled=true;">
+        <input type="email" placeholder="you@example.com" required />
+        <button type="submit">Subscribe</button>
+      </form>
+    </div>
+  </section>
+
+  <!-- Press -->
+  <section class="container">
+    <div class="section-header">
+      <h2>Featured In</h2>
+    </div>
+    <div class="press-bar">
+      <span class="press-item">Forbes</span>
+      <span class="press-item">NBC News</span>
+      <span class="press-item">Entrepreneur.com</span>
+      <span class="press-item">Reuters</span>
+      <span class="press-item">Georgetown University</span>
+      <span class="press-item">MarketingProfs</span>
+      <span class="press-item">StartupNation</span>
+      <span class="press-item">Young Entrepreneur Council</span>
+    </div>
+  </section>
+
 </BaseLayout>
 
 <style>
+  /* Hero */
   .hero {
-    padding: 4rem 1.5rem 3rem;
+    padding-top: 4.5rem;
+    padding-bottom: 2rem;
   }
 
-  .hero h1 {
-    margin-bottom: 1rem;
-  }
-
-  .intro {
-    font-size: 1.125rem;
-    color: var(--color-text);
-    max-width: 560px;
-  }
-
-  .sub {
-    margin-top: 1rem;
-    color: var(--color-text-muted);
-    font-size: 0.95rem;
-  }
-
-  .links {
-    padding: 2rem 1.5rem 4rem;
-  }
-
-  .links h2 {
-    margin-bottom: 1rem;
+  .hero-intro {
     font-size: 1.15rem;
+    color: var(--color-text-secondary);
+    max-width: 600px;
+    line-height: 1.75;
   }
 
-  .links ul {
-    list-style: none;
+  .hero-social {
     display: flex;
-    gap: 1.5rem;
+    gap: 1.25rem;
+    margin-top: 1.5rem;
+    list-style: none;
+  }
+
+  .hero-social a {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.875rem;
+    color: var(--color-text-muted);
+    font-weight: 500;
+  }
+
+  .hero-social a:hover { color: var(--color-text); }
+  .hero-social svg { width: 16px; height: 16px; }
+
+  .hero-stats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2rem;
+    margin-top: 2.25rem;
+    padding-top: 1.75rem;
+    border-top: 1px solid var(--color-border);
+  }
+
+  .stat-number {
+    display: block;
+    font-size: 1.5rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    color: var(--color-text);
+  }
+
+  .stat-label {
+    display: block;
+    font-size: 0.8rem;
+    color: var(--color-text-muted);
+    font-weight: 500;
+  }
+
+  /* Section headers */
+  .section-header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    padding: 3rem 0 1.25rem;
+  }
+
+  .section-sub {
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+  }
+
+  /* Project cards */
+  .projects-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding-bottom: 2rem;
+  }
+
+  .project-card {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    display: flex;
+    gap: 1.25rem;
+    cursor: pointer;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .project-card:hover {
+    border-color: #d6d3d1;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+    color: inherit;
+  }
+
+  .project-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.35rem;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  .project-body {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .project-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 0.2rem;
+  }
+
+  .project-name {
+    font-size: 1.05rem;
+    font-weight: 650;
+    color: var(--color-text);
+  }
+
+  .project-status {
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 0.2rem 0.55rem;
+    border-radius: 999px;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .status-active { background: #ecfdf5; color: #059669; }
+  .status-building { background: #eff6ff; color: #2563eb; }
+  .status-exploring { background: #fefce8; color: #a16207; }
+
+  .project-desc {
+    font-size: 0.9rem;
+    color: var(--color-text-muted);
+    line-height: 1.6;
+    margin-bottom: 0.85rem;
+  }
+
+  .project-tags {
+    display: flex;
+    gap: 0.4rem;
     flex-wrap: wrap;
   }
 
-  .links a {
-    font-size: 0.95rem;
+  .tag {
+    font-size: 0.7rem;
+    font-weight: 500;
+    color: var(--color-text-muted);
+    background: var(--color-surface-hover);
+    padding: 0.15rem 0.5rem;
+    border-radius: 4px;
+  }
+
+  /* Email capture */
+  .email-capture {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    padding: 2rem;
+    margin-bottom: 2rem;
+  }
+
+  .email-capture h3 {
+    margin-bottom: 0.35rem;
+  }
+
+  .email-capture p {
+    font-size: 0.9rem;
+    color: var(--color-text-muted);
+    margin-bottom: 1.25rem;
+    line-height: 1.6;
+  }
+
+  .email-form {
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  .email-form input {
+    flex: 1;
+    padding: 0.6rem 0.85rem;
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: 0.9rem;
+    color: var(--color-text);
+    background: var(--color-bg);
+    outline: none;
+  }
+
+  .email-form button {
+    padding: 0.6rem 1.25rem;
+    background: var(--color-accent);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+
+  /* Press */
+  .press-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.65rem;
+    padding-bottom: 4rem;
+  }
+
+  .press-item {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+    padding: 0.45rem 0.85rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--color-text-secondary);
+  }
+
+  /* Mobile */
+  @media (max-width: 600px) {
+    .hero { padding-top: 3rem; padding-bottom: 1.5rem; }
+    .hero-intro { font-size: 1.05rem; }
+    .hero-social { gap: 1rem; margin-top: 1.25rem; }
+    .hero-stats { gap: 1.5rem; }
+
+    .section-header { padding: 2.5rem 0 1rem; }
+
+    .projects-grid { gap: 0.75rem; }
+    .project-card { padding: 1.25rem; gap: 1rem; }
+    .project-icon { width: 42px; height: 42px; font-size: 1.1rem; border-radius: 8px; }
+    .project-top { flex-direction: column; gap: 0.25rem; }
+    .project-status { align-self: flex-start; }
+    .project-desc { font-size: 0.875rem; margin-bottom: 0.75rem; }
+
+    .email-capture { padding: 1.5rem; }
+    .email-form { flex-direction: column; }
+    .email-form button { padding: 0.7rem 1rem; }
   }
 </style>
