@@ -8,6 +8,8 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="project-styles.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <style>
     /* Timeline */
     .timeline {
@@ -179,6 +181,14 @@
         <h2>The Short Version</h2>
         <p>Valedictorian in a small Oregon town. Full academic scholarship to the University of Miami studying finance and music. Built four music companies from my dorm room. Won the Budgetball championship. First employee at The Launch Pad, where I consulted 400+ student businesses. Won WeMedia Pitch It! ($25K) for Audimated — featured on NBC News, Entrepreneur.com, and Forbes. Built Socialated from $1,000 to 13 employees before it was acquired. Formed Lucas Sommer Inc., merged it with my partner Bryan Lozano's company to create Ad-Apt — where we've delivered results for Netflix, Payless (400% ROAS), Teton Gravity Research (7.2x ROAS), Circle K, and Benchmade. Ran operations at Del Toro Shoes. Led marketing at LeadsRx (acquired by Unbounce) and guest lectured at Georgetown.</p>
         <p>Today I run Ad-Apt (marketing agency serving Netflix, Circle K, Benchmade, Payless), Boss PDX (construction in Portland), Halem Heights (Willamette Valley vineyard), and IntraAlpha (algo trading). I'm building Onit — an AI-powered marketing platform — and writing a book called Monkey Business about why your brain is wired to fail at entrepreneurship. LeadsRx, where I ran marketing, was acquired by Unbounce. Socialated, the agency I built from $1K, was acquired by Virsocom. Two companies I helped build got acquired. Now I'm building more.</p>
+      </section>
+
+      <!-- Geographic Journey -->
+      <section class="bio-section">
+        <h2>The Map</h2>
+        <p style="font-size:0.9rem; color:var(--color-text-muted); margin-bottom:1rem;">Small-town Oregon to Miami to Atlanta to Italy and back. Every move taught me something.</p>
+        <div id="journey-map" style="height:400px; border-radius:12px; border:1px solid var(--color-border); overflow:hidden;"></div>
+        <div id="map-legend" style="display:flex; flex-wrap:wrap; gap:0.5rem; margin-top:0.75rem;"></div>
       </section>
 
       <!-- Timeline -->
@@ -361,5 +371,86 @@
       </div>
     </div>
   </footer>
+<script>
+(function() {
+  var map = L.map('journey-map', {
+    scrollWheelZoom: false,
+    zoomControl: true
+  }).setView([35, -30], 3);
+
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+    attribution: '&copy; OpenStreetMap &copy; CARTO',
+    maxZoom: 19
+  }).addTo(map);
+
+  var stops = [
+    { lat: 45.3001, lng: -122.9590, label: 'Newberg, OR', year: '~2003', desc: 'Grew up here. Valedictorian.', color: '#059669' },
+    { lat: 25.7617, lng: -80.1918, label: 'Miami, FL', year: '2006–2015', desc: 'U of Miami. Recording studio. Audimated. Socialated. The Launch Pad.', color: '#2563eb' },
+    { lat: 33.7490, lng: -84.3880, label: 'Atlanta, GA', year: '~2015–2017', desc: 'Virsocom. Lucas Sommer Inc.', color: '#7c3aed' },
+    { lat: 25.7617, lng: -80.1918, label: 'Miami, FL', year: '2017–2019', desc: 'Del Toro Shoes. Partner & COO.', color: '#db2777', offset: [0, -12] },
+    { lat: 43.8041, lng: 11.2775, label: 'Florence, Italy', year: '2017–2019', desc: 'Del Toro production. 4 trips to Italian factories.', color: '#a16207' },
+    { lat: 45.5152, lng: -122.6784, label: 'Portland, OR', year: '2019–Present', desc: 'LeadsRx. Ad-Apt. Boss PDX. Home base.', color: '#059669' },
+    { lat: 45.3001, lng: -122.9590, label: 'Newberg, OR', year: 'Present', desc: 'Grove Vineyard / Halem Heights. Full circle.', color: '#059669', offset: [0, 12] }
+  ];
+
+  // Draw route lines
+  var routeCoords = [
+    [45.3001, -122.9590],  // Newberg
+    [25.7617, -80.1918],   // Miami 1
+    [33.7490, -84.3880],   // Atlanta
+    [25.7617, -80.1918],   // Miami 2
+    [43.8041, 11.2775],    // Italy
+    [25.7617, -80.1918],   // back to Miami
+    [43.8041, 11.2775],    // Italy again
+    [25.7617, -80.1918],   // back
+    [43.8041, 11.2775],    // Italy 3
+    [25.7617, -80.1918],   // back
+    [43.8041, 11.2775],    // Italy 4
+    [25.7617, -80.1918],   // back to Miami
+    [45.5152, -122.6784],  // Portland
+    [45.3001, -122.9590]   // Newberg
+  ];
+
+  L.polyline(routeCoords, {
+    color: '#d6d3d1',
+    weight: 2,
+    dashArray: '6 4',
+    opacity: 0.7
+  }).addTo(map);
+
+  // Place markers
+  var legend = document.getElementById('map-legend');
+  var seen = {};
+
+  stops.forEach(function(stop, i) {
+    var offset = stop.offset || [0, 0];
+    var marker = L.circleMarker([stop.lat + (offset[1] * 0.001), stop.lng + (offset[0] * 0.001)], {
+      radius: 8,
+      fillColor: stop.color,
+      color: '#fff',
+      weight: 2,
+      fillOpacity: 0.9
+    }).addTo(map);
+
+    marker.bindPopup(
+      '<div style="font-family:Inter,sans-serif; min-width:160px;">' +
+      '<div style="font-size:11px; font-weight:600; color:#78716c; text-transform:uppercase; letter-spacing:0.04em;">' + stop.year + '</div>' +
+      '<div style="font-size:14px; font-weight:700; margin:2px 0 4px;">' + stop.label + '</div>' +
+      '<div style="font-size:13px; color:#57534e; line-height:1.5;">' + stop.desc + '</div>' +
+      '</div>'
+    );
+
+    // Legend
+    var key = stop.label.replace(/ \d$/, '');
+    if (!seen[key]) {
+      seen[key] = true;
+      var item = document.createElement('span');
+      item.style.cssText = 'display:inline-flex; align-items:center; gap:0.3rem; font-size:0.75rem; color:#57534e;';
+      item.innerHTML = '<span style="width:10px;height:10px;border-radius:50%;background:' + stop.color + ';flex-shrink:0;"></span>' + stop.label;
+      legend.appendChild(item);
+    }
+  });
+})();
+</script>
 </body>
 </html>
