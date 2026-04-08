@@ -1,0 +1,94 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="404 — Lucas Sommer" description="Page not found.">
+
+  <section class="container not-found">
+    <div class="not-found-code">404</div>
+    <h1>Page not found</h1>
+    <p>The page you're looking for doesn't exist or has been moved.</p>
+    <div class="not-found-links">
+      <a href="/" class="nf-btn-primary">Go home</a>
+      <a href="/projects" class="nf-btn-ghost">View projects</a>
+    </div>
+  </section>
+
+</BaseLayout>
+
+<style>
+  .not-found {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    min-height: 60vh;
+    padding: 4rem 1.5rem;
+  }
+
+  .not-found-code {
+    font-family: var(--font-mono);
+    font-size: 6rem;
+    font-weight: 800;
+    letter-spacing: -4px;
+    color: var(--text-tertiary);
+    line-height: 1;
+    margin-bottom: 1rem;
+    opacity: 0.4;
+  }
+
+  .not-found h1 {
+    font-size: 1.75rem;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    margin-bottom: 0.5rem;
+  }
+
+  .not-found p {
+    font-size: 1rem;
+    color: var(--text-secondary);
+    margin-bottom: 2rem;
+  }
+
+  .not-found-links {
+    display: flex;
+    gap: 0.75rem;
+  }
+
+  .nf-btn-primary {
+    padding: 0.6rem 1.25rem;
+    background: var(--accent);
+    color: #ffffff;
+    border-radius: var(--radius-sm);
+    font-size: 0.875rem;
+    font-weight: 600;
+    transition: background-color 0.15s ease;
+  }
+
+  .nf-btn-primary:hover {
+    background: var(--accent-hover);
+    color: #ffffff;
+  }
+
+  .nf-btn-ghost {
+    padding: 0.6rem 1.25rem;
+    background: transparent;
+    color: var(--text-secondary);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    font-size: 0.875rem;
+    font-weight: 600;
+    transition: border-color 0.15s ease, color 0.15s ease;
+  }
+
+  .nf-btn-ghost:hover {
+    border-color: var(--border-hover);
+    color: var(--text-primary);
+  }
+
+  @media (max-width: 640px) {
+    .not-found-code { font-size: 4rem; }
+    .not-found h1 { font-size: 1.5rem; }
+  }
+</style>
