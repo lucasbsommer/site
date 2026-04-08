@@ -1,0 +1,93 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="IntraAlpha — Lucas Sommer" description="Options and equities algorithmic trading platform with a Discord community. Market signals, algo strategies, and trading infrastructure.">
+
+  <article class="project-detail container">
+
+    <a href="/" class="back-link">&larr; All Projects</a>
+
+    <div class="project-hero">
+      <div class="project-icon-lg" style="background:rgba(219,39,119,0.12); color:#f472b6;">IA</div>
+      <div>
+        <h1>IntraAlpha</h1>
+        <span class="project-status status-exploring">Transitioning</span>
+      </div>
+    </div>
+
+    <p class="project-lede">
+      An options and equities algorithmic trading platform with a Discord community. Market signals, trading infrastructure, and algo strategies — currently being restructured.
+    </p>
+
+    <div class="project-tags-lg">
+      <span class="tag">Finance</span>
+      <span class="tag">Algo Trading</span>
+      <span class="tag">Options</span>
+      <span class="tag">Discord</span>
+    </div>
+
+    <div class="detail-grid">
+      <section class="detail-section">
+        <h2>What is IntraAlpha?</h2>
+        <p>IntraAlpha is a trading platform built around algorithmic strategies for options and equities. It started as a community-driven product with subscriptions, tools, and resources — and grew into a Discord-based community of traders sharing signals and strategies.</p>
+        <p>I dedicate time to markets every morning (6:30-8:30 AM) and midday, running the algo and monitoring positions.</p>
+      </section>
+
+      <section class="detail-section">
+        <h2>Current Direction</h2>
+        <ul>
+          <li><strong>Simplifying</strong> — Disabling most tools and resources, cutting the subscription model</li>
+          <li><strong>Discord-only</strong> — Moving to a pure Discord community with algo-only signals</li>
+          <li><strong>Algo migration</strong> — Moving the algorithmic strategy to Alpaca via Wealthfront equities</li>
+          <li><strong>Cost reduction</strong> — Cutting cloud infrastructure costs significantly</li>
+          <li><strong>Patreon-style model</strong> — Exploring a simple support subscription tier</li>
+        </ul>
+      </section>
+
+      <section class="detail-section">
+        <h2>Lessons Learned</h2>
+        <p>IntraAlpha taught me a lot about productizing knowledge, community dynamics, and the difference between building something people want and building something that's sustainable. The algo works. The business model around it needed to be leaner.</p>
+      </section>
+    </div>
+
+    <div class="updates-section">
+      <h2>Updates</h2>
+      <div class="update-item">
+        <div class="update-date">Coming Soon</div>
+        <div class="update-title">Building in public</div>
+        <p class="update-body">Algo performance, platform changes, and what's next for IntraAlpha will be shared here.</p>
+      </div>
+    </div>
+
+    <div class="email-capture">
+      <h3>Follow IntraAlpha</h3>
+      <p class="capture-sub">Get updates on the algo, the Discord community, and where IntraAlpha is headed next.</p>
+      <form class="email-form" onsubmit="event.preventDefault(); this.querySelector('button').textContent='Subscribed!'; this.querySelector('button').disabled=true;">
+        <input type="email" placeholder="you@example.com" required />
+        <button type="submit">Subscribe</button>
+      </form>
+    </div>
+
+    <!-- Related Projects -->
+    <div class="related-projects">
+      <h2>Related Projects</h2>
+      <div class="related-grid">
+        <a href="/projects/onit" class="related-card">
+          <div class="related-icon" style="background:var(--status-building-bg); color:var(--status-building-text);">On</div>
+          <div><div class="related-name">Onit</div><div class="related-desc">AI-powered marketing — another platform play</div></div>
+        </a>
+        <a href="/projects/monkey-business" class="related-card">
+          <div class="related-icon" style="background:var(--surface-2); font-size:1.2rem;">&#x1F412;</div>
+          <div><div class="related-name">Monkey Business</div><div class="related-desc">The mindset behind trading, risk, and entrepreneurship</div></div>
+        </a>
+      </div>
+    </div>
+
+  </article>
+
+</BaseLayout>
+
+<style>
+  @import '../../styles/project-detail.css';
+</style>

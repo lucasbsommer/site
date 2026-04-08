@@ -1,0 +1,119 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="Monkey Business — Lucas Sommer" description="A 20-chapter book on the entrepreneurial mindset. Why your brain is wired for survival, not business — and how to override the defaults.">
+
+  <article class="project-detail container">
+
+    <a href="/" class="back-link">&larr; All Projects</a>
+
+    <div class="project-hero">
+      <div class="project-icon-lg" style="background:var(--surface-2); font-size:2rem;">&#x1F412;</div>
+      <div>
+        <h1>Monkey Business</h1>
+        <span class="project-status status-building">Writing</span>
+      </div>
+    </div>
+
+    <p class="project-lede">
+      A book on the entrepreneurial mindset. Humans are wired for survival on the savannah — not for building businesses. This book is about recognizing your default programming and learning to override it.
+    </p>
+
+    <div class="project-tags-lg">
+      <span class="tag">Book</span>
+      <span class="tag">Mindset</span>
+      <span class="tag">Entrepreneurship</span>
+      <span class="tag">Psychology</span>
+    </div>
+
+    <div class="detail-grid">
+      <section class="detail-section">
+        <h2>The Thesis</h2>
+        <p>Most people who want to start a business never do. Of those who start, most fail within five years. Why?</p>
+        <p>Not because of bad ideas. Not because of bad markets. Because <strong>the human brain is running survival software in a business environment</strong>. We choose safety over risk, defense over offense, emotion over reason, today over tomorrow. That's the winning strategy for staying alive on the savannah — and the losing strategy for building something new.</p>
+        <p>Every successful entrepreneur has overcome these defaults, whether they know it or not. This book makes the invisible visible — so you can consciously choose a different operating system.</p>
+      </section>
+
+      <section class="detail-section">
+        <h2>Structure</h2>
+        <p>The book follows a deliberate arc: first understand your hardware (brain), then master your social software (relationships), then optimize your execution layer (doing).</p>
+        <ul>
+          <li><strong>Chapters 1-6</strong> — Your brain: the chimp brain, fear, worry, failure, focus, and mindfulness</li>
+          <li><strong>Chapters 7-10</strong> — Your relationships: influence, PR, expectations, and managing others</li>
+          <li><strong>Chapters 11-20</strong> — Your execution: doing, time, sacrifice, efficiency, leadership, problem solving, ideas vs execution, and getting started</li>
+        </ul>
+      </section>
+
+      <section class="detail-section">
+        <h2>Chapters</h2>
+        <ol class="chapter-list">
+          <li><span class="chapter-num">1</span> <span class="chapter-title">We Are Chimps</span></li>
+          <li><span class="chapter-num">2</span> <span class="chapter-title">The Human Brain</span></li>
+          <li><span class="chapter-num">3</span> <span class="chapter-title">Fear</span></li>
+          <li><span class="chapter-num">4</span> <span class="chapter-title">Worry</span></li>
+          <li><span class="chapter-num">5</span> <span class="chapter-title">Failure</span></li>
+          <li><span class="chapter-num">6</span> <span class="chapter-title">Mindful, Focus, Present</span></li>
+          <li><span class="chapter-num">7</span> <span class="chapter-title">Win Friends and Influence People</span></li>
+          <li><span class="chapter-num">8</span> <span class="chapter-title">Your Own Public Relations Campaign</span></li>
+          <li><span class="chapter-num">9</span> <span class="chapter-title">Your Expectations</span></li>
+          <li><span class="chapter-num">10</span> <span class="chapter-title">Managing Expectations</span></li>
+          <li><span class="chapter-num">11</span> <span class="chapter-title">Doing</span></li>
+          <li><span class="chapter-num">12</span> <span class="chapter-title">Time</span></li>
+          <li><span class="chapter-num">13</span> <span class="chapter-title">Sacrifice</span></li>
+          <li><span class="chapter-num">14</span> <span class="chapter-title">One Day</span></li>
+          <li><span class="chapter-num">15</span> <span class="chapter-title">Being Efficient</span></li>
+          <li><span class="chapter-num">16</span> <span class="chapter-title">Effective</span></li>
+          <li><span class="chapter-num">17</span> <span class="chapter-title">Leadership</span></li>
+          <li><span class="chapter-num">18</span> <span class="chapter-title">Problem Solving</span></li>
+          <li><span class="chapter-num">19</span> <span class="chapter-title">Ideas vs. Execution</span></li>
+          <li><span class="chapter-num">20</span> <span class="chapter-title">Getting Started</span></li>
+        </ol>
+      </section>
+
+      <section class="detail-section">
+        <h2>Who It's For</h2>
+        <p>Anyone who has ever wanted to start something — a business, a creative project, a major life change — and found themselves stuck, afraid, or overwhelmed. This book doesn't teach you tactics. It teaches you how to think so that tactics actually work.</p>
+      </section>
+    </div>
+
+    <div class="updates-section">
+      <h2>Updates</h2>
+      <div class="update-item">
+        <div class="update-date">Coming Soon</div>
+        <div class="update-title">Writing in public</div>
+        <p class="update-body">New chapters, revisions, and the process of writing a book on the entrepreneurial mindset will be shared here.</p>
+      </div>
+    </div>
+
+    <div class="email-capture">
+      <h3>Get chapters as I write them</h3>
+      <p class="capture-sub">Monkey Business is being written in public. Subscribe to get new chapters delivered to your inbox as they're finished.</p>
+      <form class="email-form" onsubmit="event.preventDefault(); this.querySelector('button').textContent='Subscribed!'; this.querySelector('button').disabled=true;">
+        <input type="email" placeholder="you@example.com" required />
+        <button type="submit">Subscribe</button>
+      </form>
+    </div>
+
+    <!-- Related Projects -->
+    <div class="related-projects">
+      <h2>Related Projects</h2>
+      <div class="related-grid">
+        <a href="/projects/onit" class="related-card">
+          <div class="related-icon" style="background:var(--status-building-bg); color:var(--status-building-text);">On</div>
+          <div><div class="related-name">Onit</div><div class="related-desc">Execution is everything — AI marketing platform in development</div></div>
+        </a>
+        <a href="/projects/ad-apt" class="related-card">
+          <div class="related-icon" style="background:rgba(124,58,237,0.12); color:#a78bfa;">Aa</div>
+          <div><div class="related-name">Ad-Apt</div><div class="related-desc">15 years of real results — the proving ground for these ideas</div></div>
+        </a>
+      </div>
+    </div>
+
+  </article>
+
+</BaseLayout>
+
+<style>
+  @import '../../styles/project-detail.css';
+</style>

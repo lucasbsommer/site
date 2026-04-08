@@ -1,0 +1,113 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="Boss PDX — Lucas Sommer" description="Full-service construction company in Portland, Oregon. Residential and commercial projects with AI-assisted estimating and data-driven operations.">
+
+  <article class="project-detail container">
+
+    <a href="/" class="back-link">&larr; All Projects</a>
+
+    <div class="project-hero">
+      <div class="project-icon-lg" style="background:var(--status-exploring-bg); color:var(--status-exploring-text);">BP</div>
+      <div>
+        <h1>Boss PDX</h1>
+        <span class="project-status status-active">Active</span>
+      </div>
+    </div>
+
+    <p class="project-lede">
+      Full-service construction company based in Portland, Oregon. Residential and commercial projects — from concrete work to full remodels — with a crew, systems, and increasingly AI-assisted operations.
+    </p>
+
+    <div class="project-tags-lg">
+      <span class="tag">Construction</span>
+      <span class="tag">Portland</span>
+      <span class="tag">Operations</span>
+      <span class="tag">bosspdx.com</span>
+    </div>
+
+    <div class="detail-grid">
+      <section class="detail-section">
+        <h2>What is Boss PDX?</h2>
+        <p>Boss PDX is a licensed general contractor operating in the Portland metro area with 17+ years of construction experience. We handle residential and commercial projects — from custom home builds and ADU conversions to commercial concrete, excavation, and metal buildings. No job too big or small.</p>
+        <p>What makes Boss PDX different is the technology layer. The company runs on Zoho for project management, Gusto for payroll, and Ramp for expense tracking — and we're building AI-assisted estimating, an online customer portal, and structured post-mortems on every completed project.</p>
+      </section>
+
+      <section class="detail-section">
+        <h2>Services</h2>
+        <ul>
+          <li><strong>Custom home building</strong> — Full design-to-build for new residential construction</li>
+          <li><strong>ADU design & construction</strong> — Basement, garage, and detached ADU conversions, fully compliant with Portland zoning</li>
+          <li><strong>Commercial concrete</strong> — Foundations, slab-on-grade, infrastructure, and large-scale site development</li>
+          <li><strong>Excavating</strong> — Land clearing, foundation digging, and trenching</li>
+          <li><strong>Metal buildings</strong> — Commercial storage, residential garages, agricultural buildings, workshops, retail spaces, and industrial facilities</li>
+          <li><strong>Pole barn construction</strong> — Agricultural, commercial, and residential applications</li>
+          <li><strong>Retaining walls</strong> — Residential landscapes and commercial outdoor spaces</li>
+          <li><strong>Commercial remodeling</strong> — Tenant improvements, retail buildouts, and office renovations</li>
+          <li><strong>Exterior repairs</strong> — Shingles, siding, trim, and garage remodeling</li>
+        </ul>
+      </section>
+
+      <section class="detail-section">
+        <h2>The Tech Stack</h2>
+        <ul>
+          <li><strong>Project management</strong> — Zoho Projects with automated flows for billing, scheduling, and client communication</li>
+          <li><strong>AI-assisted estimating</strong> — Custom prompts that generate estimates from project parameters, dramatically reducing turnaround time</li>
+          <li><strong>Customer portal</strong> — estimate.bosspdx.com where clients view estimates, project images, and 3D Polycam scans</li>
+          <li><strong>Post-mortem system</strong> — Every completed project gets a structured review: scope, budget vs actual, timeline, change orders, subcontractor performance, lessons learned</li>
+          <li><strong>Crew operations</strong> — Gusto payroll mapped to projects, Ramp cards per project for real-time expense tracking</li>
+        </ul>
+      </section>
+
+      <section class="detail-section">
+        <h2>Notable Projects</h2>
+        <p>Active and completed projects across Portland: Dilla, Bowden, Timberline, Kirkland, Archer, King, Joe Terrace, WaCo, Camus (Kirkland concrete), Bransford, and more. Each one feeds data back into the system — post-mortems, budget analysis, and operational learnings — to make the next project smoother.</p>
+      </section>
+
+      <section class="detail-section">
+        <h2>The Vision</h2>
+        <p>Build the most data-driven construction company in Portland. Every project generates intelligence that makes the next one faster, more accurate, and more profitable. The tech stack isn't overhead — it's a competitive advantage. When your estimating is AI-powered and every past project is structured data, you can bid faster, scope tighter, and deliver better than anyone operating on spreadsheets and gut feel.</p>
+      </section>
+    </div>
+
+    <div class="updates-section">
+      <h2>Updates</h2>
+      <div class="update-item">
+        <div class="update-date">Coming Soon</div>
+        <div class="update-title">Building in public</div>
+        <p class="update-body">Project updates, crew wins, and lessons from running a data-driven construction company will be posted here.</p>
+      </div>
+    </div>
+
+    <div class="email-capture">
+      <h3>Follow Boss PDX</h3>
+      <p class="capture-sub">Get updates on projects, the tech stack, and what it's like running a construction company with AI-assisted operations.</p>
+      <form class="email-form" onsubmit="event.preventDefault(); this.querySelector('button').textContent='Subscribed!'; this.querySelector('button').disabled=true;">
+        <input type="email" placeholder="you@example.com" required />
+        <button type="submit">Subscribe</button>
+      </form>
+    </div>
+
+    <!-- Related Projects -->
+    <div class="related-projects">
+      <h2>Related Projects</h2>
+      <div class="related-grid">
+        <a href="/projects/ad-apt" class="related-card">
+          <div class="related-icon" style="background:rgba(124,58,237,0.12); color:#a78bfa;">Aa</div>
+          <div><div class="related-name">Ad-Apt</div><div class="related-desc">The marketing agency that grew Boss PDX from $0 to $1M</div></div>
+        </a>
+        <a href="/projects/grove-vineyard" class="related-card">
+          <div class="related-icon" style="background:var(--status-active-bg); color:var(--status-active-text);">GV</div>
+          <div><div class="related-name">Grove Vineyard</div><div class="related-desc">Another Oregon asset — vineyard in the Willamette Valley</div></div>
+        </a>
+      </div>
+    </div>
+
+  </article>
+
+</BaseLayout>
+
+<style>
+  @import '../../styles/project-detail.css';
+</style>
