@@ -5,6 +5,7 @@ interface Props {
 }
 
 const { title, description = "Lucas Sommer — serial entrepreneur, builder, investor. Follow along as I build companies across marketing, construction, wine, fintech, and AI." } = Astro.props;
+const currentPath = Astro.url.pathname;
 ---
 
 <html lang="en">
@@ -13,10 +14,12 @@ const { title, description = "Lucas Sommer — serial entrepreneur, builder, inv
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content={description} />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href={`https://lucassommer.com${currentPath}`} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://lucassommer.com" />
+    <meta property="og:url" content={`https://lucassommer.com${currentPath}`} />
     <meta name="twitter:card" content="summary" />
     <meta name="twitter:site" content="@lucasbsommer" />
     <meta name="twitter:title" content={title} />
@@ -70,9 +73,9 @@ const { title, description = "Lucas Sommer — serial entrepreneur, builder, inv
         <a href="/" class="site-name">lucas sommer</a>
         <div class="nav-right">
           <div class="nav-links">
-            <a href="/projects">Projects</a>
-            <a href="/resources">Resources</a>
-            <a href="/about">About</a>
+            <a href="/projects" class={currentPath.startsWith('/projects') ? 'nav-active' : ''}>Projects</a>
+            <a href="/resources" class={currentPath.startsWith('/resources') ? 'nav-active' : ''}>Resources</a>
+            <a href="/about" class={currentPath.startsWith('/about') ? 'nav-active' : ''}>About</a>
           </div>
           <a href="/brand" class="nav-brand-link" aria-label="Brand settings" title="Brand settings">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="16" height="16"><path d="M12.22 2h-.44a2 2 0 00-2 2v.18a2 2 0 01-1 1.73l-.43.25a2 2 0 01-2 0l-.15-.08a2 2 0 00-2.73.73l-.22.38a2 2 0 00.73 2.73l.15.1a2 2 0 011 1.72v.51a2 2 0 01-1 1.74l-.15.09a2 2 0 00-.73 2.73l.22.38a2 2 0 002.73.73l.15-.08a2 2 0 012 0l.43.25a2 2 0 011 1.73V20a2 2 0 002 2h.44a2 2 0 002-2v-.18a2 2 0 011-1.73l.43-.25a2 2 0 012 0l.15.08a2 2 0 002.73-.73l.22-.39a2 2 0 00-.73-2.73l-.15-.08a2 2 0 01-1-1.74v-.5a2 2 0 011-1.74l.15-.09a2 2 0 00.73-2.73l-.22-.38a2 2 0 00-2.73-.73l-.15.08a2 2 0 01-2 0l-.43-.25a2 2 0 01-1-1.73V4a2 2 0 00-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
@@ -177,6 +180,7 @@ const { title, description = "Lucas Sommer — serial entrepreneur, builder, inv
   }
 
   .nav-links a:hover { color: var(--text-primary); }
+  .nav-links a.nav-active { color: var(--text-primary); }
 
   /* ---- Brand/Settings Link ---- */
   .nav-brand-link {
