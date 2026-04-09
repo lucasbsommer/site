@@ -4,6 +4,26 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
 <BaseLayout title="Lucas Sommer — Serial Entrepreneur, Builder, Investor">
 
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "name": "Lucas Sommer",
+    "url": "https://lucassommer.com",
+    "jobTitle": "Serial Entrepreneur",
+    "description": "Serial entrepreneur from Oregon. Founded 8+ companies across marketing, construction, wine, fintech, and AI. Two acquisitions. Featured in Forbes, NBC News, and Entrepreneur.com.",
+    "sameAs": [
+      "https://twitter.com/lucasbsommer",
+      "https://linkedin.com/in/lucasbsommer",
+      "https://github.com/lucasbsommer"
+    ],
+    "alumniOf": {
+      "@type": "CollegeOrUniversity",
+      "name": "University of Miami"
+    },
+    "knowsAbout": ["Digital Marketing", "Construction", "Viticulture", "AI", "Entrepreneurship", "Fintech"],
+    "award": ["WeMedia Pitch It! Grand Prize Winner", "Young Entrepreneur Council Member"]
+  })} />
+
   <!-- Hero -->
   <section class="hero container">
     <div class="hero-badge">
@@ -85,7 +105,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
             <div class="project-name">Boss PDX</div>
             <span class="project-status status-active">Active</span>
           </div>
-          <p class="project-desc">Full-service construction company in Portland. Residential and commercial projects, AI-assisted estimating, and a crew that gets it done.</p>
+          <p class="project-desc">Licensed Portland general contractor with 17+ years experience. Custom homes, ADUs, commercial concrete, excavation, hardscaping, and full remodels — powered by AI-assisted estimating.</p>
           <div class="project-tags">
             <span class="tag">Construction</span>
             <span class="tag">Portland</span>
@@ -101,7 +121,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
             <div class="project-name">Grove Vineyard</div>
             <span class="project-status status-active">Active</span>
           </div>
-          <p class="project-desc">Willamette Valley vineyard growing European clones of Pinot Noir and Chardonnay. A long-term land and agriculture play rooted in Oregon.</p>
+          <p class="project-desc">Estate vineyard in Oregon's Chehalem Valley at 750ft elevation. Pinot Noir and Chardonnay crafted by Jacques Tardy, 8th generation Burgundian winemaker. Organic farming, Salmon Safe certified.</p>
           <div class="project-tags">
             <span class="tag">Wine</span>
             <span class="tag">Agriculture</span>
