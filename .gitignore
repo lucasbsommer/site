@@ -20,6 +20,12 @@ pnpm-debug.log*
 # local claude settings
 .claude/settings.local.json
 
+# static HTML mockups (local reference only)
+preview.html
+about.html
+projects/*.html
+project-styles.css
+
 # macOS-specific files
 .DS_Store
 
