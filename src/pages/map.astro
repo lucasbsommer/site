@@ -1,0 +1,326 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="Map — Lucas Sommer" description="An interactive map of Lucas Sommer's clients, projects, and life journey across the US and beyond.">
+
+  <section class="map-page container">
+    <div class="map-hero">
+      <h1>The Map</h1>
+      <p class="map-intro">Clients, projects, and the places that shaped how I build. Click a pin to learn more.</p>
+    </div>
+
+    <div class="map-filters">
+      <button class="filter-btn active" data-filter="all">All</button>
+      <button class="filter-btn" data-filter="project"><span class="filter-dot" style="background:#3b82f6;"></span> Projects</button>
+      <button class="filter-btn" data-filter="client"><span class="filter-dot" style="background:#a78bfa;"></span> Clients</button>
+      <button class="filter-btn" data-filter="life"><span class="filter-dot" style="background:#4ade80;"></span> Life</button>
+    </div>
+
+    <div id="map" class="map-container"></div>
+
+    <div class="map-legend">
+      <div class="legend-item"><span class="legend-dot" style="background:#3b82f6;"></span> My Projects</div>
+      <div class="legend-item"><span class="legend-dot" style="background:#a78bfa;"></span> Clients</div>
+      <div class="legend-item"><span class="legend-dot" style="background:#4ade80;"></span> Life Journey</div>
+    </div>
+
+    <div class="map-stats">
+      <div class="map-stat">
+        <span class="map-stat-number">5</span>
+        <span class="map-stat-label">States Lived In</span>
+      </div>
+      <div class="map-stat">
+        <span class="map-stat-number">10+</span>
+        <span class="map-stat-label">Cities Worked</span>
+      </div>
+      <div class="map-stat">
+        <span class="map-stat-number">6</span>
+        <span class="map-stat-label">Active Projects</span>
+      </div>
+      <div class="map-stat">
+        <span class="map-stat-number">10+</span>
+        <span class="map-stat-label">Major Clients</span>
+      </div>
+    </div>
+  </section>
+
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script is:inline src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+  <script is:inline>
+    document.addEventListener('DOMContentLoaded', function() {
+
+      // Detect theme for tile layer
+      var isLight = document.documentElement.getAttribute('data-theme') === 'light';
+      var tileUrl = isLight
+        ? 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png'
+        : 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png';
+
+      var map = L.map('map', {
+        center: [40.5, -98],
+        zoom: 4,
+        scrollWheelZoom: true,
+        zoomControl: true
+      });
+
+      L.tileLayer(tileUrl, {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a> &copy; <a href="https://carto.com/">CARTO</a>',
+        subdomains: 'abcd',
+        maxZoom: 19
+      }).addTo(map);
+
+      // Pin data
+      var pins = [
+        // === PROJECTS ===
+        { lat: 45.4207, lng: -122.6703, type: 'project', name: 'Ad-Apt', desc: 'Digital marketing agency. 15+ years, Netflix, Payless, Circle K, Benchmade.', link: '/projects/ad-apt', color: '#3b82f6' },
+        { lat: 45.5152, lng: -122.6784, type: 'project', name: 'Boss PDX', desc: 'Licensed Portland general contractor. 17+ years, custom homes, ADUs, commercial.', link: '/projects/boss-pdx', color: '#3b82f6' },
+        { lat: 45.3154, lng: -122.9580, type: 'project', name: 'Grove Vineyard', desc: 'Estate vineyard. Chehalem Valley, 750ft. Pinot Noir & Chardonnay by Jacques Tardy.', link: '/projects/grove-vineyard', color: '#3b82f6' },
+        { lat: 45.5231, lng: -122.6765, type: 'project', name: 'IntraAlpha', desc: 'Options-only trading platform. Screeners, IV analysis, daily reports on 400+ stocks.', link: '/projects/intraalpha', color: '#3b82f6' },
+        { lat: 45.5100, lng: -122.6800, type: 'project', name: 'Onit', desc: 'AI-powered marketing platform. Productizing 15 years of agency experience.', link: '/projects/onit', color: '#3b82f6' },
+
+        // === CLIENTS ===
+        { lat: 37.3861, lng: -122.0839, type: 'client', name: 'Netflix', desc: 'Campaign collaboration for the streaming giant.', color: '#a78bfa' },
+        { lat: 39.0558, lng: -95.6890, type: 'client', name: 'Payless ShoeSource', desc: '400% ROAS. 1,200% e-commerce growth. PPC, SEO, email.', color: '#a78bfa' },
+        { lat: 43.6084, lng: -110.7965, type: 'client', name: 'Teton Gravity Research', desc: '7.2x ROAS. 500% sales increase. Google Ads, Shopify, Klaviyo.', color: '#a78bfa' },
+        { lat: 45.3573, lng: -122.6068, type: 'client', name: 'Benchmade Knives', desc: 'Ongoing digital marketing for the iconic Oregon knife maker.', color: '#a78bfa' },
+        { lat: 45.3311, lng: -121.7113, type: 'client', name: 'Timberline Lodge', desc: 'Digital marketing for the iconic Oregon mountain lodge on Mt. Hood.', color: '#a78bfa' },
+        { lat: 33.4484, lng: -112.0740, type: 'client', name: 'True Blue Car Wash', desc: '$1M+ new sales. 500% subscription growth. 65 locations, 170K subscribers.', color: '#a78bfa' },
+        { lat: 25.7617, lng: -80.1918, type: 'client', name: 'Dr. Miami', desc: 'Digital marketing for the celebrity plastic surgeon.', color: '#a78bfa' },
+        { lat: 45.8185, lng: -122.7585, type: 'client', name: 'Circle K / Couche-Tard', desc: 'Marketing partner through Clean Freak → True Blue → Couche-Tard acquisition.', color: '#a78bfa' },
+        { lat: 45.5152, lng: -122.5500, type: 'client', name: '16 Law Firms', desc: '"Phones ringing daily with inquiries for over a decade."', color: '#a78bfa' },
+
+        // === LIFE JOURNEY ===
+        { lat: 45.3007, lng: -122.9733, type: 'life', name: 'Newberg, Oregon', desc: 'Where it all started. Grew up here. Valedictorian. Heart of wine country.', color: '#4ade80' },
+        { lat: 25.7215, lng: -80.2684, type: 'life', name: 'University of Miami', desc: 'BS Finance + Music, MBA Entrepreneurship. Full scholarship. 4 music companies from dorm room.', color: '#4ade80' },
+        { lat: 25.7617, lng: -80.2200, type: 'life', name: 'Miami', desc: 'Audimated (NBC, Forbes, WeMedia $25K). Socialated (acquired). Del Toro Shoes.', color: '#4ade80' },
+        { lat: 33.7490, lng: -84.3880, type: 'life', name: 'Atlanta', desc: 'Chapter in the journey. Building and learning.', color: '#4ade80' },
+        { lat: 43.7696, lng: 11.2558, type: 'life', name: 'Italy', desc: 'Del Toro Shoes — luxury handmade Italian footwear. Partner role.', color: '#4ade80' },
+        { lat: 45.5152, lng: -122.6784, type: 'life', name: 'Portland, Oregon', desc: 'Home base. Wife Caitlin, sons Cameron and Ben, dog Ace. Building everything from here.', color: '#4ade80' },
+        { lat: 38.9072, lng: -77.0369, type: 'life', name: 'Georgetown University', desc: 'Guest lecturer at McDonough School of Business.', color: '#4ade80' },
+        { lat: 45.4931, lng: -122.6430, type: 'life', name: 'LeadsRx (Portland)', desc: 'Director of Marketing. 5,000+ global brands. Acquired by Unbounce.', color: '#4ade80' }
+      ];
+
+      // Create marker layers by type
+      var layers = { project: [], client: [], life: [] };
+      var allMarkers = [];
+
+      pins.forEach(function(pin) {
+        var svgIcon = L.divIcon({
+          className: 'custom-pin',
+          html: '<div style="width:14px;height:14px;border-radius:50%;background:' + pin.color + ';border:2.5px solid rgba(255,255,255,0.9);box-shadow:0 2px 8px rgba(0,0,0,0.3);"></div>',
+          iconSize: [14, 14],
+          iconAnchor: [7, 7],
+          popupAnchor: [0, -10]
+        });
+
+        var popupContent = '<div style="font-family:Inter,sans-serif;min-width:180px;max-width:240px;">' +
+          '<div style="font-weight:700;font-size:14px;margin-bottom:4px;color:#1a1a1a;">' + pin.name + '</div>' +
+          '<div style="font-size:12px;color:#666;line-height:1.5;margin-bottom:6px;">' + pin.desc + '</div>' +
+          (pin.link ? '<a href="' + pin.link + '" style="font-size:11px;font-weight:600;color:#3b82f6;text-decoration:none;">View project &rarr;</a>' : '') +
+          '</div>';
+
+        var marker = L.marker([pin.lat, pin.lng], { icon: svgIcon })
+          .bindPopup(popupContent, { closeButton: false, offset: [0, -4] });
+
+        marker._pinType = pin.type;
+        layers[pin.type].push(marker);
+        allMarkers.push(marker);
+        marker.addTo(map);
+      });
+
+      // Filter buttons
+      document.querySelectorAll('.filter-btn').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+          document.querySelectorAll('.filter-btn').forEach(function(b) { b.classList.remove('active'); });
+          btn.classList.add('active');
+          var filter = btn.dataset.filter;
+
+          allMarkers.forEach(function(m) {
+            if (filter === 'all' || m._pinType === filter) {
+              if (!map.hasLayer(m)) m.addTo(map);
+            } else {
+              if (map.hasLayer(m)) map.removeLayer(m);
+            }
+          });
+        });
+      });
+
+      // Listen for theme changes to swap tiles
+      var observer = new MutationObserver(function() {
+        var nowLight = document.documentElement.getAttribute('data-theme') === 'light';
+        var newUrl = nowLight
+          ? 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png'
+          : 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png';
+        map.eachLayer(function(layer) {
+          if (layer instanceof L.TileLayer) {
+            layer.setUrl(newUrl);
+          }
+        });
+      });
+      observer.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+    });
+  </script>
+
+</BaseLayout>
+
+<style>
+  .map-page {
+    padding-bottom: 4rem;
+  }
+
+  .map-hero {
+    padding-top: 4rem;
+    padding-bottom: 1rem;
+  }
+
+  .map-hero h1 {
+    font-size: 2.5rem;
+    font-weight: 800;
+    letter-spacing: -1.5px;
+    margin-bottom: 0.75rem;
+  }
+
+  .map-intro {
+    font-size: 1.125rem;
+    color: var(--text-secondary);
+    max-width: 600px;
+    line-height: 1.7;
+  }
+
+  /* Filters */
+  .map-filters {
+    display: flex;
+    gap: 0.5rem;
+    padding: 1.25rem 0;
+    flex-wrap: wrap;
+  }
+
+  .filter-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.4rem 0.85rem;
+    font-family: inherit;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+    background: var(--surface-1);
+    border: 1px solid var(--border);
+    border-radius: 9999px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+
+  .filter-btn:hover {
+    border-color: var(--border-hover);
+    color: var(--text-primary);
+  }
+
+  .filter-btn.active {
+    background: var(--accent);
+    color: #ffffff;
+    border-color: var(--accent);
+  }
+
+  .filter-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    display: inline-block;
+  }
+
+  /* Map */
+  .map-container {
+    width: 100%;
+    height: 520px;
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    overflow: hidden;
+    z-index: 1;
+  }
+
+  /* Override Leaflet popup styles */
+  :global(.leaflet-popup-content-wrapper) {
+    border-radius: 10px !important;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.15) !important;
+    padding: 0 !important;
+  }
+
+  :global(.leaflet-popup-content) {
+    margin: 12px 14px !important;
+  }
+
+  :global(.leaflet-popup-tip) {
+    display: none !important;
+  }
+
+  :global(.custom-pin) {
+    background: transparent !important;
+    border: none !important;
+  }
+
+  /* Legend */
+  .map-legend {
+    display: flex;
+    gap: 1.5rem;
+    padding: 1rem 0;
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.75rem;
+    color: var(--text-tertiary);
+    font-weight: 500;
+  }
+
+  .legend-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    display: inline-block;
+    border: 2px solid rgba(255,255,255,0.5);
+  }
+
+  /* Stats */
+  .map-stats {
+    display: flex;
+    gap: 2.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border);
+    margin-top: 0.5rem;
+  }
+
+  .map-stat-number {
+    display: block;
+    font-size: 1.5rem;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    color: var(--text-primary);
+    font-family: var(--font-mono);
+  }
+
+  .map-stat-label {
+    display: block;
+    font-size: 0.75rem;
+    color: var(--text-tertiary);
+    font-weight: 500;
+    margin-top: 0.15rem;
+  }
+
+  /* Mobile */
+  @media (max-width: 640px) {
+    .map-hero { padding-top: 3rem; }
+    .map-hero h1 { font-size: 1.75rem; }
+    .map-intro { font-size: 1rem; }
+    .map-container { height: 380px; }
+    .map-stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+    }
+    .map-legend { flex-wrap: wrap; gap: 1rem; }
+  }
+</style>
