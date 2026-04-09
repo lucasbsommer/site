@@ -2,7 +2,7 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 ---
 
-<BaseLayout title="IntraAlpha — Lucas Sommer" description="Options and equities algorithmic trading platform with a Discord community. Market signals, algo strategies, and trading infrastructure.">
+<BaseLayout title="IntraAlpha — Lucas Sommer" description="Options-only trading platform with proprietary screeners, historical option data, real-time charting, and algorithmic trading. Built for probability-based options traders.">
 
   <article class="project-detail container">
 
@@ -17,47 +17,103 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
     </div>
 
     <p class="project-lede">
-      An options and equities algorithmic trading platform with a Discord community. Market signals, trading infrastructure, and algo strategies — currently being restructured.
+      The world's best options-only platform. Price efficiency, research, and probability-based trading — giving retail traders institutional-level data access for options and equities.
     </p>
 
     <div class="project-tags-lg">
-      <span class="tag">Finance</span>
-      <span class="tag">Algo Trading</span>
       <span class="tag">Options</span>
+      <span class="tag">Algo Trading</span>
+      <span class="tag">Finance</span>
       <span class="tag">Discord</span>
+      <span class="tag">intraalpha.com</span>
     </div>
 
     <div class="detail-grid">
+
       <section class="detail-section">
         <h2>What is IntraAlpha?</h2>
-        <p>IntraAlpha is a trading platform built around algorithmic strategies for options and equities. It started as a community-driven product with subscriptions, tools, and resources — and grew into a Discord-based community of traders sharing signals and strategies.</p>
-        <p>I dedicate time to markets every morning (6:30-8:30 AM) and midday, running the algo and monitoring positions.</p>
+        <p>IntraAlpha combines data from OPRA and US exchanges to give retail traders the same level of data access as institutions. The platform offers proprietary options tools, real-time charting, algorithmic trading, and a daily research report — all focused on options.</p>
+        <p>It started as a full trading platform with subscriptions, tools, and resources, then grew into a Discord-based community of traders. The platform runs on Google Cloud and pulls financial data from industry leaders ThetaData and Polygon, with charting powered by TradingView.</p>
       </section>
 
       <section class="detail-section">
-        <h2>Current Direction</h2>
+        <h2>Platform Tools</h2>
+        <div class="tools-grid">
+          <div class="tool-card">
+            <h3>Options Screener</h3>
+            <p>Customizable tool that identifies profitable trade setups. Filter by percent away from ATM strike, efficiency percent, market cap, stock price, directional bias, and weeks until expiration.</p>
+          </div>
+          <div class="tool-card">
+            <h3>Historical Option Graph</h3>
+            <p>See how expired options performed in the past. Millions of contracts across hundreds of equities and ETFs with option data going back up to 7 years. OHLCV in 5-minute intervals.</p>
+          </div>
+          <div class="tool-card">
+            <h3>Best Options Report</h3>
+            <p>Daily automated analysis of 400+ widely-traded stocks with weekly options. Identifies potential profitable strategies each morning before market open.</p>
+          </div>
+          <div class="tool-card">
+            <h3>IV Analysis Tools</h3>
+            <p>Proprietary tools for historical implied volatility, IV curves across expiration dates, and IV curves across strike prices. Use IV to your advantage by understanding its impact on option prices.</p>
+          </div>
+          <div class="tool-card">
+            <h3>Option Charts</h3>
+            <p>Industry-leading charting powered by TradingView. Real-time data, responsive and mobile-friendly. Plot options data with the same tools institutions use.</p>
+          </div>
+          <div class="tool-card">
+            <h3>Algo Trading</h3>
+            <p>Trade equities algorithmically for free via Alpaca. Submit options orders via API using IBKR's Trader Workstation. Real-time audio alerts for US equities.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="detail-section">
+        <h2>Best Options Report — Results</h2>
+        <p>The Best Options Report runs a comprehensive daily review of over 400 stocks. Key findings from the tracked results:</p>
         <ul>
-          <li><strong>Simplifying</strong> — Disabling most tools and resources, cutting the subscription model</li>
-          <li><strong>Discord-only</strong> — Moving to a pure Discord community with algo-only signals</li>
-          <li><strong>Algo migration</strong> — Moving the algorithmic strategy to Alpaca via Wealthfront equities</li>
-          <li><strong>Cost reduction</strong> — Cutting cloud infrastructure costs significantly</li>
-          <li><strong>Patreon-style model</strong> — Exploring a simple support subscription tier</li>
+          <li><strong>Short puts were the top performer</strong> — representing 60% of profits generated</li>
+          <li><strong>Short calls generated $136,518 in premium</strong></li>
+          <li><strong>Short puts delivered $86,703 in premium</strong></li>
+          <li><strong>Long calls and long puts were losers</strong> across all variables — confirming the selling premium thesis</li>
+        </ul>
+        <p>The data reinforces what experienced options traders already know: selling premium consistently outperforms buying it. IntraAlpha's tools are built around this probability-based approach.</p>
+      </section>
+
+      <section class="detail-section">
+        <h2>Data & Infrastructure</h2>
+        <ul>
+          <li><strong>100% market coverage</strong> — real-time, 15-minute delayed, and 24-hour delayed data packages</li>
+          <li><strong>ThetaData + Polygon</strong> — financial data from industry leaders</li>
+          <li><strong>TradingView</strong> — charting technology</li>
+          <li><strong>Google Cloud</strong> — infrastructure</li>
+          <li><strong>Alpaca</strong> — commission-free algorithmic equity trading</li>
+          <li><strong>IBKR TWS</strong> — options order submission via API</li>
+          <li><strong>tastytrade partnership</strong> — open and fund a tastytrade account through IntraAlpha, receive a year of IntraAlpha Premium free</li>
         </ul>
       </section>
 
       <section class="detail-section">
-        <h2>Lessons Learned</h2>
-        <p>IntraAlpha taught me a lot about productizing knowledge, community dynamics, and the difference between building something people want and building something that's sustainable. The algo works. The business model around it needed to be leaner.</p>
+        <h2>Community & Content</h2>
+        <p>IntraAlpha has a growing community of options traders sharing ideas and building followings as contributors. The ecosystem includes:</p>
+        <ul>
+          <li><strong>Discord community</strong> — real-time trade discussion and algo signals</li>
+          <li><strong>Best Options Report newsletter</strong> — daily pre-market analysis</li>
+          <li><strong>Educational courses</strong> — including "The Complete Guide to Option Selling: From Basics to Advanced Strategies"</li>
+          <li><strong>Product guides</strong> — how to use the screener, historical graph, and other tools</li>
+          <li><strong>X / Twitter</strong> — market commentary and platform updates</li>
+        </ul>
       </section>
-    </div>
 
-    <div class="updates-section">
-      <h2>Updates</h2>
-      <div class="update-item">
-        <div class="update-date">Coming Soon</div>
-        <div class="update-title">Building in public</div>
-        <p class="update-body">Algo performance, platform changes, and what's next for IntraAlpha will be shared here.</p>
-      </div>
+      <section class="detail-section">
+        <h2>Current Direction</h2>
+        <p>IntraAlpha is transitioning from a full subscription SaaS platform to a leaner model:</p>
+        <ul>
+          <li><strong>Simplifying</strong> — streamlining the tool set, cutting infrastructure costs</li>
+          <li><strong>Discord-first</strong> — centering the community and algo signals on Discord</li>
+          <li><strong>Algo migration</strong> — moving the core algorithm to Alpaca for equities</li>
+          <li><strong>Lessons learned</strong> — the algo works, but the business model needed to be leaner. Productizing knowledge is different from building sustainable infrastructure</li>
+        </ul>
+      </section>
+
     </div>
 
     <div class="email-capture">
@@ -90,4 +146,42 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 
 <style>
   @import '../../styles/project-detail.css';
+
+  .tools-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+    margin-top: 0.75rem;
+  }
+
+  .tool-card {
+    background: var(--surface-1);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.25rem;
+    transition: border-color 0.15s ease, background-color 0.15s ease;
+  }
+
+  .tool-card:hover {
+    border-color: var(--border-hover);
+  }
+
+  .tool-card h3 {
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 0.4rem;
+  }
+
+  .tool-card p {
+    font-size: 0.8125rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+  }
+
+  @media (max-width: 640px) {
+    .tools-grid {
+      grid-template-columns: 1fr;
+    }
+  }
 </style>
