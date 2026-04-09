@@ -57,8 +57,47 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
       </section>
 
       <section class="detail-section">
+        <h2>Proven Results (via Ad-Apt)</h2>
+        <p>Onit productizes the same methodology that produced real results for real brands at <a href="/projects/ad-apt">Ad-Apt</a>:</p>
+        <ul>
+          <li><strong>Payless ShoeSource</strong> — 400% ROAS, 1,200% e-commerce growth</li>
+          <li><strong>Teton Gravity Research</strong> — 7.2x ROAS on paid campaigns</li>
+          <li><strong>True Blue Car Wash</strong> — $1M+ new sales, 500% subscription growth</li>
+          <li><strong>16 law firms</strong> — phones ringing daily with inquiries for over a decade</li>
+          <li><strong>Netflix, Circle K, Benchmade, Timberline Lodge</strong> — national brand campaigns</li>
+        </ul>
+        <p>The playbook works. Onit encodes it into software so every business can access it — not just the ones that can afford $10K/month retainers.</p>
+      </section>
+
+      <section class="detail-section">
+        <h2>The Team</h2>
+        <div class="team-grid">
+          <div class="team-card">
+            <div class="team-name">Lucas Sommer</div>
+            <div class="team-role">Founder</div>
+            <p>15 years in marketing. Built Socialated (acquired), Ad-Apt, ran marketing at LeadsRx (acquired by Unbounce). Forbes, NBC News, Georgetown lecturer.</p>
+          </div>
+          <div class="team-card">
+            <div class="team-name">Bryan Lozano</div>
+            <div class="team-role">Co-Founder</div>
+            <p>Co-founder of Ad-Apt. Partner in Lucas Sommer Inc. Deep expertise in paid media, client strategy, and campaign execution.</p>
+          </div>
+          <div class="team-card">
+            <div class="team-name">Kody</div>
+            <div class="team-role">Development</div>
+            <p>Platform development, Zoho integrations, and technical infrastructure.</p>
+          </div>
+          <div class="team-card">
+            <div class="team-name">Humberto</div>
+            <div class="team-role">Operations</div>
+            <p>Campaign operations, client onboarding, and execution workflows.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="detail-section">
         <h2>Current Status</h2>
-        <p>Actively building. Core platform in development with the team (Bryan, Kody, Humberto). Zoho integrations live. Landing page and sign-up pipeline operational. Working on the master marketing plan and go-to-market execution.</p>
+        <p>Actively building. Core platform in development. Zoho integrations live. Landing page and sign-up pipeline operational. Working on the master marketing plan and go-to-market execution.</p>
       </section>
 
       <section class="detail-section">
@@ -106,4 +145,51 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 
 <style>
   @import '../../styles/project-detail.css';
+
+  .team-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+    margin-top: 0.75rem;
+  }
+
+  .team-card {
+    background: var(--surface-1);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.25rem;
+    transition: border-color 0.15s ease, background-color 0.15s ease;
+  }
+
+  .team-card:hover {
+    border-color: var(--border-hover);
+  }
+
+  .team-name {
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 0.15rem;
+  }
+
+  .team-role {
+    font-size: 0.6875rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--accent-text);
+    margin-bottom: 0.4rem;
+  }
+
+  .team-card p {
+    font-size: 0.8125rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+  }
+
+  @media (max-width: 640px) {
+    .team-grid {
+      grid-template-columns: 1fr;
+    }
+  }
 </style>

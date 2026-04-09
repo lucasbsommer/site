@@ -2,7 +2,7 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 ---
 
-<BaseLayout title="Boss PDX — Lucas Sommer" description="Full-service construction company in Portland, Oregon. Residential and commercial projects with AI-assisted estimating and data-driven operations.">
+<BaseLayout title="Boss PDX — Lucas Sommer" description="Licensed Portland Oregon general contractor with 17+ years of experience. Residential and commercial construction, ADU specialist, custom homes, excavation, and concrete work.">
 
   <article class="project-detail container">
 
@@ -17,36 +17,83 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
     </div>
 
     <p class="project-lede">
-      Full-service construction company based in Portland, Oregon. Residential and commercial projects — from concrete work to full remodels — with a crew, systems, and increasingly AI-assisted operations.
+      Licensed Portland Oregon general contractor and construction expert. 17+ years building and remodeling homes and commercial properties across the Portland metro area. On time. On budget.
     </p>
 
     <div class="project-tags-lg">
       <span class="tag">Construction</span>
       <span class="tag">Portland</span>
-      <span class="tag">Operations</span>
+      <span class="tag">General Contractor</span>
+      <span class="tag">CCB #232383</span>
       <span class="tag">bosspdx.com</span>
     </div>
 
     <div class="detail-grid">
+
       <section class="detail-section">
         <h2>What is Boss PDX?</h2>
-        <p>Boss PDX is a licensed general contractor operating in the Portland metro area with 17+ years of construction experience. We handle residential and commercial projects — from custom home builds and ADU conversions to commercial concrete, excavation, and metal buildings. No job too big or small.</p>
-        <p>What makes Boss PDX different is the technology layer. The company runs on Zoho for project management, Gusto for payroll, and Ramp for expense tracking — and we're building AI-assisted estimating, an online customer portal, and structured post-mortems on every completed project.</p>
+        <p>Boss PDX is a locally owned and operated construction company that's been building and remodeling homes and commercial properties across Portland for nearly two decades. From entire gut renovations of residential homes to building commercial properties to landscaping projects — the scope of work is extensive and diverse.</p>
+        <p>What makes Boss PDX different is the technology layer. The company runs on Zoho for project management, Gusto for payroll, and Ramp for expense tracking — with AI-assisted estimating, an online customer portal, and structured post-mortems on every completed project.</p>
       </section>
 
       <section class="detail-section">
         <h2>Services</h2>
-        <ul>
-          <li><strong>Custom home building</strong> — Full design-to-build for new residential construction</li>
-          <li><strong>ADU design & construction</strong> — Basement, garage, and detached ADU conversions, fully compliant with Portland zoning</li>
-          <li><strong>Commercial concrete</strong> — Foundations, slab-on-grade, infrastructure, and large-scale site development</li>
-          <li><strong>Excavating</strong> — Land clearing, foundation digging, and trenching</li>
-          <li><strong>Metal buildings</strong> — Commercial storage, residential garages, agricultural buildings, workshops, retail spaces, and industrial facilities</li>
-          <li><strong>Pole barn construction</strong> — Agricultural, commercial, and residential applications</li>
-          <li><strong>Retaining walls</strong> — Residential landscapes and commercial outdoor spaces</li>
-          <li><strong>Commercial remodeling</strong> — Tenant improvements, retail buildouts, and office renovations</li>
-          <li><strong>Exterior repairs</strong> — Shingles, siding, trim, and garage remodeling</li>
-        </ul>
+        <div class="services-grid">
+          <div class="service-card">
+            <h3>Custom Home Building</h3>
+            <p>Full design-to-build for new residential construction. 35 years of combined experience bringing dream homes to life from concept to completion.</p>
+          </div>
+          <div class="service-card">
+            <h3>ADU Specialist</h3>
+            <p>Turn your basement, garage, or detached structure into a legally permitted ADU. Attached, detached, basement, and garage conversions — fully compliant with Portland zoning.</p>
+          </div>
+          <div class="service-card">
+            <h3>Commercial Concrete</h3>
+            <p>Foundation work, slab-on-grade installations, large-scale infrastructure, and site development. Expert solutions for commercial properties throughout Portland.</p>
+          </div>
+          <div class="service-card">
+            <h3>Excavating</h3>
+            <p>Land clearing and grading, foundation and utility excavation, drainage systems, and trenching. Creating safe, stable bases for construction.</p>
+          </div>
+          <div class="service-card">
+            <h3>Retaining Walls</h3>
+            <p>Installation and repair to manage slopes, prevent erosion, and add structural interest to residential and commercial landscapes.</p>
+          </div>
+          <div class="service-card">
+            <h3>Hardscaping</h3>
+            <p>Custom hardscape features, pavers, walkways, patios, and outdoor living spaces for residential gardens and commercial landscapes.</p>
+          </div>
+          <div class="service-card">
+            <h3>Exterior Work</h3>
+            <p>Siding replacement, trim work, window and door replacement, roofing repairs, and complete exterior renovations.</p>
+          </div>
+          <div class="service-card">
+            <h3>Metal Buildings</h3>
+            <p>Commercial storage, residential garages, agricultural buildings, workshops, retail spaces, and industrial facilities.</p>
+          </div>
+          <div class="service-card">
+            <h3>Commercial Remodeling</h3>
+            <p>Tenant improvements, retail buildouts, office renovations, and commercial bathroom remodels.</p>
+          </div>
+          <div class="service-card">
+            <h3>Home Additions</h3>
+            <p>Seamless room additions to multi-story extensions. Enhance living spaces and increase property value.</p>
+          </div>
+          <div class="service-card">
+            <h3>Kitchen & Bath</h3>
+            <p>Full gut renovations or cosmetic updates. Cabinetry, countertops, backsplash, hardware sourcing, and complete design.</p>
+          </div>
+          <div class="service-card">
+            <h3>Pole Barns</h3>
+            <p>Agricultural, commercial, and residential pole barn construction. Custom designs for storage, workshops, and more.</p>
+          </div>
+        </div>
+        <p style="margin-top:1rem;">Also: custom cabinetry & carpentry, masonry & stonework, drywall, painting, flooring, plumbing, garages, basement finishing, demolition, and construction permit management.</p>
+      </section>
+
+      <section class="detail-section">
+        <h2>Service Areas</h2>
+        <p>Downtown Portland, Lake Oswego, West Linn, Wilsonville, Tualatin, Tigard, Sherwood, Newberg, McMinnville, and Lincoln City.</p>
       </section>
 
       <section class="detail-section">
@@ -57,6 +104,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
           <li><strong>Customer portal</strong> — estimate.bosspdx.com where clients view estimates, project images, and 3D Polycam scans</li>
           <li><strong>Post-mortem system</strong> — Every completed project gets a structured review: scope, budget vs actual, timeline, change orders, subcontractor performance, lessons learned</li>
           <li><strong>Crew operations</strong> — Gusto payroll mapped to projects, Ramp cards per project for real-time expense tracking</li>
+          <li><strong>Subcontractor management</strong> — All subcontractor paperwork handled in-house with 15-20% markup for timeline and invoice management</li>
         </ul>
       </section>
 
@@ -69,20 +117,12 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
         <h2>The Vision</h2>
         <p>Build the most data-driven construction company in Portland. Every project generates intelligence that makes the next one faster, more accurate, and more profitable. The tech stack isn't overhead — it's a competitive advantage. When your estimating is AI-powered and every past project is structured data, you can bid faster, scope tighter, and deliver better than anyone operating on spreadsheets and gut feel.</p>
       </section>
-    </div>
 
-    <div class="updates-section">
-      <h2>Updates</h2>
-      <div class="update-item">
-        <div class="update-date">Coming Soon</div>
-        <div class="update-title">Building in public</div>
-        <p class="update-body">Project updates, crew wins, and lessons from running a data-driven construction company will be posted here.</p>
-      </div>
     </div>
 
     <div class="email-capture">
-      <h3>Follow Boss PDX</h3>
-      <p class="capture-sub">Get updates on projects, the tech stack, and what it's like running a construction company with AI-assisted operations.</p>
+      <h3>Get a Free Estimate</h3>
+      <p class="capture-sub">Planning a project in the Portland metro area? Get a free estimate or follow along as we build the most data-driven construction company in Oregon.</p>
       <form class="email-form" onsubmit="event.preventDefault(); this.querySelector('button').textContent='Subscribed!'; this.querySelector('button').disabled=true;">
         <input type="email" placeholder="you@example.com" required />
         <button type="submit">Subscribe</button>
@@ -110,4 +150,48 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 
 <style>
   @import '../../styles/project-detail.css';
+
+  .services-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 0.75rem;
+    margin-top: 0.75rem;
+  }
+
+  .service-card {
+    background: var(--surface-1);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1rem;
+    transition: border-color 0.15s ease, background-color 0.15s ease;
+  }
+
+  .service-card:hover {
+    border-color: var(--border-hover);
+  }
+
+  .service-card h3 {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 0.3rem;
+  }
+
+  .service-card p {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    line-height: 1.55;
+  }
+
+  @media (max-width: 768px) {
+    .services-grid {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .services-grid {
+      grid-template-columns: 1fr;
+    }
+  }
 </style>
