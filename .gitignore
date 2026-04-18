@@ -26,9 +26,6 @@ about.html
 projects/*.html
 project-styles.css
 
-# local task tracking
-todo.md
-
 # macOS-specific files
 .DS_Store
 
