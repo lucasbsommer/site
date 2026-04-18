@@ -1,5 +1,8 @@
 # lucassommer.com — Todo
 
+## Task Zero
+- [ ] Merge branch `claude/lucas-sommer-next-steps-0SLeI` into `main` on GitHub, then `git pull` locally to get todo.md and all site improvements onto your local machine
+
 ## In Progress
 - [ ] Review homepage hero + brand improvements (branch: claude/lucas-sommer-next-steps-0SLeI)
 
