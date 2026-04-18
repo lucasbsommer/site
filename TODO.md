@@ -1,8 +1,20 @@
 # lucassommer.com — TODO
 
 ## Content
-- [ ] Fill in /ideas page with real business ideas (waiting on Lucas to provide)
+- [ ] Fill in /ideas page with real business ideas — first one below
 - [ ] Review and finalize 8 Core Truths on /about page
+
+## Business Ideas to Add
+
+### 1. Geiger — Ambient code activity monitor
+A vibe-coded desktop app that tracks local keystrokes and file changes, then translates the activity into ambient audio. Sounds like a Geiger counter picking up radiation — but instead of radiation, it's picking up your dev flow.
+
+- **The vibe:** Listen to the factory. Your code has a rhythm. You can hear when it's running hot, cooling off, or stalled.
+- **The feature:** Pings you when activity stops — a subtle nudge when you've drifted away from the keyboard, or when a long-running agent goes quiet.
+- **Why it works:** Devs already have music/lofi playing. This replaces the passive soundtrack with a productivity-tuned one. For agent-driven coding (like Claude Code sessions), it solves the "is it still working?" problem — you hear it working.
+- **Build stack:** Electron or Tauri app, listens to fs events + OS-level keystroke counts (no content, just rate), routes to Web Audio oscillator/sample playback. Probably a weekend vibe-code.
+- **Who should build it:** A solo dev who loves ambient/generative music. Distribute as a $9 one-time download or $3/mo. Niche but sticky.
+
 
 ## Features
 - [ ] Wire up email capture forms (currently client-side fakes)
