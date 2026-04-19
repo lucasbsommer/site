@@ -3,6 +3,7 @@
 ## Content
 - [ ] Fill in /ideas page with real business ideas — first one below
 - [ ] Review and finalize 8 Core Truths on /about page
+- [ ] Comedy document — Lucas has an existing jokes/comedy document (not in this repo, lives locally or in another tool). Get it into the project when ready and figure out what to do with it (site page, content for socials, book material, etc.)
 
 ## Business Ideas to Add
 
