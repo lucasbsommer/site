@@ -4,6 +4,7 @@
 - [ ] Fill in /ideas page with real business ideas — first one below
 - [ ] Review and finalize 8 Core Truths on /about page
 - [ ] Comedy document — Lucas has an existing jokes/comedy document (not in this repo, lives locally or in another tool). Get it into the project when ready and figure out what to do with it (site page, content for socials, book material, etc.)
+- [ ] Add referral/affiliate links section — tools Lucas actually uses and recommends, with referral codes for income. Examples: Ramp (corporate cards), Gusto (payroll), Zoho (business suite). Likely lives on /resources or a new /stack page. Gather full list of services + referral URLs, then build out a clean card grid with logo, what it is, why Lucas uses it, and the CTA link.
 
 ## Business Ideas to Add
 
