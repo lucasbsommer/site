@@ -30,9 +30,9 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       <span class="badge-dot"></span>
       Currently building
     </div>
-    <h1 class="hero-title">I build things, learn in public, and share what works.</h1>
+    <h1 class="hero-title">Two exits. Eight companies. Fifteen years of building what's next.</h1>
     <p class="hero-intro">
-      Serial entrepreneur from Oregon. I've founded, scaled, and exited companies across marketing, construction, wine, fintech, and AI. This is my home base — follow along, grab resources, or dig into what I'm building.
+      I'm Lucas Sommer — a serial entrepreneur from Oregon. I've built and sold companies, driven 400%+ ROAS for brands like Netflix and Payless, and been featured in Forbes and NBC News. This is my home base — follow along, grab resources, or dig into what I'm building now.
     </p>
     <ul class="hero-social">
       <li>
@@ -71,6 +71,14 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         <span class="stat-number">400%+</span>
         <span class="stat-label">Client ROAS</span>
       </div>
+    </div>
+  </section>
+
+  <!-- Story So Far -->
+  <section class="container">
+    <div class="story-bridge">
+      <h2>The Story So Far</h2>
+      <p>It started with a recording studio in my University of Miami dorm room. That turned into four music companies, then a marketing agency I grew to 13 people and sold. Along the way I planted a vineyard, got a general contractor's license, built a fintech platform, and started driving results for brands like Netflix, Circle K, and Benchmade. Now I'm writing a book on the entrepreneurial mindset and building an AI-powered marketing platform that productizes everything I've learned. <a href="/about">Read the full story &rarr;</a></p>
     </div>
   </section>
 
@@ -218,7 +226,21 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   <!-- Press -->
   <section class="container">
     <div class="section-header">
-      <h2>Featured In</h2>
+      <h2>Press & Recognition</h2>
+    </div>
+    <div class="credibility-highlights">
+      <div class="cred-item cred-featured">
+        <span class="cred-label">Award</span>
+        <span class="cred-text">WeMedia Pitch It! Grand Prize Winner — $25,000</span>
+      </div>
+      <div class="cred-item cred-featured">
+        <span class="cred-label">Speaking</span>
+        <span class="cred-text">Guest Lecturer — Georgetown University, McDonough School of Business</span>
+      </div>
+      <div class="cred-item">
+        <span class="cred-label">Member</span>
+        <span class="cred-text">Young Entrepreneur Council (YEC)</span>
+      </div>
     </div>
     <div class="press-bar">
       <span class="press-item">Forbes</span>
@@ -228,7 +250,6 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       <span class="press-item">Georgetown University</span>
       <span class="press-item">MarketingProfs</span>
       <span class="press-item">StartupNation</span>
-      <span class="press-item">Young Entrepreneur Council</span>
     </div>
   </section>
 
@@ -550,6 +571,68 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   .testimonial-attr strong {
     color: var(--text-secondary);
     font-weight: 600;
+  }
+
+  /* ---- Story Bridge ---- */
+  .story-bridge {
+    padding: 2.5rem 0 0;
+  }
+
+  .story-bridge h2 {
+    font-size: 1.25rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .story-bridge p {
+    font-size: 0.9375rem;
+    color: var(--text-secondary);
+    line-height: 1.75;
+    max-width: 680px;
+  }
+
+  .story-bridge a {
+    font-weight: 600;
+    white-space: nowrap;
+  }
+
+  /* ---- Credibility Highlights ---- */
+  .credibility-highlights {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .cred-item {
+    display: flex;
+    align-items: baseline;
+    gap: 0.75rem;
+    padding: 0.85rem 1.15rem;
+    background: var(--surface-1);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    transition: border-color 0.15s ease, background-color 0.15s ease;
+  }
+
+  .cred-item.cred-featured {
+    border-color: var(--accent-soft);
+  }
+
+  .cred-label {
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--accent-text);
+    flex-shrink: 0;
+    min-width: 60px;
+  }
+
+  .cred-text {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--text-primary);
   }
 
   /* ---- Press ---- */
