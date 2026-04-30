@@ -458,6 +458,7 @@ loadState();
 // ═══════════════════════════════════════════════════════════════
 // RENDER LEFT
 // ═══════════════════════════════════════════════════════════════
+const openSecs=new Set(['model','vertical','geo']);
 function renderLeft(){
   const pm=primaryModel();
   const verts=S.models.flatMap(m=>VERTICALS[m]||[]);
@@ -467,7 +468,7 @@ function renderLeft(){
 
   el.innerHTML=`
   <div class="tier-label">Tier 1 — Unlocks the Plan</div>
-  <div class="isec open" data-sec="model">
+  <div class="isec${openSecs.has('model')?' open':''}" data-sec="model">
     <div class="isec-head"><span class="isec-title">Business Model</span>${S.models.length?`<span class="isec-badge done">${S.models.length} selected</span>`:''}<span class="isec-arrow">▸</span></div>
     <div class="isec-body">
       <div class="fg"><div class="hint">Select all that apply</div>
@@ -475,7 +476,7 @@ function renderLeft(){
       </div>
     </div>
   </div>
-  <div class="isec${t1?' open':' locked'}" data-sec="vertical">
+  <div class="isec${t1?(openSecs.has('vertical')?' open':''):' locked'}" data-sec="vertical">
     <div class="isec-head"><span class="isec-title">Vertical</span>${S.verticals.length?`<span class="isec-badge done">${S.verticals.length}</span>`:''}<span class="isec-arrow">▸</span></div>
     <div class="isec-body">
       <div class="fg"><div class="hint">Select all that apply</div>
@@ -483,7 +484,7 @@ function renderLeft(){
       </div>
     </div>
   </div>
-  <div class="isec${t1?' open':' locked'}" data-sec="geo">
+  <div class="isec${t1?(openSecs.has('geo')?' open':''):' locked'}" data-sec="geo">
     <div class="isec-head"><span class="isec-title">Geo Scope</span>${S.geoScopes.length?`<span class="isec-badge done">${S.geoScopes.join(', ')}</span>`:''}<span class="isec-arrow">▸</span></div>
     <div class="isec-body">
       <div class="fg">
@@ -493,7 +494,7 @@ function renderLeft(){
   </div>
 
   <div class="tier-label">Tier 2 — Constraints</div>
-  <div class="isec${t1?'':' locked'}" data-sec="constraints">
+  <div class="isec${t1?(openSecs.has('constraints')?' open':''):' locked'}" data-sec="constraints">
     <div class="isec-head"><span class="isec-title">Capacity & Timeline</span><span class="isec-arrow">▸</span></div>
     <div class="isec-body">
       <div class="fg" style="opacity:0.3;pointer-events:none"><label>Budget</label><div class="slider-wrap"><input type="range" id="inBudget" min="1" max="3" value="${S.budget}" disabled><span class="slider-val">${['','Bootstrapped','Moderate','Significant'][S.budget]}</span></div></div>
@@ -501,7 +502,7 @@ function renderLeft(){
       <div class="fg"><label>Timeline</label><div class="slider-wrap"><input type="range" id="inTimeline" min="1" max="3" value="${S.timeline}"><span class="slider-val">${['','Urgent (3mo)','Standard (6mo)','Long-term (12mo)'][S.timeline]}</span></div></div>
     </div>
   </div>
-  <div class="isec${t1?'':' locked'}" data-sec="existing">
+  <div class="isec${t1?(openSecs.has('existing')?' open':''):' locked'}" data-sec="existing">
     <div class="isec-head"><span class="isec-title">What Already Exists</span><span class="isec-arrow">▸</span></div>
     <div class="isec-body">
       <div class="fg">
@@ -511,7 +512,7 @@ function renderLeft(){
   </div>
 
   <div class="tier-label">Tier 3 — Personalize</div>
-  <div class="isec${t1?'':' locked'}" data-sec="identity">
+  <div class="isec${t1?(openSecs.has('identity')?' open':''):' locked'}" data-sec="identity">
     <div class="isec-head"><span class="isec-title">Identity & Offerings</span><span class="isec-arrow">▸</span></div>
     <div class="isec-body">
       <div class="fg"><label>Business Name</label><input type="text" id="inName" value="${esc(S.businessName)}" placeholder="e.g. Inspiring Painting"></div>
@@ -531,7 +532,7 @@ function renderLeft(){
   </div>
 
   <div class="tier-label">Tier 4 — Measurement</div>
-  <div class="isec${t1?'':' locked'}" data-sec="tracking">
+  <div class="isec${t1?(openSecs.has('tracking')?' open':''):' locked'}" data-sec="tracking">
     <div class="isec-head"><span class="isec-title">Tracking Infrastructure</span>${Object.values(S.tracking).filter(Boolean).length?`<span class="isec-badge done">${Object.values(S.tracking).filter(Boolean).length} / ${TRACKING_INFRA.length}</span>`:''}<span class="isec-arrow">▸</span></div>
     <div class="isec-body">
       <div class="fg">
@@ -546,7 +547,7 @@ function renderLeft(){
   </div>`;
 
   // WIRE
-  document.querySelectorAll('.isec-head').forEach(h=>h.onclick=()=>{if(!h.parentElement.classList.contains('locked'))h.parentElement.classList.toggle('open');});
+  document.querySelectorAll('.isec-head').forEach(h=>h.onclick=()=>{const p=h.parentElement;if(p.classList.contains('locked'))return;const sec=p.dataset.sec;if(openSecs.has(sec))openSecs.delete(sec);else openSecs.add(sec);p.classList.toggle('open');});
   document.querySelectorAll('#pillModels .pill').forEach(p=>p.onclick=()=>{toggleArr(S.models,p.dataset.v);renderLeft();renderRight();});
   document.querySelectorAll('#pillVerts .pill').forEach(p=>p.onclick=()=>{toggleArr(S.verticals,p.dataset.v);renderLeft();renderRight();});
   document.querySelectorAll('#pillGeo .pill').forEach(p=>p.onclick=()=>{toggleArr(S.geoScopes,p.dataset.v);renderLeft();renderRight();});
