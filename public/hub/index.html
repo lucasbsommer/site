@@ -76,10 +76,6 @@ body{background:var(--bg);color:var(--text);font-family:'DM Mono',monospace;font
 .slider-wrap input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:14px;border-radius:50%;background:var(--accent);cursor:pointer;}
 .slider-val{font-size:10px;color:var(--accent);width:80px;text-align:right;}
 
-.check-list{display:flex;flex-direction:column;gap:4px;}
-.check-item{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text-dim);cursor:pointer;padding:3px 0;}
-.check-item input{accent-color:var(--green);}
-
 /* RIGHT PANEL */
 .rtabs{display:flex;border-bottom:1px solid var(--border);padding:0 24px;flex-shrink:0;overflow-x:auto;}
 .rtab{padding:12px 14px;font-size:10px;color:var(--text-muted);cursor:pointer;border:none;border-bottom:2px solid transparent;background:none;font-family:'DM Mono',monospace;transition:all 0.2s;white-space:nowrap;}
@@ -171,6 +167,71 @@ body{background:var(--bg);color:var(--text);font-family:'DM Mono',monospace;font
 
 .legend-row{display:flex;gap:12px;padding:8px 16px;border-bottom:1px solid var(--border);font-size:10px;color:var(--text-muted);align-items:center;flex-wrap:wrap;}
 .legend-item{display:flex;align-items:center;gap:4px;}
+
+/* TIMELINE */
+.tl-month{margin-bottom:20px;}
+.tl-month-head{font-family:'Instrument Serif',serif;font-size:18px;margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid var(--border);display:flex;align-items:baseline;gap:8px;}
+.tl-month-sub{font-size:10px;color:var(--text-muted);font-family:'DM Mono',monospace;}
+.tl-item{display:grid;grid-template-columns:1fr 64px 44px;gap:6px;padding:5px 4px;border-bottom:1px solid rgba(255,255,255,0.02);font-size:11px;color:var(--text-dim);}
+
+/* EXPORT */
+.json-box{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px;font-size:10px;line-height:1.6;white-space:pre-wrap;word-break:break-all;max-height:70vh;overflow-y:auto;color:var(--text-dim);font-family:'DM Mono',monospace;}
+.json-box .jk{color:var(--blue);}
+.json-box .jv{color:var(--accent);}
+.json-box .jn{color:var(--orange);}
+.copy-btn{background:var(--accent);color:var(--bg);border:none;padding:8px 20px;border-radius:var(--radius);font-family:'DM Mono',monospace;font-size:11px;cursor:pointer;font-weight:500;margin-bottom:16px;transition:opacity 0.15s;}
+.copy-btn:hover{opacity:0.85;}
+.copy-btn:active{opacity:0.7;}
+
+/* SUBMIT */
+.submit-bar{position:sticky;bottom:0;padding:12px 16px;background:var(--surface);border-top:1px solid var(--border);z-index:10;display:flex;gap:8px;}
+.submit-btn{flex:2;padding:10px;background:var(--accent);color:var(--bg);border:none;border-radius:var(--radius);font-family:'DM Mono',monospace;font-size:11px;font-weight:500;cursor:pointer;transition:opacity 0.15s;letter-spacing:0.5px;}
+.submit-btn:hover{opacity:0.85;}
+.submit-btn:active{opacity:0.7;}
+.submit-btn:disabled{opacity:0.3;cursor:not-allowed;}
+.bar-btn{flex:1;padding:10px;border:1px solid var(--border);background:transparent;color:var(--text-muted);border-radius:var(--radius);font-family:'DM Mono',monospace;font-size:10px;cursor:pointer;transition:all 0.15s;}
+.bar-btn:hover{border-color:var(--text-dim);color:var(--text-dim);}
+.bar-btn.danger:hover{border-color:var(--red);color:var(--red);}
+
+/* CONFIRM */
+.conf-section{margin-bottom:24px;}
+.conf-section h4{font-size:10px;text-transform:uppercase;letter-spacing:1.5px;color:var(--text-muted);margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid var(--border);}
+.conf-row{display:flex;justify-content:space-between;padding:5px 0;font-size:11px;border-bottom:1px solid rgba(255,255,255,0.02);}
+.conf-label{color:var(--text-muted);}
+.conf-value{color:var(--text);text-align:right;max-width:60%;word-break:break-word;}
+.conf-value.empty{color:var(--text-muted);font-style:italic;}
+.conf-pills{display:flex;flex-wrap:wrap;gap:4px;justify-content:flex-end;max-width:60%;}
+.conf-pill{font-size:9px;padding:2px 8px;border-radius:10px;background:var(--accent-dim);color:var(--accent);}
+.conf-pill.off{background:rgba(255,255,255,0.05);color:var(--text-muted);}
+
+.email-draft{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px;font-size:11px;line-height:1.7;color:var(--text-dim);white-space:pre-wrap;margin-top:16px;}
+.email-draft .em-to{color:var(--text-muted);margin-bottom:4px;}
+.email-draft .em-subject{color:var(--accent);font-weight:500;margin-bottom:12px;}
+.email-draft .em-body{color:var(--text-dim);}
+
+.back-link{font-size:11px;color:var(--accent);cursor:pointer;margin-bottom:16px;display:inline-block;}
+.back-link:hover{text-decoration:underline;}
+
+/* TASKS */
+.task-spoke{margin-bottom:20px;border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;}
+.task-spoke-head{display:flex;align-items:center;gap:8px;padding:10px 12px;background:var(--surface);cursor:pointer;user-select:none;}
+.task-spoke-head:hover{background:var(--surface2);}
+.task-spoke-name{font-size:12px;font-weight:500;flex:1;}
+.task-progress{font-size:10px;color:var(--text-muted);}
+.task-progress-bar{width:60px;height:6px;background:var(--border);border-radius:3px;overflow:hidden;}
+.task-progress-fill{height:100%;border-radius:3px;transition:width 0.3s;}
+.task-list{display:none;padding:4px 0;}
+.task-spoke.open .task-list{display:block;}
+.task-item{display:flex;align-items:flex-start;gap:8px;padding:6px 12px;font-size:11px;color:var(--text-dim);cursor:pointer;transition:background 0.1s;user-select:none;}
+.task-item:hover{background:var(--surface);}
+.task-check{width:16px;height:16px;border:1.5px solid var(--border);border-radius:3px;flex-shrink:0;display:flex;align-items:center;justify-content:center;margin-top:1px;transition:all 0.15s;}
+.task-item.done .task-check{background:var(--green);border-color:var(--green);color:var(--bg);font-size:10px;}
+.task-item.done{color:var(--text-muted);text-decoration:line-through;opacity:0.5;}
+.task-text{line-height:1.4;}
+.overall-progress{display:flex;align-items:center;gap:12px;margin-bottom:20px;padding:16px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);}
+.overall-bar{flex:1;height:10px;background:var(--border);border-radius:5px;overflow:hidden;}
+.overall-fill{height:100%;border-radius:5px;transition:width 0.5s;}
+.overall-pct{font-family:'Instrument Serif',serif;font-size:28px;color:var(--accent);width:60px;text-align:right;}
 </style>
 </head>
 <body>
@@ -240,10 +301,84 @@ const SPOKE_KPIS={gbp:['gbpViews','gbpActions','localPackRank','phoneCalls'],seo
 
 const TRACKING_INFRA=[{id:'ga4',n:'GA4'},{id:'gsc',n:'Search Console'},{id:'gtm',n:'Tag Manager'},{id:'utmDiscipline',n:'UTM Parameters'},{id:'callTracking',n:'Call Tracking'},{id:'metaPixel',n:'Meta Pixel'},{id:'googleAdsTag',n:'Google Ads Tag'},{id:'emailPlatform',n:'Email Platform'},{id:'smsPlatform',n:'SMS Platform'},{id:'rankTracker',n:'Rank Tracker'},{id:'heatmaps',n:'Heatmaps'},{id:'crm',n:'CRM / Lead Tracking'},{id:'reviewMonitor',n:'Review Monitoring'},{id:'socialAnalytics',n:'Social Analytics'},{id:'speedMonitor',n:'Page Speed Monitor'},{id:'gbpInsights',n:'GBP Insights'},{id:'mktplaceAnalytics',n:'Marketplace Analytics'},{id:'affiliateTracking',n:'Affiliate Tracking'}];
 
-const KPIS=[{id:'sessions',n:'Website Sessions',cat:'Hub',req:['ga4']},{id:'bounceRate',n:'Bounce Rate',cat:'Hub',req:['ga4']},{id:'conversionRate',n:'Conversion Rate',cat:'Hub',req:['ga4','gtm']},{id:'formSubmissions',n:'Form Submissions',cat:'Hub',req:['ga4','gtm']},{id:'phoneCalls',n:'Phone Calls',cat:'Hub',req:['callTracking']},{id:'pageSpeed',n:'Core Web Vitals',cat:'Hub',req:['speedMonitor']},{id:'sourceAttribution',n:'Traffic Source Attribution',cat:'Hub',req:['ga4','utmDiscipline']},{id:'scrollDepth',n:'Scroll Depth',cat:'Hub',req:['heatmaps']},{id:'organicTraffic',n:'Organic Traffic',cat:'Search',req:['ga4','gsc']},{id:'keywordRankings',n:'Keyword Rankings',cat:'Search',req:['rankTracker']},{id:'searchImpressions',n:'Search Impressions',cat:'Search',req:['gsc']},{id:'searchCTR',n:'Search CTR',cat:'Search',req:['gsc']},{id:'domainAuthority',n:'Domain Authority',cat:'Search',req:['rankTracker']},{id:'localPackRank',n:'Local Pack Position',cat:'Search',req:['rankTracker','gbpInsights']},{id:'gbpViews',n:'GBP Profile Views',cat:'GBP',req:['gbpInsights']},{id:'gbpActions',n:'GBP Actions',cat:'GBP',req:['gbpInsights']},{id:'adImpressions',n:'Ad Impressions',cat:'Paid',req:['googleAdsTag']},{id:'adClicks',n:'Ad Clicks',cat:'Paid',req:['googleAdsTag']},{id:'adCTR',n:'Ad CTR',cat:'Paid',req:['googleAdsTag']},{id:'cpc',n:'Cost per Click',cat:'Paid',req:['googleAdsTag']},{id:'adConversions',n:'Ad Conversions',cat:'Paid',req:['googleAdsTag','ga4']},{id:'cpa',n:'Cost per Acquisition',cat:'Paid',req:['googleAdsTag','ga4']},{id:'roas',n:'Return on Ad Spend',cat:'Paid',req:['googleAdsTag','ga4']},{id:'metaConversions',n:'Meta Conversions',cat:'Paid',req:['metaPixel']},{id:'metaCPA',n:'Meta Cost per Result',cat:'Paid',req:['metaPixel']},{id:'listSize',n:'Email List Size',cat:'Email',req:['emailPlatform']},{id:'openRate',n:'Email Open Rate',cat:'Email',req:['emailPlatform']},{id:'emailCTR',n:'Email Click Rate',cat:'Email',req:['emailPlatform']},{id:'revPerSend',n:'Revenue per Send',cat:'Email',req:['emailPlatform','ga4']},{id:'smsDelivery',n:'SMS Delivery Rate',cat:'Email',req:['smsPlatform']},{id:'smsCTR',n:'SMS Click Rate',cat:'Email',req:['smsPlatform']},{id:'followers',n:'Followers',cat:'Social',req:['socialAnalytics']},{id:'engagementRate',n:'Engagement Rate',cat:'Social',req:['socialAnalytics']},{id:'socialReach',n:'Reach / Impressions',cat:'Social',req:['socialAnalytics']},{id:'socialClicks',n:'Link Clicks to Hub',cat:'Social',req:['socialAnalytics','utmDiscipline']},{id:'reviewCount',n:'Review Count',cat:'Reputation',req:['reviewMonitor']},{id:'avgRating',n:'Avg Star Rating',cat:'Reputation',req:['reviewMonitor']},{id:'reviewVelocity',n:'New Reviews / Mo',cat:'Reputation',req:['reviewMonitor']},{id:'leadsGenerated',n:'Leads Generated',cat:'Revenue',req:['crm']},{id:'leadToClose',n:'Lead → Close Rate',cat:'Revenue',req:['crm']},{id:'cac',n:'Customer Acq Cost',cat:'Revenue',req:['crm','ga4']},{id:'ltv',n:'Lifetime Value',cat:'Revenue',req:['crm']},{id:'revenue',n:'Revenue',cat:'Revenue',req:['crm']},{id:'referralRate',n:'Referral Rate',cat:'Revenue',req:['crm','affiliateTracking']},{id:'mktplaceSessions',n:'Mktplace Sessions',cat:'Marketplaces',req:['mktplaceAnalytics']},{id:'mktplaceConvRate',n:'Mktplace Conv Rate',cat:'Marketplaces',req:['mktplaceAnalytics']},{id:'buyBox',n:'Buy Box %',cat:'Marketplaces',req:['mktplaceAnalytics']},{id:'mktplaceRevenue',n:'Mktplace Revenue',cat:'Marketplaces',req:['mktplaceAnalytics']}];
+const KPIS=[{id:'sessions',n:'Website Sessions',cat:'Hub',req:['ga4']},{id:'bounceRate',n:'Bounce Rate',cat:'Hub',req:['ga4']},{id:'conversionRate',n:'Conversion Rate',cat:'Hub',req:['ga4','gtm']},{id:'formSubmissions',n:'Form Submissions',cat:'Hub',req:['ga4','gtm']},{id:'phoneCalls',n:'Phone Calls',cat:'Hub',req:['callTracking']},{id:'pageSpeed',n:'Core Web Vitals',cat:'Hub',req:['speedMonitor']},{id:'sourceAttribution',n:'Traffic Source Attribution',cat:'Hub',req:['ga4','utmDiscipline']},{id:'scrollDepth',n:'Scroll Depth',cat:'Hub',req:['heatmaps']},{id:'organicTraffic',n:'Organic Traffic',cat:'Search',req:['ga4','gsc']},{id:'keywordRankings',n:'Keyword Rankings',cat:'Search',req:['rankTracker']},{id:'searchImpressions',n:'Search Impressions',cat:'Search',req:['gsc']},{id:'searchCTR',n:'Search CTR',cat:'Search',req:['gsc']},{id:'domainAuthority',n:'Domain Authority',cat:'Search',req:['rankTracker']},{id:'localPackRank',n:'Local Pack Position',cat:'Search',req:['rankTracker','gbpInsights']},{id:'gbpViews',n:'GBP Profile Views',cat:'GBP',req:['gbpInsights']},{id:'gbpActions',n:'GBP Actions',cat:'GBP',req:['gbpInsights']},{id:'adImpressions',n:'Ad Impressions',cat:'Paid',req:['googleAdsTag']},{id:'adClicks',n:'Ad Clicks',cat:'Paid',req:['googleAdsTag']},{id:'adCTR',n:'Ad CTR',cat:'Paid',req:['googleAdsTag']},{id:'cpc',n:'Cost per Click',cat:'Paid',req:['googleAdsTag']},{id:'adConversions',n:'Ad Conversions',cat:'Paid',req:['googleAdsTag','ga4']},{id:'cpa',n:'Cost per Acquisition',cat:'Paid',req:['googleAdsTag','ga4']},{id:'roas',n:'Return on Ad Spend',cat:'Paid',req:['googleAdsTag','ga4']},{id:'metaConversions',n:'Meta Conversions',cat:'Paid',req:['metaPixel']},{id:'metaCPA',n:'Meta Cost per Result',cat:'Paid',req:['metaPixel']},{id:'listSize',n:'Email List Size',cat:'Email',req:['emailPlatform']},{id:'openRate',n:'Email Open Rate',cat:'Email',req:['emailPlatform']},{id:'emailCTR',n:'Email Click Rate',cat:'Email',req:['emailPlatform']},{id:'revPerSend',n:'Revenue per Send',cat:'Email',req:['emailPlatform','ga4']},{id:'smsDelivery',n:'SMS Delivery Rate',cat:'Email',req:['smsPlatform']},{id:'smsCTR',n:'SMS Click Rate',cat:'Email',req:['smsPlatform']},{id:'followers',n:'Followers',cat:'Social',req:['socialAnalytics']},{id:'engagementRate',n:'Engagement Rate',cat:'Social',req:['socialAnalytics']},{id:'socialReach',n:'Reach / Impressions',cat:'Social',req:['socialAnalytics']},{id:'socialClicks',n:'Link Clicks to Hub',cat:'Social',req:['socialAnalytics','utmDiscipline']},{id:'reviewCount',n:'Review Count',cat:'Reputation',req:['reviewMonitor']},{id:'avgRating',n:'Avg Star Rating',cat:'Reputation',req:['reviewMonitor']},{id:'reviewVelocity',n:'New Reviews / Mo',cat:'Reputation',req:['reviewMonitor']},{id:'leadsGenerated',n:'Leads Generated',cat:'Revenue',req:['crm']},{id:'leadToClose',n:'Lead → Close Rate',cat:'Revenue',req:['crm']},{id:'cac',n:'Customer Acq Cost',cat:'Revenue',req:['crm','ga4']},{id:'ltv',n:'Lifetime Value',cat:'Revenue',req:['crm']},{id:'revenue',n:'Revenue',cat:'Revenue',req:['crm']},{id:'referralRate',n:'Referral Rate',cat:'Revenue',req:['crm','affiliateTracking']},{id:'mktplaceSessions',n:'Mktplace Sessions',cat:'Marketplaces',req:['mktplaceAnalytics']},{id:'mktplaceConvRate',n:'Mktplace Conv Rate',cat:'Marketplaces',req:['mktplaceAnalytics']},{id:'buyBox',n:'Buy Box %',cat:'Marketplaces',req:['mktplaceAnalytics']},{id:'mktplaceRevenue',n:'Mktplace Revenue',cat:'Marketplaces',req:['mktplaceAnalytics']},{id:'pagesPerSession',n:'Pages / Session',cat:'Hub',req:['ga4']},{id:'backlinks',n:'Backlinks',cat:'Search',req:['rankTracker']},{id:'unsubRate',n:'Unsubscribe Rate',cat:'Email',req:['emailPlatform']},{id:'chatInitiated',n:'Chat Sessions',cat:'Hub',req:['ga4']}];
 
 const MODEL_LABELS={localService:'Local Service',localRetail:'Local Retail',ecommerce:'E-Commerce / DTC',localProduct:'Local Product',personalBrand:'Personal Brand',nonprofit:'Nonprofit',saas:'SaaS',contentCreator:'Content Creator'};
 const LOCAL_SPOKES=['gbp','appleMaps','localPack','localDir','nextdoor','storefront','signage','vehicleWrap'];
+
+// ═══════════════════════════════════════════════════════════════
+// DATA: TASKS PER SPOKE
+// ═══════════════════════════════════════════════════════════════
+const SPOKE_TASKS={
+gbp:['Claim listing at business.google.com','Verify ownership (postcard, phone, or instant)','Set primary GBP category','Add secondary categories','Write business description (750 chars max)','Upload 25+ photos: storefront, team, work samples','Add all services with descriptions and prices','Set business hours and special hours','Define service area or address','Create first GBP post','Generate and save review request short link'],
+appleMaps:['Register at mapsconnect.apple.com','Verify business ownership','Add photos, hours, and categories','Confirm NAP matches hub and GBP'],
+seoOrganic:['Run technical SEO audit (crawl errors, indexation)','Submit XML sitemap to Google Search Console','Fix all broken links and 404s','Optimize title tags and meta descriptions for every page','Add schema markup (LocalBusiness, Product, or Organization)','Ensure mobile-responsive and fast-loading','Create internal linking structure','Set up canonical URLs','Build one {offerings} page per service/product','Build one {serviceArea} page per location served'],
+localPack:['Ensure GBP is verified and complete','Confirm NAP consistency across all citations','Collect 10+ Google reviews with responses','Add GBP posts weekly','Embed Google Map on hub contact page'],
+generalDir:['Create Yelp business listing with NAP','Create BBB listing','Create Foursquare / Swarm listing','Verify NAP identical to hub and GBP on every listing','Upload photos to each directory'],
+industryDir:['Identify top 5 directories for {vertical}','Create profile on each with full NAP','Upload portfolio/work photos','Add services and descriptions','Claim free tier first, evaluate paid later'],
+googleSearch:['Create Google Ads account','Link Google Ads to GA4','Set up conversion tracking (calls, forms, purchases)','Build first search campaign targeting {offerings} + {serviceArea}','Write 3 responsive search ads per ad group','Add negative keyword list','Set daily budget and bidding strategy','Add sitelink, callout, and call extensions','Launch and monitor for 72 hours','Optimize: pause low CTR keywords, increase bids on converters'],
+googleLSA:['Verify GBP is active and verified','Apply for Google Guaranteed badge','Submit license and insurance documentation','Set service categories and service areas','Set weekly budget','Enable message and call leads','Respond to all leads within 1 hour','Dispute invalid leads within 30 days'],
+googleShopping:['Set up Google Merchant Center','Upload product feed with all required fields','Link Merchant Center to Google Ads','Create Shopping campaign','Set ROAS or maximize conversions bidding','Add negative keywords for irrelevant queries','Optimize product titles and descriptions','Add high-quality product images'],
+metaAds:['Install Meta Pixel on hub','Create Meta Business Manager account','Set up Events Manager and verify pixel fires','Define custom conversions (form, call, purchase)','Build first campaign: choose objective','Create audience: location + interests + demographics','Design 3-5 ad creatives (image or video)','Write ad copy with clear CTA','Set daily budget','Launch, monitor 48hrs, then optimize'],
+linkedinAds:['Create LinkedIn Campaign Manager account','Install LinkedIn Insight Tag on hub','Define target audience (title, company, industry)','Choose campaign objective','Create sponsored content ads','Set daily budget and bid','Launch and monitor engagement metrics'],
+retargeting:['Verify Meta Pixel is collecting data','Verify Google Ads remarketing tag installed','Create retargeting audience (site visitors 30/60/90 days)','Build retargeting ad creative (different from prospecting)','Set frequency cap','Launch on Meta and/or Google Display','Monitor and exclude converters'],
+facebook:['Create Facebook Business Page','Add profile photo, cover photo, and all business info','Link to {clientDomain}','Write About section','Create first 5 posts (intro, services, photos, testimonial, CTA)','Invite existing customers to follow','Set posting cadence: 3x/week minimum'],
+instagram:['Create Instagram Business account','Connect to Facebook Business Page','Add profile photo, bio with CTA, and link to hub','Create first 9 posts (grid aesthetic)','Write captions with local hashtags','Post first Reel or Story','Set posting cadence: 3-5x/week'],
+tiktok:['Create TikTok Business account','Complete profile with link to hub','Research trending sounds and formats in {vertical}','Create and post first 3 videos','Add relevant hashtags','Post consistently: 3-5x/week minimum','Engage with comments within first hour of posting'],
+youtube:['Create YouTube channel with brand name','Add channel art, profile photo, and description','Link to {clientDomain} in channel description','Create channel trailer','Upload first 3 videos','Write SEO-optimized titles and descriptions','Create custom thumbnails','Set publishing schedule'],
+linkedin:['Create or optimize LinkedIn Company Page','Add logo, banner, and complete description','Link to {clientDomain}','Invite team to list as employees','Post first 5 updates','Set posting cadence: 3-5x/week','Connect personal profiles to company page'],
+nextdoor:['Claim business on Nextdoor','Add business info, hours, and categories','Post first neighborhood update','Respond to any recommendations','Post monthly offers or updates'],
+discord:['Create Discord server','Set up channels: general, announcements, support, off-topic','Create roles and permissions','Write welcome message and rules','Invite first 20 members','Post regularly and engage daily'],
+reddit:['Create Reddit account with brand-appropriate name','Identify 3-5 relevant subreddits','Read rules for each subreddit','Start contributing value (answers, not promotion)','Post original content after building karma','Never hard-sell — add value first'],
+pinterest:['Create Pinterest Business account','Claim {clientDomain}','Create 5-10 themed boards','Pin first 20 pins with optimized descriptions','Enable Rich Pins','Set pinning cadence: 5-10 pins/day'],
+blog:['Set up blog on hub (WordPress, Ghost, or built-in CMS)','Define 10 target keywords from {offerings} + {serviceArea}','Write and publish first 3 blog posts (800+ words each)','Optimize each with title tag, meta description, internal links','Add images with alt text','Set publishing cadence: 1-2 posts/week','Promote each post on social channels'],
+podcast:['Define podcast concept, name, and format','Set up hosting (Buzzsprout, Transistor, Anchor)','Record and edit first 3 episodes','Create cover art and write show description','Submit to Apple Podcasts, Spotify, and Google Podcasts','Create podcast page on hub','Promote launch on all social channels'],
+newsletter:['Choose email platform (Mailchimp, ConvertKit, Beehiiv)','Create signup form and embed on hub','Write welcome email sequence (3-5 emails)','Design email template matching brand','Send first newsletter','Set cadence: weekly or biweekly','Add signup CTA to all social bios'],
+guestContent:['Identify 10 publications or blogs in {vertical}','Research their submission guidelines','Pitch 3 guest post ideas to each','Write and submit first guest post','Include bio with link to {clientDomain}','Promote published guest content on social'],
+webinars:['Choose webinar platform (Zoom, StreamYard, Crowdcast)','Define topic and outline','Create registration landing page on hub','Promote registration via email + social','Host webinar and record','Upload recording to hub and YouTube','Send follow-up email to attendees'],
+courses:['Define course topic and curriculum outline','Choose platform (Teachable, Kajabi, Gumroad, on-hub)','Record or write course content','Create sales page','Set pricing','Launch to email list first','Collect testimonials from beta students'],
+docs:['Audit what documentation is needed','Choose docs platform (GitBook, Notion, on-hub)','Write getting-started guide','Document all features/endpoints','Add search functionality','Link docs from hub navigation','Update docs with every product change'],
+email:['Choose email platform (Mailchimp, ConvertKit, Klaviyo, ActiveCampaign)','Import existing contact list','Create signup form on hub (header, footer, pop-up)','Build welcome email sequence (3-5 emails)','Set up transactional emails (confirmation, receipt)','Design template matching brand','Send first campaign','Set regular cadence (weekly or biweekly)','Segment list by source, behavior, or interest'],
+sms:['Choose SMS platform (Twilio, SimpleTexting, Postscript)','Register for A2P 10DLC compliance','Get opt-in consent mechanism on hub','Import existing opted-in contacts','Write first SMS campaign','Set frequency cap (max 4/month)','Track delivery and click rates'],
+push:['Choose push notification provider','Add push opt-in prompt to hub','Write welcome notification','Set up triggered notifications (abandon cart, new content)','Set frequency cap','Monitor opt-in and click rates'],
+directMail:['Define mailing list (past customers, prospects)','Design mailer (postcard, letter, or flyer)','Write compelling copy with CTA and tracking URL/QR code','Print and address','Schedule mail drop','Track responses via unique URL or phone number'],
+phone:['Set up business phone number','Configure call routing / IVR if needed','Set up call tracking with source attribution','Add phone number to hub, GBP, and all directories','Test call flow end-to-end','Set up voicemail with professional greeting'],
+chatbot:['Choose chatbot platform (Intercom, Drift, Tidio, AI-powered)','Install chat widget on hub','Configure greeting message and business hours','Set up FAQ responses for common questions','Define handoff rules to human support','Test full conversation flow'],
+loyalty:['Define loyalty program structure (points, tiers, punch card)','Choose platform (Smile.io, Square Loyalty, custom)','Create enrollment flow on hub and/or in-store','Design rewards and redemption tiers','Promote to existing customers via email','Train staff on enrollment process'],
+reviews:['Generate Google review short link','Create post-job review request template (email + SMS)','Set up automated review request trigger','Respond to all existing reviews (positive and negative)','Add review badges/widget to hub','Set goal: 2+ new reviews per week','Monitor review platforms weekly'],
+press:['Write press release for newsworthy event or launch','Build media list: 10-20 local/industry journalists','Craft personalized pitch emails','Send pitches and follow up in 5 days','Prepare press kit on hub (logos, photos, founder bio)','Respond to all journalist inquiries within 24 hours'],
+podcastGuest:['Identify 10 podcasts in {vertical} or adjacent','Research each host and recent episodes','Send personalized pitch with 3 topic ideas','Prepare talking points and bio','Record interview','Promote episode on all channels','Link back to hub in show notes'],
+speaking:['Define 2-3 signature talk topics','Create speaker one-sheet','Apply to 5 local events, conferences, or meetups','Prepare slide deck and talk track','Deliver first talk','Collect audience feedback and testimonials','Post recap content on social and blog'],
+awards:['Research industry and local awards programs','Identify 5 awards to apply for','Prepare application materials','Submit applications before deadlines','Promote any wins or nominations on hub and social'],
+wom:['Deliver exceptional service that generates organic referrals','Ask satisfied customers for referrals directly','Create referral incentive (discount, gift card)','Follow up with referred leads quickly','Thank referrers personally'],
+ugc:['Encourage customers to tag you in posts','Create a branded hashtag','Repost customer content (with permission)','Feature UGC on hub testimonials page','Run UGC contest or campaign','Thank contributors publicly'],
+backlinks:['Audit current backlink profile','Identify 10 link-worthy pages on hub','Research competitor backlinks for opportunities','Submit to relevant resource pages and directories','Pitch guest posts with contextual links','Create linkable assets (tools, data, guides)','Monitor new backlinks monthly'],
+community:['Identify 3 local organizations or causes to support','Sponsor a local event or team','Volunteer and document with photos','Post about involvement on social','Get listed on community partner pages'],
+referral:['Define referral incentive (both parties)','Build referral landing page on hub','Create referral email template','Promote program to existing customers','Track referral source and conversion','Pay out / deliver incentives promptly'],
+affiliate:['Choose affiliate platform (ShareASale, Impact, Refersion, custom)','Define commission structure','Create affiliate signup page','Recruit first 10 affiliates','Provide creative assets and tracking links','Set up automated commission payouts','Monitor affiliate performance monthly'],
+coMarketing:['Identify 3 complementary (non-competing) businesses','Propose co-marketing idea (joint webinar, bundle, content swap)','Define roles, audience sharing, and timeline','Execute campaign','Measure results and share learnings','Evaluate ongoing partnership potential'],
+wholesale:['Define wholesale pricing and minimums','Create wholesale line sheet or catalog','Set up wholesale inquiry form on hub','List on Faire or relevant B2B marketplace','Reach out to 10 target retailers','Send samples','Negotiate terms and ship first order'],
+crossPromo:['Identify partner with overlapping audience','Agree on cross-promotion format (email swap, social shoutout, bundle)','Create co-branded content or offer','Execute simultaneously','Track traffic and conversions from partner'],
+charityPartner:['Identify aligned nonprofit or cause','Define partnership structure (% of sales, sponsorship, volunteer)','Announce partnership on hub and social','Create co-branded content','Report on impact quarterly'],
+tradeAssoc:['Research relevant trade associations for {vertical}','Join 1-2 associations','Attend first meeting or event','Get listed in member directory with link to hub','Volunteer for committee or speaking opportunity'],
+integrations:['Identify top 3 products your customers also use','Research integration partnership programs','Build or propose integration','Get listed in partner marketplace','Co-market integration launch'],
+amazon:['Create Amazon Seller Central account','Choose FBA or FBM fulfillment','Create product listings with optimized titles and descriptions','Upload high-quality product images (7+ per listing)','Set competitive pricing','Launch first 5 products','Enroll in Amazon Brand Registry if applicable','Monitor reviews and respond to customer questions'],
+etsy:['Create Etsy seller account','Set up shop branding (banner, logo, policies)','List first 10 products with optimized titles and tags','Upload lifestyle and product photos','Set pricing including Etsy fees','Promote shop link on hub and social'],
+faire:['Create Faire brand account','Upload product catalog with wholesale pricing','Set minimums and shipping policies','Respond to retailer inquiries within 24 hours','Fulfill first orders on time','Collect retailer reviews'],
+gumroad:['Create Gumroad account','Upload first digital product or offering','Write compelling product description','Set pricing (or pay-what-you-want)','Design cover image','Share purchase link on hub and social','Set up email follow-up for buyers'],
+retailPartners:['Identify 10 target retail stores','Prepare sell sheet with pricing, packaging, and margin info','Schedule meetings or send samples','Negotiate placement terms','Deliver first inventory','Check in monthly on sell-through'],
+storefront:['Secure lease and build out space','Design signage (exterior and interior)','Set up POS system','Stock inventory','Set hours and publish on GBP + hub','Host soft opening','Host grand opening event'],
+signage:['Design signage matching brand','Order and install exterior signage','Add address/phone/website to signage','Consider A-frame sidewalk sign if applicable','Install vehicle magnets or wraps if applicable'],
+vehicleWrap:['Design vehicle wrap matching brand','Include {phone}, {clientDomain}, and {licenseNumber} if applicable','Get wrap professionally installed','Photograph wrapped vehicle for social and hub','Keep vehicle clean — it is a mobile billboard'],
+events:['Define event concept and audience','Set date, time, and venue','Create event page on hub','Promote via email, social, and GBP post','Prepare materials and setup','Host event and collect attendee emails','Post recap content and photos','Send follow-up email to attendees'],
+popups:['Identify high-foot-traffic location','Negotiate short-term lease or market booth','Design display and signage','Stock inventory','Promote pop-up on social and email','Collect emails and social follows at pop-up','Photograph and post content during event'],
+print:['Design business card with {phone}, {clientDomain}, QR code','Design leave-behind flyer or brochure','Print door hangers if applicable','Print job-site signs if applicable','Distribute to past customers, partners, and job sites'],
+merch:['Define merch items (tees, hats, stickers, mugs)','Design artwork matching brand','Choose print-on-demand or bulk production','Create merch page on hub or Gumroad','Promote on social','Give merch to top customers and partners'],
+discord:['Create Discord server','Set up channels: general, announcements, support, off-topic','Create roles and permissions','Write welcome message and rules','Invite first 20 members','Post regularly and engage daily'],
+appMktplace:['Identify relevant app marketplaces (Salesforce, HubSpot, Zapier, Shopify)','Review listing requirements','Build integration if needed','Create listing with screenshots, description, and docs link','Submit for review','Promote listing on hub and social'],
+influencerPaid:['Define campaign goal (awareness, traffic, conversions)','Set budget and compensation structure (flat fee, commission, gifted)','Identify 10-20 creators in {vertical} with aligned audience','Vet engagement rates — ignore follower count alone','Send outreach with clear brief: deliverables, timeline, usage rights','Negotiate terms and sign agreement','Ship product or provide access','Review and approve content before publish','Track performance: clicks, conversions, CPM','Evaluate for ongoing partnership'],
+programmatic:['Choose DSP (The Trade Desk, DV360, Amazon DSP)','Define audience segments: demographics, interests, intent','Upload first-party data for custom audiences','Set campaign objective and KPIs','Create display and/or video ad creative','Set frequency caps and brand safety filters','Launch campaign with test budget','Monitor viewability and fraud metrics','Optimize placements weekly','Scale what works, cut what doesn\'t'],
+};
 
 // ═══════════════════════════════════════════════════════════════
 // STATE
@@ -251,10 +386,12 @@ const LOCAL_SPOKES=['gbp','appleMaps','localPack','localDir','nextdoor','storefr
 const S={
   models:[],verticals:[],geoScopes:[],
   businessName:'',clientDomain:'',phone:'',address:'',licenseNumber:'',
+  userEmail:'',recipientEmail:'',
   offerings:[],serviceArea:[],targetAudience:'',
   budget:2,teamCapacity:2,timeline:2,
   existingAssets:[],
   tracking:{},
+  taskState:{},
   tab:'formula',ownerFilter:'all',kpiFilter:'all'
 };
 TRACKING_INFRA.forEach(t=>S.tracking[t.id]=false);
@@ -263,16 +400,41 @@ TRACKING_INFRA.forEach(t=>S.tracking[t.id]=false);
 // HELPERS
 // ═══════════════════════════════════════════════════════════════
 function findSpoke(id){for(const c of CATS)for(const s of c.spokes)if(s.id===id)return{...s,cat:c.label,catIcon:c.icon};return null;}
-function calcP(sc){return+(sc[0]*.30+sc[1]*.25+sc[2]*.15+sc[3]*.10+sc[4]*.10+sc[5]*.10).toFixed(1);}
+function calcP(sc,spokeId){
+  // Base weighted score
+  let score=sc[0]*.30+sc[1]*.25+sc[2]*.15+sc[3]*.10+sc[4]*.10+sc[5]*.10;
+  // Dynamic adjustments based on constraints
+  if(spokeId){
+    const cost=SPOKE_COST[spokeId]||1;
+    const cap=SPOKE_CAP[spokeId]||1;
+    // Penalize spokes that strain budget (cost near or at budget limit)
+    if(S.budget===1&&cost>=2)score*=0.7;
+    else if(S.budget===2&&cost>=3)score*=0.8;
+    // Penalize spokes that strain capacity
+    if(S.teamCapacity===1&&cap>=2)score*=0.75;
+    else if(S.teamCapacity===2&&cap>=3)score*=0.85;
+    // Boost fast TTV spokes when timeline is urgent
+    if(S.timeline===1){
+      const ttv=SPOKE_TTV[spokeId];
+      if(ttv==='immediate'||ttv==='days')score*=1.15;
+      else if(ttv==='months'||ttv==='quarters')score*=0.75;
+    }
+    // Boost compounding spokes when timeline is long-term
+    if(S.timeline===3){
+      if(sc[5]>=8)score*=1.1; // compoundingValue is index 5
+    }
+  }
+  return+Math.min(10,score).toFixed(1);
+}
 function v(val,fb){return val||`<span class="empty">${fb}</span>`;}
 function esc(s){const d=document.createElement('div');d.textContent=s;return d.innerHTML;}
 function toggleArr(arr,val){const i=arr.indexOf(val);if(i>-1)arr.splice(i,1);else arr.push(val);}
 function primaryModel(){return S.models[0]||'localService';}
 
 function getActiveSpokes(){
+  if(!S.models.length)return[];
   const set=new Set();
-  const models=S.models.length?S.models:['localService'];
-  models.forEach(m=>(MS[m]||[]).forEach(id=>set.add(id)));
+  S.models.forEach(m=>(MS[m]||[]).forEach(id=>set.add(id)));
   const isGlobal=S.geoScopes.includes('global')||S.geoScopes.includes('national');
   if(isGlobal)LOCAL_SPOKES.forEach(id=>set.delete(id));
   return[...set];
@@ -288,6 +450,10 @@ function getSpokeStatus(id){
 }
 function tier1Done(){return S.models.length>0;}
 function tier2Done(){return S.budget>0&&S.teamCapacity>0;}
+
+function saveState(){try{localStorage.setItem('hubspoke_v3',JSON.stringify(S));}catch(e){}}
+function loadState(){try{const d=localStorage.getItem('hubspoke_v3');if(d){const p=JSON.parse(d);Object.assign(S,p);}}catch(e){}}
+loadState();
 
 // ═══════════════════════════════════════════════════════════════
 // RENDER LEFT
@@ -328,16 +494,19 @@ function renderLeft(){
 
   <div class="tier-label">Tier 2 — Constraints</div>
   <div class="isec${t1?'':' locked'}" data-sec="constraints">
-    <div class="isec-head"><span class="isec-title">Budget & Capacity</span><span class="isec-arrow">▸</span></div>
+    <div class="isec-head"><span class="isec-title">Capacity & Timeline</span><span class="isec-arrow">▸</span></div>
     <div class="isec-body">
-      <div class="fg"><label>Budget</label><div class="slider-wrap"><input type="range" id="inBudget" min="1" max="3" value="${S.budget}"><span class="slider-val">${['','Bootstrapped','Moderate','Significant'][S.budget]}</span></div></div>
+      <div class="fg" style="opacity:0.3;pointer-events:none"><label>Budget</label><div class="slider-wrap"><input type="range" id="inBudget" min="1" max="3" value="${S.budget}" disabled><span class="slider-val">${['','Bootstrapped','Moderate','Significant'][S.budget]}</span></div></div>
       <div class="fg"><label>Team Capacity</label><div class="slider-wrap"><input type="range" id="inCapacity" min="1" max="3" value="${S.teamCapacity}"><span class="slider-val">${['','Solo','Small Team','Agency'][S.teamCapacity]}</span></div></div>
+      <div class="fg"><label>Timeline</label><div class="slider-wrap"><input type="range" id="inTimeline" min="1" max="3" value="${S.timeline}"><span class="slider-val">${['','Urgent (3mo)','Standard (6mo)','Long-term (12mo)'][S.timeline]}</span></div></div>
     </div>
   </div>
   <div class="isec${t1?'':' locked'}" data-sec="existing">
     <div class="isec-head"><span class="isec-title">What Already Exists</span><span class="isec-arrow">▸</span></div>
     <div class="isec-body">
-      <div class="fg"><div class="check-list">${['Website live','GBP claimed','Social profiles','Email list','Reviews (10+)','Analytics wired','Paid ads running'].map((a,i)=>{const key=['website','gbp','social','email','reviews','analytics','paidAds'][i];return`<label class="check-item"><input type="checkbox" data-asset="${key}"${S.existingAssets.includes(key)?' checked':''}>${a}</label>`;}).join('')}</div></div>
+      <div class="fg">
+        <div class="pill-grid" id="pillAssets">${[['Website live','website'],['GBP claimed','gbp'],['Social profiles','social'],['Email list','email'],['Reviews (10+)','reviews'],['Analytics wired','analytics'],['Paid ads running','paidAds']].map(([label,key])=>`<div class="pill sm${S.existingAssets.includes(key)?' selected':''}" data-v="${key}">${label}</div>`).join('')}</div>
+      </div>
     </div>
   </div>
 
@@ -356,6 +525,8 @@ function renderLeft(){
       <div class="fg"><label>Phone</label><input type="text" id="inPhone" value="${esc(S.phone)}" placeholder="optional"></div>
       <div class="fg"><label>Address</label><input type="text" id="inAddress" value="${esc(S.address)}" placeholder="optional"></div>
       <div class="fg"><label>License #</label><input type="text" id="inLicense" value="${esc(S.licenseNumber)}" placeholder="optional"></div>
+      <div class="fg"><label>Your Email</label><input type="text" id="inUserEmail" value="${esc(S.userEmail)}" placeholder="who filled this out"></div>
+      <div class="fg"><label>Send Report To</label><input type="text" id="inRecipientEmail" value="${esc(S.recipientEmail)}" placeholder="who receives the plan"></div>
     </div>
   </div>
 
@@ -363,8 +534,15 @@ function renderLeft(){
   <div class="isec${t1?'':' locked'}" data-sec="tracking">
     <div class="isec-head"><span class="isec-title">Tracking Infrastructure</span>${Object.values(S.tracking).filter(Boolean).length?`<span class="isec-badge done">${Object.values(S.tracking).filter(Boolean).length} / ${TRACKING_INFRA.length}</span>`:''}<span class="isec-arrow">▸</span></div>
     <div class="isec-body">
-      <div class="fg"><div class="check-list">${TRACKING_INFRA.map(t=>`<label class="check-item"><input type="checkbox" data-track="${t.id}"${S.tracking[t.id]?' checked':''}>${t.n}</label>`).join('')}</div></div>
+      <div class="fg">
+        <div class="pill-grid" id="pillTracking">${TRACKING_INFRA.map(t=>`<div class="pill sm${S.tracking[t.id]?' selected':''}" data-v="${t.id}">${t.n}</div>`).join('')}</div>
+      </div>
     </div>
+  </div>
+  <div class="submit-bar">
+    <button class="bar-btn" id="saveBtn">Save</button>
+    <button class="bar-btn danger" id="clearBtn">Clear</button>
+    <button class="submit-btn" id="submitBtn"${t1?'':' disabled'}>Submit →</button>
   </div>`;
 
   // WIRE
@@ -373,13 +551,16 @@ function renderLeft(){
   document.querySelectorAll('#pillVerts .pill').forEach(p=>p.onclick=()=>{toggleArr(S.verticals,p.dataset.v);renderLeft();renderRight();});
   document.querySelectorAll('#pillGeo .pill').forEach(p=>p.onclick=()=>{toggleArr(S.geoScopes,p.dataset.v);renderLeft();renderRight();});
   const bind=(id,key)=>{const el=document.getElementById(id);if(el)el.onchange=el.oninput=()=>{S[key]=el.value;renderRight();}};
-  bind('inName','businessName');bind('inDomain','clientDomain');bind('inPhone','phone');bind('inAddress','address');bind('inLicense','licenseNumber');
-  const bSlider=document.getElementById('inBudget');if(bSlider)bSlider.oninput=e=>{S.budget=+e.target.value;e.target.nextElementSibling.textContent=['','Bootstrapped','Moderate','Significant'][S.budget];renderRight();};
+  bind('inName','businessName');bind('inDomain','clientDomain');bind('inPhone','phone');bind('inAddress','address');bind('inLicense','licenseNumber');bind('inUserEmail','userEmail');bind('inRecipientEmail','recipientEmail');
   const cSlider=document.getElementById('inCapacity');if(cSlider)cSlider.oninput=e=>{S.teamCapacity=+e.target.value;e.target.nextElementSibling.textContent=['','Solo','Small Team','Agency'][S.teamCapacity];renderRight();};
+  const tSlider=document.getElementById('inTimeline');if(tSlider)tSlider.oninput=e=>{S.timeline=+e.target.value;e.target.nextElementSibling.textContent=['','Urgent (3mo)','Standard (6mo)','Long-term (12mo)'][S.timeline];renderRight();};
   ['inOffering','inArea'].forEach(id=>{const inp=document.getElementById(id);if(inp)inp.onkeydown=e=>{if(e.key==='Enter'&&inp.value.trim()){e.preventDefault();const k=id==='inOffering'?'offerings':'serviceArea';S[k].push(inp.value.trim());inp.value='';renderLeft();renderRight();}};});
   document.querySelectorAll('.tx[data-rm]').forEach(x=>x.onclick=()=>{const v=x.dataset.rm;S.offerings=S.offerings.filter(t=>t!==v);S.serviceArea=S.serviceArea.filter(t=>t!==v);renderLeft();renderRight();});
-  document.querySelectorAll('[data-asset]').forEach(cb=>cb.onchange=()=>{const k=cb.dataset.asset;if(cb.checked)S.existingAssets.push(k);else S.existingAssets=S.existingAssets.filter(a=>a!==k);renderRight();});
-  document.querySelectorAll('[data-track]').forEach(cb=>cb.onchange=()=>{S.tracking[cb.dataset.track]=cb.checked;renderRight();});
+  document.querySelectorAll('#pillAssets .pill').forEach(p=>p.onclick=()=>{toggleArr(S.existingAssets,p.dataset.v);renderLeft();renderRight();});
+  document.querySelectorAll('#pillTracking .pill').forEach(p=>p.onclick=()=>{S.tracking[p.dataset.v]=!S.tracking[p.dataset.v];renderLeft();renderRight();});
+  const submitBtn=document.getElementById('submitBtn');if(submitBtn)submitBtn.onclick=()=>{S.tab='submit';renderRight();};
+  const saveBtn=document.getElementById('saveBtn');if(saveBtn)saveBtn.onclick=()=>{saveState();saveBtn.textContent='Saved!';setTimeout(()=>{saveBtn.textContent='Save';},1200);};
+  const clearBtn=document.getElementById('clearBtn');if(clearBtn)clearBtn.onclick=()=>{if(confirm('Clear all inputs and start fresh?')){localStorage.removeItem('hubspoke_v3');location.reload();}};
 }
 
 // ═══════════════════════════════════════════════════════════════
@@ -393,21 +574,28 @@ function renderRight(){
   const trackOn=Object.values(S.tracking).filter(Boolean).length;
   const kpiOn=KPIS.filter(k=>k.req.every(r=>S.tracking[r])).length;
 
+  const pm=primaryModel();
+  const modelNames=S.models.map(m=>MODEL_LABELS[m]).join(', ')||'None selected';
+
+  // Task progress
+  const deploySpokes=DO[pm]||[];
+  let totalTasks=0,completedTasks=0;
+  deploySpokes.forEach(sid=>{const tasks=SPOKE_TASKS[sid]||[];totalTasks+=tasks.length;tasks.forEach((_,i)=>{if(S.taskState[sid]&&S.taskState[sid][i])completedTasks++;});});
+  const taskPct=totalTasks?Math.round(completedTasks/totalTasks*100):0;
+
   document.getElementById('statsBar').innerHTML=
     `<div class="stat"><div class="stat-val a">${active.length}</div><div class="stat-lbl">Active</div></div>`+
     `<div class="stat"><div class="stat-val g">${ready}</div><div class="stat-lbl">Ready</div></div>`+
-    `<div class="stat"><div class="stat-val y">${done}</div><div class="stat-lbl">Done</div></div>`+
     `<div class="stat"><div class="stat-val r">${blocked}</div><div class="stat-lbl">Blocked</div></div>`+
-    `<div class="stat"><div class="stat-val a">${kpiOn}/${KPIS.length}</div><div class="stat-lbl">KPIs On</div></div>`+
+    `<div class="stat"><div class="stat-val a">${taskPct}%</div><div class="stat-lbl">Tasks</div></div>`+
+    `<div class="stat"><div class="stat-val a">${kpiOn}/${KPIS.length}</div><div class="stat-lbl">KPIs</div></div>`+
     `<div class="stat"><div class="stat-val a">${trackOn}/${TRACKING_INFRA.length}</div><div class="stat-lbl">Tracking</div></div>`;
 
-  const tabs=[['formula','Formula'],['hub','Hub'],['spokes','Spokes'],['deploy','Deploy'],['deps','Deps'],['priority','Priority'],['kpis','KPIs']];
+  const tabs=[['formula','Formula'],['hub','Hub'],['spokes','Spokes'],['tasks','Tasks'],['deploy','Deploy'],['timeline','Timeline'],['deps','Deps'],['priority','Priority'],['kpis','KPIs'],['export','Export']];
   document.getElementById('rtabs').innerHTML=tabs.map(([t,l])=>`<button class="rtab${S.tab===t?' active':''}" data-t="${t}">${l}</button>`).join('');
   document.querySelectorAll('.rtab').forEach(el=>el.onclick=()=>{S.tab=el.dataset.t;S.ownerFilter='all';S.kpiFilter='all';renderRight();});
 
   const rc=document.getElementById('rcontent');
-  const pm=primaryModel();
-  const modelNames=S.models.map(m=>MODEL_LABELS[m]).join(', ')||'None selected';
 
   if(S.tab==='formula'){
     const conv=CONVERSIONS[pm];
@@ -467,6 +655,70 @@ function renderRight(){
     rc.innerHTML=h;
     document.querySelectorAll('.fc').forEach(b=>b.onclick=()=>{S.ownerFilter=b.dataset.f;renderRight();});
 
+  }else if(S.tab==='tasks'){
+    const order=DO[pm]||[];
+    // Overall progress
+    let tTotal=0,tDone=0;
+    order.forEach(sid=>{const tasks=SPOKE_TASKS[sid]||[];tTotal+=tasks.length;tasks.forEach((_,i)=>{if(S.taskState[sid]&&S.taskState[sid][i])tDone++;});});
+    const overallPct=tTotal?Math.round(tDone/tTotal*100):0;
+    const hue=overallPct>75?'142':overallPct>40?'48':'0';
+    
+    let h=`<div class="section-head">Execution Tasks</div>
+    <p class="section-intro">Checklist per spoke in deployment order. Check tasks off as you complete them. Progress saves automatically.</p>
+    <div class="overall-progress">
+      <div style="font-size:11px;color:var(--text-muted);width:80px">${tDone} / ${tTotal}</div>
+      <div class="overall-bar"><div class="overall-fill" style="width:${overallPct}%;background:hsl(${hue},65%,50%)"></div></div>
+      <div class="overall-pct">${overallPct}%</div>
+    </div>`;
+    
+    for(let di=0;di<order.length;di++){
+      const sid=order[di];
+      const s=findSpoke(sid);if(!s)continue;
+      const tasks=SPOKE_TASKS[sid];if(!tasks||!tasks.length)continue;
+      const st=getSpokeStatus(sid);
+      const spokeCompleted=tasks.filter((_,i)=>S.taskState[sid]&&S.taskState[sid][i]).length;
+      const spokePct=Math.round(spokeCompleted/tasks.length*100);
+      const spokeHue=spokePct===100?'142':spokePct>0?'48':'0';
+      const phase=di<5?'now':di<10?'next':'later';
+      
+      h+=`<div class="task-spoke${spokePct>0&&spokePct<100?' open':''}" data-spoke="${sid}">
+        <div class="task-spoke-head">
+          <span class="deploy-phase ${phase}" style="font-size:8px;padding:1px 5px;margin-right:4px">${di+1}</span>
+          <span class="task-spoke-name">${s.n}</span>
+          <span class="task-progress">${spokeCompleted}/${tasks.length}</span>
+          <div class="task-progress-bar"><div class="task-progress-fill" style="width:${spokePct}%;background:hsl(${spokeHue},65%,50%)"></div></div>
+          <span style="font-size:10px;color:var(--text-muted)">▸</span>
+        </div>
+        <div class="task-list">`;
+      tasks.forEach((task,ti)=>{
+        const checked=S.taskState[sid]&&S.taskState[sid][ti];
+        const taskText=task.replace(/{(\w+)}/g,(_,key)=>{
+          const vals={offerings:S.offerings.join(', '),serviceArea:S.serviceArea.join(', '),vertical:S.verticals.join(', '),clientDomain:S.clientDomain,businessName:S.businessName,phone:S.phone};
+          return vals[key]||`{${key}}`;
+        });
+        h+=`<div class="task-item${checked?' done':''}" data-sid="${sid}" data-ti="${ti}">
+          <div class="task-check">${checked?'✓':''}</div>
+          <div class="task-text">${esc(taskText)}</div>
+        </div>`;
+      });
+      h+=`</div></div>`;
+    }
+    
+    rc.innerHTML=h;
+    // Wire spoke toggles
+    document.querySelectorAll('.task-spoke-head').forEach(head=>{
+      head.onclick=()=>head.parentElement.classList.toggle('open');
+    });
+    // Wire task checks
+    document.querySelectorAll('.task-item').forEach(item=>{
+      item.onclick=()=>{
+        const sid=item.dataset.sid;const ti=+item.dataset.ti;
+        if(!S.taskState[sid])S.taskState[sid]={};
+        S.taskState[sid][ti]=!S.taskState[sid][ti];
+        renderRight();
+      };
+    });
+
   }else if(S.tab==='deploy'){
     const order=DO[pm]||[];
     let h=`<p class="section-intro">Activation sequence. <span class="st-label green">NOW</span> = first 5, <span class="st-label yellow">NEXT</span> = 6-10, <span style="color:var(--text-muted)">LATER</span> = 11+.</p>`;
@@ -493,7 +745,7 @@ function renderRight(){
   }else if(S.tab==='priority'){
     const pd=PRI[pm];
     if(!pd){rc.innerHTML=`<p class="section-intro">Select a business model to see priority scoring.</p>`;return;}
-    const scored=Object.entries(pd).map(([id,sc])=>{const s=findSpoke(id);const st=getSpokeStatus(id);return{id,name:s?s.n:id,score:calcP(sc),st:st.st};}).sort((a,b)=>b.score-a.score);
+    const scored=Object.entries(pd).map(([id,sc])=>{const s=findSpoke(id);const st=getSpokeStatus(id);return{id,name:s?s.n:id,score:calcP(sc,id),st:st.st};}).sort((a,b)=>b.score-a.score);
     let h=`<p class="section-intro">Weighted priority score. <span class="st-label red">Blocked</span> spokes dimmed.</p>`;
     for(let i=0;i<scored.length;i++){
       const pct=scored[i].score/10*100;const hue=pct>75?'142':pct>55?'48':'0';
@@ -522,7 +774,263 @@ function renderRight(){
     if(totalOff>0){const mi={};kpiStatuses.filter(k=>!k.isOn).forEach(k=>{k.missing.forEach(r=>{if(!mi[r])mi[r]={n:TRACKING_INFRA.find(t=>t.id===r)?.n||r,u:0};mi[r].u++;});});const sorted=Object.entries(mi).sort((a,b)=>b[1].u-a[1].u);h+=`<div class="conv-box" style="margin-top:20px"><h4>Wire Next (by KPI impact)</h4>`;for(const[,info]of sorted.slice(0,6))h+=`<div class="conv-row"><span>${info.n}</span><span class="conv-val">unlocks ${info.u} KPI${info.u>1?'s':''}</span></div>`;h+=`</div>`;}
     rc.innerHTML=h;
     document.querySelectorAll('[data-kf]').forEach(b=>b.onclick=()=>{S.kpiFilter=b.dataset.kf;renderRight();});
+
+  }else if(S.tab==='timeline'){
+    const order=DO[pm]||[];
+    // Map timeline setting to total months: urgent=3, standard=6, long-term=12
+    const totalMonths={1:3,2:6,3:12}[S.timeline]||6;
+    const spokesPerMonth=Math.max(1,Math.ceil(order.length/totalMonths));
+    
+    // Group spokes into months
+    const months=[];
+    for(let i=0;i<order.length;i++){
+      const monthIdx=Math.floor(i/spokesPerMonth);
+      if(!months[monthIdx])months[monthIdx]=[];
+      months[monthIdx].push(order[i]);
+    }
+    
+    let h=`<p class="section-intro">${order.length} spokes across ${months.length} months. Timeline: ${['','Urgent (3mo)','Standard (6mo)','Long-term (12mo)'][S.timeline]}. Adjust timeline slider in constraints to reflow.</p>`;
+    
+    months.forEach((spokes,mi)=>{
+      const phase=mi<2?'now':mi<Math.ceil(months.length*0.6)?'next':'later';
+      const phaseLabel=mi<2?'NOW':mi<Math.ceil(months.length*0.6)?'NEXT':'LATER';
+      h+=`<div class="tl-month"><div class="tl-month-head">Month ${mi+1}<span class="tl-month-sub">${spokes.length} spoke${spokes.length>1?'s':''} · <span class="st-label ${phase==='now'?'green':phase==='next'?'yellow':'gray'}">${phaseLabel}</span></span></div>`;
+      spokes.forEach(sid=>{
+        const s=findSpoke(sid);if(!s)return;
+        const st=getSpokeStatus(sid);
+        const ttv=SPOKE_TTV[sid]||'—';
+        const ttvS={immediate:'now',days:'days',weeks:'wks',months:'mos',quarters:'qtrs','???':'???'}[ttv]||'—';
+        h+=`<div class="tl-item" style="${st.st==='blocked'?'opacity:0.35':''}">
+          <div>${s.n}${st.st==='blocked'?' <span class="st-label red">BLOCKED</span>':''}${st.st==='done'?' <span class="st-label green">DONE</span>':''}</div>
+          <div class="sr-tag ${s.o}">${s.o}</div>
+          <div style="text-align:center;font-size:9px;color:var(--text-muted)">${ttvS}</div>
+        </div>`;
+      });
+      h+=`</div>`;
+    });
+    
+    // Summary
+    h+=`<div class="conv-box" style="margin-top:20px"><h4>Timeline Summary</h4>
+      <div class="conv-row"><span>Total Spokes</span><span class="conv-val">${order.length}</span></div>
+      <div class="conv-row"><span>Duration</span><span class="conv-val">${months.length} months</span></div>
+      <div class="conv-row"><span>Avg Spokes / Month</span><span class="conv-val">${spokesPerMonth}</span></div>
+      <div class="conv-row"><span>Blocked (need resolution)</span><span class="conv-val" style="color:var(--red)">${order.filter(id=>getSpokeStatus(id).st==='blocked').length}</span></div>
+      <div class="conv-row"><span>Already Done</span><span class="conv-val" style="color:var(--green)">${order.filter(id=>getSpokeStatus(id).st==='done').length}</span></div>
+    </div>`;
+    rc.innerHTML=h;
+
+  }else if(S.tab==='export'){
+    // Build full computed state as JSON
+    const activeList=getActiveSpokes();
+    const spokeDetails=activeList.map(id=>{
+      const s=findSpoke(id);const st=getSpokeStatus(id);
+      const ttv=SPOKE_TTV[id]||null;
+      const kpis=SPOKE_KPIS[id]||[];
+      return{id,name:s?.n,ownership:s?.o,category:s?.cat,status:st.st,blockedBy:st.reason||null,timeToValue:ttv,relatedKPIs:kpis,cost:SPOKE_COST[id]||1,capacityReq:SPOKE_CAP[id]||1};
+    });
+    const conv=CONVERSIONS[pm];
+    const hubPages=(HUB_PAGES[pm]||[]).map(p=>p.page);
+    const deployOrder=(DO[pm]||[]).map((id,i)=>{const s=findSpoke(id);const st=getSpokeStatus(id);return{position:i+1,id,name:s?.n,status:st.st,timeToValue:SPOKE_TTV[id]||null};});
+    const kpiStatus=KPIS.map(k=>{const missing=k.req.filter(r=>!S.tracking[r]);return{id:k.id,name:k.n,category:k.cat,trackable:!missing.length,requires:k.req,missing};});
+    const trackingStatus={};TRACKING_INFRA.forEach(t=>{trackingStatus[t.id]={name:t.n,wired:!!S.tracking[t.id]};});
+    
+    // Vertical recs
+    const vertRecs={};
+    S.verticals.forEach(vt=>{S.models.forEach(m=>{const vm=(VERT_MAP[m]||{})[vt];if(vm)vertRecs[vt]=vm;});});
+
+    const exportObj={
+      meta:{framework:'Hub & Spoke',version:'v3',exported:new Date().toISOString()},
+      inputs:{
+        businessModels:S.models.map(m=>MODEL_LABELS[m]),
+        verticals:S.verticals,
+        geoScopes:S.geoScopes,
+        businessName:S.businessName||null,
+        clientDomain:S.clientDomain||null,
+        clientEmail:S.clientDomain?'info@'+S.clientDomain:null,
+        phone:S.phone||null,
+        address:S.address||null,
+        licenseNumber:S.licenseNumber||null,
+        userEmail:S.userEmail||null,
+        recipientEmail:S.recipientEmail||null,
+        offerings:S.offerings,
+        serviceArea:S.serviceArea,
+        targetAudience:S.targetAudience||null,
+        budget:['','bootstrapped','moderate','significant'][S.budget],
+        teamCapacity:['','solo','small_team','agency'][S.teamCapacity],
+        timeline:['','urgent_3mo','standard_6mo','long_term_12mo'][S.timeline]
+      },
+      computed:{
+        primaryConversion:conv?.primary||null,
+        secondaryConversion:conv?.secondary||null,
+        conversionPlatform:conv?.platform||null,
+        hubPages,
+        totalSpokesInUniverse:CATS.reduce((s,c)=>s+c.spokes.length,0),
+        activeSpokes:activeList.length,
+        readySpokes:spokeDetails.filter(s=>s.status==='ready').length,
+        blockedSpokes:spokeDetails.filter(s=>s.status==='blocked').length,
+        doneSpokes:spokeDetails.filter(s=>s.status==='done').length,
+        kpisTrackable:kpiStatus.filter(k=>k.trackable).length,
+        kpisDark:kpiStatus.filter(k=>!k.trackable).length,
+        trackingToolsWired:Object.values(S.tracking).filter(Boolean).length,
+      },
+      verticalRecommendations:Object.keys(vertRecs).length?vertRecs:null,
+      spokes:spokeDetails,
+      deploymentOrder:deployOrder,
+      kpis:kpiStatus,
+      trackingInfrastructure:trackingStatus,
+      offeringPages:S.offerings.map(o=>({page:o,type:'offering_detail'})),
+      areaPages:S.serviceArea.map(a=>({page:a,type:'area_landing'})),
+      crossProductPages:S.offerings.length&&S.serviceArea.length?S.offerings.flatMap(o=>S.serviceArea.map(a=>({page:`${o} in ${a}`,type:'seo_cross_product'}))):[], 
+      taskProgress:deployOrder.map(d=>{const tasks=SPOKE_TASKS[d.id]||[];const done=tasks.filter((_,i)=>S.taskState[d.id]&&S.taskState[d.id][i]).length;return{spoke:d.id,name:d.name,total:tasks.length,completed:done,pct:tasks.length?Math.round(done/tasks.length*100):0};}).filter(t=>t.total>0)
+    };
+    
+    const jsonStr=JSON.stringify(exportObj,null,2);
+    
+    let h=`<div class="section-head">Export</div>
+    <p class="section-intro">Full computed state as JSON. Copy and use as input for any downstream system, agent, or document generator.</p>
+    <button class="copy-btn" id="copyJson">Copy JSON</button>
+    <button class="copy-btn" id="resetState" style="background:var(--red);margin-left:8px;">Reset All</button>
+    <div class="json-box" id="jsonOutput">${esc(jsonStr)}</div>`;
+    rc.innerHTML=h;
+    document.getElementById('copyJson').onclick=()=>{navigator.clipboard.writeText(jsonStr).then(()=>{document.getElementById('copyJson').textContent='Copied!';setTimeout(()=>{document.getElementById('copyJson').textContent='Copy JSON';},1500);});};
+    document.getElementById('resetState').onclick=()=>{if(confirm('Reset all inputs?')){localStorage.removeItem('hubspoke_v3');location.reload();}};
+
+  }else if(S.tab==='submit'){
+    const active=getActiveSpokes();
+    const conv=CONVERSIONS[pm];
+    const deployOrder=(DO[pm]||[]);
+    const trackOn=Object.values(S.tracking).filter(Boolean).length;
+    const kpiOn=KPIS.filter(k=>k.req.every(r=>S.tracking[r])).length;
+    
+    function cr(label,val){return`<div class="conf-row"><span class="conf-label">${label}</span><span class="conf-value${val?'':' empty'}">${val||'Not provided'}</span></div>`;}
+    function crPills(label,arr){
+      if(!arr.length)return`<div class="conf-row"><span class="conf-label">${label}</span><span class="conf-value empty">None</span></div>`;
+      return`<div class="conf-row"><span class="conf-label">${label}</span><div class="conf-pills">${arr.map(a=>`<span class="conf-pill">${esc(a)}</span>`).join('')}</div></div>`;
+    }
+    
+    let h=`<span class="back-link" id="backToplan">← Back to plan</span>
+    <div class="section-head">Confirm & Submit</div>
+    <p class="section-intro">Review all inputs below. When confirmed, copy the email draft to send.</p>
+    
+    <div class="conf-section"><h4>Business Identity</h4>
+      ${cr('Business Name',S.businessName)}
+      ${cr('Domain',S.clientDomain)}
+      ${cr('Email',S.clientDomain?'info@'+S.clientDomain:'')}
+      ${cr('Phone',S.phone)}
+      ${cr('Address',S.address)}
+      ${cr('License #',S.licenseNumber)}
+      ${cr('Submitted By',S.userEmail)}
+      ${cr('Send Report To',S.recipientEmail)}
+    </div>
+    
+    <div class="conf-section"><h4>Classification</h4>
+      ${crPills('Business Model',S.models.map(m=>MODEL_LABELS[m]))}
+      ${crPills('Vertical',S.verticals)}
+      ${crPills('Geo Scope',S.geoScopes)}
+    </div>
+    
+    <div class="conf-section"><h4>Offerings & Audience</h4>
+      ${crPills('Offerings',S.offerings)}
+      ${crPills('Service Area',S.serviceArea)}
+      ${cr('Target Audience',S.targetAudience)}
+    </div>
+    
+    <div class="conf-section"><h4>Constraints</h4>
+      ${cr('Budget',['','Bootstrapped','Moderate','Significant'][S.budget])}
+      ${cr('Team Capacity',['','Solo','Small Team','Agency'][S.teamCapacity])}
+      ${cr('Timeline',['','Urgent (3mo)','Standard (6mo)','Long-term (12mo)'][S.timeline])}
+    </div>
+    
+    <div class="conf-section"><h4>Current State</h4>
+      ${crPills('Already Exists',S.existingAssets.map(a=>({website:'Website',gbp:'GBP',social:'Social',email:'Email List',reviews:'Reviews 10+',analytics:'Analytics',paidAds:'Paid Ads'}[a]||a)))}
+      ${cr('Tracking Tools Wired',trackOn+' / '+TRACKING_INFRA.length)}
+    </div>
+    
+    <div class="conf-section"><h4>Computed Plan</h4>
+      ${cr('Active Spokes',active.length+' of '+CATS.reduce((s,c)=>s+c.spokes.length,0))}
+      ${cr('Ready Now',active.filter(id=>getSpokeStatus(id).st==='ready').length.toString())}
+      ${cr('Blocked',active.filter(id=>getSpokeStatus(id).st==='blocked').length.toString())}
+      ${cr('Task Progress',completedTasks+' / '+totalTasks+' tasks ('+taskPct+'%)')}
+      ${cr('KPIs Trackable',kpiOn+' / '+KPIS.length)}
+      ${cr('Primary Conversion',conv?.primary)}
+      ${cr('Secondary Conversion',conv?.secondary)}
+      ${cr('First 5 Spokes to Deploy',deployOrder.slice(0,5).map(id=>{const s=findSpoke(id);return s?s.n:id;}).join(', '))}
+    </div>`;
+    
+    // Email draft
+    const bName=S.businessName||'[Business Name]';
+    const domain=S.clientDomain||'[domain]';
+    const recipient=S.recipientEmail||'[recipient]';
+    const submitter=S.userEmail||'[submitter]';
+    const modelsStr=S.models.map(m=>MODEL_LABELS[m]).join(', ')||'[not specified]';
+    const vertsStr=S.verticals.join(', ')||'[not specified]';
+    const geoStr=S.geoScopes.join(', ')||'[not specified]';
+    const offerStr=S.offerings.join(', ')||'[not specified]';
+    const areaStr=S.serviceArea.join(', ')||'[not specified]';
+    const budgetStr=['','Bootstrapped','Moderate','Significant'][S.budget];
+    const capStr=['','Solo','Small Team','Agency'][S.teamCapacity];
+    const tlStr=['','Urgent (3mo)','Standard (6mo)','Long-term (12mo)'][S.timeline];
+    const existsStr=S.existingAssets.length?S.existingAssets.map(a=>({website:'Website',gbp:'GBP',social:'Social profiles',email:'Email list',reviews:'Reviews (10+)',analytics:'Analytics',paidAds:'Paid ads'}[a]||a)).join(', '):'Nothing yet';
+    const top5=deployOrder.slice(0,5).map((id,i)=>{const s=findSpoke(id);return`  ${i+1}. ${s?s.n:id}`;}).join('\n');
+    
+    const emailBody=`New intake submitted for ${bName}.
+Submitted by: ${submitter}
+
+BUSINESS
+Name: ${bName}
+Domain: ${domain}
+Phone: ${S.phone||'—'}
+Address: ${S.address||'—'}
+License: ${S.licenseNumber||'—'}
+
+CLASSIFICATION
+Model: ${modelsStr}
+Vertical: ${vertsStr}
+Geo: ${geoStr}
+
+OFFERINGS & AUDIENCE
+Offerings: ${offerStr}
+Service Area: ${areaStr}
+Target Audience: ${S.targetAudience||'—'}
+
+CONSTRAINTS
+Budget: ${budgetStr}
+Team: ${capStr}
+Timeline: ${tlStr}
+
+CURRENT STATE
+Already Exists: ${existsStr}
+Tracking Tools: ${trackOn} / ${TRACKING_INFRA.length} wired
+KPIs Trackable: ${kpiOn} / ${KPIS.length}
+
+PLAN SUMMARY
+Active Spokes: ${active.length}
+Ready: ${active.filter(id=>getSpokeStatus(id).st==='ready').length}
+Blocked: ${active.filter(id=>getSpokeStatus(id).st==='blocked').length}
+Task Progress: ${completedTasks} / ${totalTasks} (${taskPct}%)
+Primary Conversion: ${conv?.primary||'—'}
+
+FIRST 5 TO DEPLOY
+${top5}`;
+
+    const emailSubject=`Intake: ${bName} — ${modelsStr}`;
+
+    h+=`<div style="margin-top:24px"><div class="section-head" style="font-size:16px">Email Draft</div>
+    <p class="section-intro">Copy this email. Wire your own send endpoint later.</p>
+    <button class="copy-btn" id="copySubject">Copy Subject</button>
+    <button class="copy-btn" id="copyEmail">Copy Email Body</button>
+    <div class="email-draft">
+      <div class="em-to">To: ${esc(recipient)}</div>
+      <div class="em-subject">Subject: ${esc(emailSubject)}</div>
+      <div class="em-body">${esc(emailBody)}</div>
+    </div></div>`;
+    
+    rc.innerHTML=h;
+    document.getElementById('backToplan').onclick=()=>{S.tab='formula';renderRight();};
+    document.getElementById('copySubject').onclick=()=>{navigator.clipboard.writeText(emailSubject).then(()=>{document.getElementById('copySubject').textContent='Copied!';setTimeout(()=>{document.getElementById('copySubject').textContent='Copy Subject';},1500);});};
+    document.getElementById('copyEmail').onclick=()=>{navigator.clipboard.writeText(emailBody).then(()=>{document.getElementById('copyEmail').textContent='Copied!';setTimeout(()=>{document.getElementById('copyEmail').textContent='Copy Email Body';},1500);});};
   }
+  saveState();
 }
 
 // INIT
