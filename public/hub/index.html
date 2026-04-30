@@ -888,10 +888,12 @@ function renderRight(){
     
     let h=`<div class="section-head">Export</div>
     <p class="section-intro">Full computed state as JSON. Copy and use as input for any downstream system, agent, or document generator.</p>
-    <button class="copy-btn" id="copyJson">Copy JSON</button>
+    <button class="copy-btn" id="openRoadmap">Open Roadmap →</button>
+    <button class="copy-btn" id="copyJson" style="margin-left:8px;">Copy JSON</button>
     <button class="copy-btn" id="resetState" style="background:var(--red);margin-left:8px;">Reset All</button>
     <div class="json-box" id="jsonOutput">${esc(jsonStr)}</div>`;
     rc.innerHTML=h;
+    document.getElementById('openRoadmap').onclick=()=>{const p=btoa(unescape(encodeURIComponent(jsonStr)));location.href='/roadmap?plan='+p;};
     document.getElementById('copyJson').onclick=()=>{navigator.clipboard.writeText(jsonStr).then(()=>{document.getElementById('copyJson').textContent='Copied!';setTimeout(()=>{document.getElementById('copyJson').textContent='Copy JSON';},1500);});};
     document.getElementById('resetState').onclick=()=>{if(confirm('Reset all inputs?')){localStorage.removeItem('hubspoke_v3');location.reload();}};
 

@@ -903,7 +903,7 @@ document.getElementById('demo3').onclick=()=>loadPlan(DEMOS.demo3);
 
 // Auto-load from localStorage or URL
 const urlP=new URLSearchParams(window.location.search).get('plan');
-if(urlP){try{loadPlan(atob(urlP));}catch(e){}}
+if(urlP){try{loadPlan(decodeURIComponent(escape(atob(urlP))));}catch(e){}}
 else{const s=localStorage.getItem('hubspoke_roadmap');if(s)try{loadPlan(s);}catch(e){localStorage.removeItem('hubspoke_roadmap');}}
 </script>
 </body>
