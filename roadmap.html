@@ -1,0 +1,910 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Your Marketing Roadmap — Onit.</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Unbounded:wght@800&family=Epilogue:wght@300;400;500;600&family=Syne+Mono&display=swap');
+
+:root{
+  --bg:#0A0A0A;--surface:#111113;--surface2:#181819;
+  --border:#222224;--border-light:#333336;
+  --text:#F5F5F5;--text-dim:#A8A8B0;--text-muted:#5A5A62;
+  --accent:#c8f540;--accent-dim:rgba(200,245,64,0.08);
+  --green:#4ade80;--green-dim:rgba(74,222,128,0.08);
+  --yellow:#facc15;--yellow-dim:rgba(250,204,21,0.08);
+  --red:#f87171;
+  --blue:#60a5fa;--blue-dim:rgba(96,165,250,0.08);
+  --purple:#a78bfa;--orange:#fb923c;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);color:var(--text);font-family:'Epilogue',sans-serif;font-size:16px;line-height:1.75;-webkit-font-smoothing:antialiased;scroll-behavior:smooth;}
+.map-tooltip{background:var(--surface)!important;color:var(--text)!important;border:1px solid var(--border)!important;border-radius:6px!important;padding:4px 10px!important;font-family:'Syne Mono',monospace!important;font-size:11px!important;box-shadow:0 4px 12px rgba(0,0,0,0.3)!important;}
+
+/* LOAD SCREEN */
+.load{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:40px 20px;}
+.load-inner{max-width:560px;width:100%;text-align:center;}
+.load .logo{font-family:'Unbounded',sans-serif;font-weight:800;font-size:48px;letter-spacing:-0.02em;margin-bottom:4px;}
+.load .logo .dot{display:inline-block;width:10px;height:10px;border-radius:50%;background:var(--accent);margin-left:3px;}
+.load .sub{font-family:'Syne Mono',monospace;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-muted);margin-bottom:48px;}
+.load textarea{width:100%;height:160px;background:var(--surface);border:1px solid var(--border);border-radius:8px;color:var(--text-dim);font-family:'Syne Mono',monospace;font-size:11px;padding:16px;resize:vertical;margin-bottom:12px;}
+.load textarea:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-dim);}
+.load textarea::placeholder{color:var(--text-muted);}
+.load-btn{width:100%;padding:16px;background:var(--accent);color:var(--bg);border:none;border-radius:8px;font-family:'Unbounded',sans-serif;font-weight:800;font-size:14px;cursor:pointer;letter-spacing:0.02em;transition:opacity 0.15s;}
+.load-btn:hover{opacity:0.85;}
+.load-err{color:var(--red);font-size:12px;margin-top:8px;font-family:'Syne Mono',monospace;}
+.load-divider{color:var(--text-muted);font-size:11px;margin:28px 0 20px;display:flex;align-items:center;gap:16px;}
+.load-divider::before,.load-divider::after{content:'';flex:1;height:1px;background:var(--border);}
+.demo-row{display:flex;gap:10px;}
+.demo-btn{flex:1;padding:14px 8px;background:var(--surface);border:1px solid var(--border);color:var(--text-dim);border-radius:8px;cursor:pointer;transition:all 0.15s;text-align:center;font-family:'Epilogue',sans-serif;}
+.demo-btn:hover{border-color:var(--accent);color:var(--accent);}
+.demo-btn .demo-icon{font-size:24px;margin-bottom:4px;}
+.demo-btn .demo-label{font-size:12px;font-weight:500;}
+.demo-btn .demo-type{font-family:'Syne Mono',monospace;font-size:9px;color:var(--text-muted);letter-spacing:0.5px;margin-top:2px;}
+
+/* ROADMAP */
+.roadmap{display:none;max-width:780px;margin:0 auto;padding:60px 24px 100px;}
+
+/* ONIT HEADER */
+.r-logo{font-family:'Unbounded',sans-serif;font-weight:800;font-size:13px;color:var(--text-muted);letter-spacing:-0.02em;margin-bottom:32px;}
+.r-logo .dot{display:inline-block;width:5px;height:5px;border-radius:50%;background:var(--accent);margin-left:2px;}
+
+/* HERO */
+.r-hero{margin-bottom:64px;padding-bottom:48px;border-bottom:1px solid var(--border);}
+.r-hero h1{font-family:'Unbounded',sans-serif;font-weight:800;font-size:52px;letter-spacing:-0.03em;line-height:1.1;margin-bottom:12px;}
+.r-hero .domain{font-family:'Syne Mono',monospace;font-size:14px;color:var(--accent);letter-spacing:0.5px;margin-bottom:24px;}
+.r-hero .tags{display:flex;gap:8px;flex-wrap:wrap;}
+.r-hero .tag{font-size:13px;padding:5px 14px;border-radius:20px;background:var(--surface);border:1px solid var(--border);color:var(--text-dim);}
+
+/* SECTIONS */
+.sec{margin-bottom:64px;}
+.sec-label{font-family:'Syne Mono',monospace;font-size:12px;letter-spacing:2px;text-transform:uppercase;color:var(--text-muted);margin-bottom:12px;}
+.sec h2{font-family:'Unbounded',sans-serif;font-weight:800;font-size:40px;letter-spacing:-0.02em;line-height:1.15;margin-bottom:12px;}
+.sec .lead{font-size:16px;color:var(--text-dim);margin-bottom:28px;max-width:580px;font-weight:300;}
+
+/* NUMBERS */
+.num-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:40px;}
+.num-box{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:20px 14px;text-align:center;}
+.num-val{font-family:'Unbounded',sans-serif;font-weight:800;font-size:36px;letter-spacing:-0.02em;}
+.num-val.green{color:var(--green);}.num-val.accent{color:var(--accent);}.num-val.red{color:var(--red);}.num-val.blue{color:var(--blue);}
+.num-lbl{font-size:12px;color:var(--text-muted);margin-top:4px;}
+
+/* CARDS */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:24px;margin-bottom:14px;}
+.card h4{font-family:'Syne Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--text-muted);margin-bottom:14px;}
+.card-row{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid rgba(255,255,255,0.03);font-size:15px;}
+.card-row:last-child{border-bottom:none;}
+.card-label{color:var(--text-dim);font-weight:300;}
+.card-val{color:var(--accent);font-weight:500;}
+
+/* PAGE GRID */
+.page-list{margin-top:4px;}
+.page-item{display:grid;grid-template-columns:20px 16px 1fr;align-items:center;gap:8px;padding:7px 4px;border-bottom:1px solid rgba(255,255,255,0.04);font-size:14px;color:var(--text-dim);}
+.page-item:last-child{border-bottom:none;}
+.page-num{font-family:'Syne Mono',monospace;font-size:11px;color:var(--text-muted);text-align:right;}
+.page-icon{display:flex;align-items:center;justify-content:center;}
+.page-icon svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;}
+.page-item.type-core{color:var(--text-dim);}
+.page-item.type-core .page-icon{color:var(--text-muted);}
+.page-item.type-offer{color:var(--text);border-left:2px solid var(--accent);padding-left:10px;margin-left:-2px;}
+.page-item.type-offer .page-icon{color:var(--accent);}
+.page-item.type-offer .page-num{color:var(--accent);}
+.page-item.type-area{color:var(--text);border-left:2px solid var(--blue);padding-left:10px;margin-left:-2px;}
+.page-item.type-area .page-icon{color:var(--blue);}
+.page-item.type-area .page-num{color:var(--blue);}
+.page-item.type-search{color:var(--text-dim);border-left:2px solid var(--orange);padding-left:10px;margin-left:-2px;}
+.page-item.type-search .page-icon{color:var(--orange);}
+.page-item.type-search .page-num{color:var(--orange);}
+
+/* STEP CARD (for step 0) */
+.step-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:0 0;margin-bottom:8px;overflow:hidden;}
+
+/* PILLS */
+.pills{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px;}
+.pill{font-size:12px;padding:5px 14px;border-radius:20px;background:var(--surface2);border:1px solid var(--border);color:var(--text-dim);}
+
+/* STEP LIST */
+.step{display:grid;grid-template-columns:52px 1fr auto;align-items:center;gap:14px;padding:16px 16px;border-bottom:1px solid rgba(255,255,255,0.04);}
+.step:last-child{border-bottom:none;}
+.step-num{font-family:'Unbounded',sans-serif;font-weight:800;font-size:24px;color:var(--accent);text-align:center;letter-spacing:-0.02em;}
+.step-name{font-size:16px;font-weight:500;}
+.step-detail{font-size:12px;color:var(--text-muted);margin-top:2px;font-weight:300;}
+.step-badge{font-size:10px;padding:4px 10px;border-radius:6px;font-weight:600;letter-spacing:0.5px;white-space:nowrap;}
+.step-badge.now{background:var(--green-dim);color:var(--green);}
+.step-badge.next{background:var(--yellow-dim);color:var(--yellow);}
+.step-badge.later{background:rgba(255,255,255,0.04);color:var(--text-muted);}
+
+/* MONTH BLOCKS */
+.month{margin-bottom:32px;}
+.month-head{font-family:'Unbounded',sans-serif;font-weight:800;font-size:22px;letter-spacing:-0.02em;margin-bottom:4px;}
+.month-sub{font-family:'Syne Mono',monospace;font-size:10px;color:var(--text-muted);letter-spacing:0.5px;margin-bottom:14px;}
+.month-item{display:flex;align-items:center;gap:10px;padding:8px 0;font-size:15px;color:var(--text-dim);border-bottom:1px solid rgba(255,255,255,0.03);}
+.month-item:last-child{border-bottom:none;}
+.own-tag{font-size:9px;padding:3px 7px;border-radius:4px;font-weight:500;}
+.own-tag.owned{background:var(--green-dim);color:var(--green);}
+.own-tag.rented{background:var(--blue-dim);color:var(--blue);}
+.own-tag.earned{background:rgba(251,146,60,0.08);color:var(--orange);}
+.own-tag.paid{background:rgba(248,113,113,0.08);color:var(--red);}
+.own-tag.shared{background:rgba(167,139,250,0.08);color:var(--purple);}
+
+/* KPI */
+.kpi-group{margin-bottom:20px;}
+.kpi-group-head{font-size:14px;font-weight:500;margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid var(--border);}
+.kpi-item{display:grid;grid-template-columns:1fr 50px;align-items:center;padding:5px 0;font-size:14px;color:var(--text-dim);border-bottom:1px solid rgba(255,255,255,0.02);}
+.kpi-on{color:var(--green);font-size:11px;font-weight:600;text-align:right;}
+.kpi-off{color:var(--red);font-size:11px;font-weight:600;text-align:right;opacity:0.6;}
+
+/* CTA */
+.cta{background:var(--surface);border:2px solid var(--accent);border-radius:16px;padding:40px;text-align:center;margin-top:48px;}
+.cta h2{font-family:'Unbounded',sans-serif;font-weight:800;font-size:28px;letter-spacing:-0.02em;margin-bottom:8px;}
+.cta p{color:var(--text-dim);font-size:15px;margin-bottom:24px;font-weight:300;max-width:400px;margin-left:auto;margin-right:auto;}
+.cta-btn{display:inline-block;padding:16px 40px;background:var(--accent);color:var(--bg);border:none;border-radius:8px;font-family:'Unbounded',sans-serif;font-weight:800;font-size:14px;cursor:pointer;text-decoration:none;letter-spacing:0.02em;transition:opacity 0.15s;}
+.cta-btn:hover{opacity:0.85;}
+
+/* FOOTER */
+.r-footer{margin-top:64px;padding-top:20px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;}
+.r-footer .logo{font-family:'Unbounded',sans-serif;font-weight:800;font-size:11px;color:var(--text-muted);}
+.r-footer .logo .dot{display:inline-block;width:4px;height:4px;border-radius:50%;background:var(--accent);margin-left:2px;}
+.r-footer .date{font-family:'Syne Mono',monospace;font-size:10px;color:var(--text-muted);}
+
+/* VARIABLE HIGHLIGHTS */
+.v{display:inline;padding:1px 7px;margin:0 1px;border-radius:4px;background:var(--accent-dim);color:var(--accent);font-weight:500;border:1px solid rgba(200,245,64,0.15);white-space:nowrap;}
+.v2{display:inline;padding:1px 7px;margin:0 1px;border-radius:4px;background:var(--blue-dim);color:var(--blue);font-weight:500;border:1px solid rgba(96,165,250,0.12);white-space:nowrap;}
+
+/* EXPORT BAR */
+.export-bar{display:flex;align-items:center;gap:8px;padding:20px 0 0;flex-wrap:wrap;}
+.export-label{font-family:'Syne Mono',monospace;font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--text-muted);margin-right:4px;white-space:nowrap;}
+.export-pill{display:flex;align-items:center;gap:6px;font-size:12px;padding:7px 14px;border-radius:20px;border:1px solid var(--border);color:var(--text-dim);cursor:pointer;background:var(--surface);font-family:'Epilogue',sans-serif;font-weight:500;transition:all 0.15s;white-space:nowrap;}
+.export-pill:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-dim);}
+.export-pill svg{width:14px;height:14px;flex-shrink:0;}
+
+/* MODAL */
+.modal-overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.75);z-index:100;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(4px);}
+.modal-overlay.open{display:flex;}
+.modal{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:36px;max-width:440px;width:100%;text-align:center;position:relative;box-shadow:0 24px 80px rgba(0,0,0,0.5);}
+.modal-close{position:absolute;top:16px;right:16px;background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:18px;padding:4px 8px;border-radius:4px;transition:color 0.15s;}
+.modal-close:hover{color:var(--text);}
+.modal-icon{font-size:32px;margin-bottom:12px;}
+.modal h3{font-family:'Unbounded',sans-serif;font-weight:800;font-size:20px;letter-spacing:-0.02em;margin-bottom:6px;}
+.modal p{color:var(--text-dim);font-size:14px;font-weight:300;margin-bottom:20px;line-height:1.6;}
+.modal-input{width:100%;padding:14px 16px;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:'Epilogue',sans-serif;font-size:14px;margin-bottom:12px;text-align:center;}
+.modal-input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-dim);}
+.modal-input::placeholder{color:var(--text-muted);}
+.modal-submit{width:100%;padding:14px;background:var(--accent);color:var(--bg);border:none;border-radius:8px;font-family:'Unbounded',sans-serif;font-weight:800;font-size:13px;cursor:pointer;letter-spacing:0.02em;transition:opacity 0.15s;}
+.modal-submit:hover{opacity:0.85;}
+.modal-success{display:none;}
+.modal-success.show{display:block;}
+.modal-form.hide{display:none;}
+.modal-check{font-size:40px;margin-bottom:12px;}
+
+/* SECTION NAV */
+.sec-nav{position:sticky;top:0;z-index:50;background:rgba(10,10,10,0.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:0 24px;display:none;overflow-x:auto;}
+.sec-nav.visible{display:flex;}
+.sec-nav a{font-family:'Syne Mono',monospace;font-size:11px;letter-spacing:0.5px;color:var(--text-muted);text-decoration:none;padding:14px 14px;white-space:nowrap;transition:color 0.15s;border-bottom:2px solid transparent;}
+.sec-nav a:hover{color:var(--text-dim);}
+.sec-nav a.active{color:var(--accent);border-bottom-color:var(--accent);}
+
+/* MAP */
+.map-container{height:300px;border-radius:12px;overflow:hidden;border:1px solid var(--border);margin-top:20px;position:relative;}
+.map-container .leaflet-tile-pane{filter:brightness(0.7) contrast(1.1) saturate(0.3);}
+.map-container .leaflet-control-zoom a{background:var(--surface);color:var(--text);border-color:var(--border);}
+.map-label{position:absolute;bottom:12px;left:12px;z-index:1000;background:rgba(10,10,10,0.85);backdrop-filter:blur(4px);padding:6px 12px;border-radius:6px;font-family:'Syne Mono',monospace;font-size:10px;color:var(--accent);letter-spacing:0.5px;border:1px solid var(--border);}
+
+/* SECTION VISUALS */
+.sec-viz{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:24px;margin-bottom:24px;overflow:hidden;position:relative;}
+.sec-viz svg{display:block;width:100%;height:auto;}
+.viz-label{font-family:'Syne Mono',monospace;font-size:9px;letter-spacing:1px;text-transform:uppercase;fill:var(--text-muted);}
+.viz-val{font-family:'Unbounded',sans-serif;font-weight:800;fill:var(--accent);}
+.viz-dim{fill:var(--text-muted);}
+.viz-line{stroke:var(--accent);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
+.viz-fill{fill:url(#vizGrad);opacity:0.15;}
+.viz-grid{stroke:var(--border);stroke-width:0.5;}
+.viz-dot{fill:var(--accent);}
+.viz-bar{rx:3;ry:3;}
+.channel-ring{position:relative;display:flex;align-items:center;justify-content:center;gap:32px;padding:8px 0;}
+.ring-center{text-align:center;}
+.ring-center .ring-num{font-family:'Unbounded',sans-serif;font-weight:800;font-size:36px;color:var(--accent);}
+.ring-center .ring-lbl{font-size:11px;color:var(--text-muted);margin-top:2px;}
+.ring-breakdown{display:flex;flex-direction:column;gap:6px;}
+.ring-row{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text-dim);}
+.ring-bar{height:8px;border-radius:4px;min-width:4px;}
+
+@media(max-width:600px){
+  .r-hero h1{font-size:32px;}
+  .sec h2{font-size:28px;}
+  .num-grid{grid-template-columns:repeat(2,1fr);}
+  .step{grid-template-columns:40px 1fr;}.step .step-badge{display:none;}
+  .demo-row{flex-direction:column;}
+}
+</style>
+</head>
+<body>
+
+<div class="load" id="loadScreen">
+  <div class="load-inner">
+    <div class="logo">Onit<span class="dot"></span></div>
+    <div class="sub">Your marketing roadmap</div>
+    <textarea id="jsonInput" placeholder="Paste your plan JSON here..."></textarea>
+    <button class="load-btn" id="loadBtn">Generate Roadmap</button>
+    <div class="load-err" id="loadErr"></div>
+    <div class="load-divider">or try an example</div>
+    <div class="demo-row">
+      <button class="demo-btn" id="demo1"><div class="demo-icon">🎨</div><div class="demo-label">Inspiring Painting</div><div class="demo-type">Local Service · Painter</div></button>
+      <button class="demo-btn" id="demo2"><div class="demo-icon">🧴</div><div class="demo-label">Glow Botanicals</div><div class="demo-type">E-Commerce · Skincare</div></button>
+      <button class="demo-btn" id="demo3"><div class="demo-icon">🎙️</div><div class="demo-label">Sarah Chen</div><div class="demo-type">Personal Brand · Coach</div></button>
+    </div>
+  </div>
+</div>
+
+<div class="roadmap" id="roadmap"></div>
+
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal">
+    <button class="modal-close" id="modalClose">&times;</button>
+    <div class="modal-form" id="modalForm">
+      <div class="modal-icon" id="modalIcon"></div>
+      <h3>Send to <span id="modalService"></span></h3>
+      <p>We'll prepare your <span id="modalFormat"></span> export and send it over. Where should it go?</p>
+      <input class="modal-input" id="modalEmail" type="email" placeholder="you@company.com">
+      <button class="modal-submit" id="modalSubmit">Send My Plan</button>
+    </div>
+    <div class="modal-success" id="modalSuccess">
+      <div class="modal-check">✓</div>
+      <h3>You're all set.</h3>
+      <p>We'll send your <span id="modalFormat2"></span> export shortly. Keep an eye on your inbox.</p>
+    </div>
+  </div>
+</div>
+
+<script>
+const SPOKE_OWN={gbp:'rented',appleMaps:'rented',seoOrganic:'owned',localPack:'rented',generalDir:'rented',industryDir:'rented',facebook:'rented',instagram:'rented',tiktok:'rented',youtube:'rented',linkedin:'rented',x:'rented',pinterest:'rented',nextdoor:'rented',discord:'owned',reddit:'rented',blog:'owned',podcast:'owned',newsletter:'owned',guestContent:'earned',webinars:'owned',courses:'owned',docs:'owned',amazon:'rented',etsy:'rented',faire:'rented',gumroad:'rented',googleSearch:'paid',googleLSA:'paid',googleShopping:'paid',googleDisplay:'paid',metaAds:'paid',tiktokAds:'paid',linkedinAds:'paid',retargeting:'paid',influencerPaid:'paid',programmatic:'paid',email:'owned',sms:'owned',push:'owned',directMail:'owned',phone:'owned',chatbot:'owned',loyalty:'owned',press:'earned',podcastGuest:'earned',speaking:'earned',awards:'earned',wom:'earned',ugc:'earned',reviews:'earned',backlinks:'earned',community:'earned',referral:'shared',affiliate:'shared',coMarketing:'shared',wholesale:'shared',crossPromo:'shared',charityPartner:'shared',tradeAssoc:'shared',integrations:'shared',storefront:'owned',signage:'owned',vehicleWrap:'owned',events:'owned',popups:'owned',print:'owned',merch:'owned'};
+const OWN_LABEL={owned:'You own it',rented:'Platform',earned:'You earn it',paid:'Paid',shared:'Partnership'};
+const SPOKE_VALUE={
+  gbp:'How people find you on Google Maps and local search',
+  phone:'Every marketing channel needs a number to ring',
+  generalDir:'Builds trust with search engines and catches people browsing directories',
+  industryDir:'Where people in your industry go to find and vet providers',
+  googleLSA:'Pay-per-lead ads with a Google Guaranteed badge — highest intent traffic',
+  reviews:'Social proof that turns searchers into callers',
+  seoOrganic:'Free traffic that compounds over time — the long game',
+  email:'Direct line to people who already know you — highest ROI channel',
+  facebook:'Where your past customers are — referrals and community',
+  instagram:'Visual proof of your work — builds trust before the first conversation',
+  googleSearch:'Shows up when people are actively searching for what you do',
+  blog:'Answers the questions your customers are Googling',
+  retargeting:'Brings back people who visited your site but didn\'t convert',
+  referral:'Turns happy customers into a sales channel',
+  sms:'98% open rate — the most direct way to reach someone',
+  nextdoor:'Neighborhood-level visibility where trust is everything',
+  signage:'Every job site is a billboard for your next job',
+  vehicleWrap:'Your trucks are driving through your target market every day',
+  directMail:'Cuts through the digital noise — tangible and memorable',
+  community:'People hire businesses they see giving back',
+  metaAds:'Puts your products in front of the exact right audience',
+  googleShopping:'Your products appear when people are ready to buy',
+  amazon:'Access to millions of shoppers already looking for products like yours',
+  tiktok:'Short video is the fastest way to build brand awareness right now',
+  affiliate:'Other people sell for you — you only pay when it works',
+  newsletter:'Owned audience you can reach anytime without paying a platform',
+  influencerPaid:'Borrows trust from someone your audience already follows',
+  ugc:'Real customers showing real results — more believable than any ad',
+  programmatic:'Automated ads across thousands of websites at scale',
+  pinterest:'Visual discovery engine — people come here to plan purchases',
+  linkedin:'Where professional credibility is built and demonstrated',
+  podcast:'Deep trust-building — an hour of your voice in someone\'s ear',
+  guestContent:'Borrows someone else\'s audience to grow yours',
+  podcastGuest:'Reach new audiences through conversations, not ads',
+  youtube:'Searchable video content that compounds like a blog',
+  speaking:'Positions you as the authority in the room',
+  courses:'Packages your expertise into scalable revenue',
+  press:'Third-party credibility you can\'t buy',
+  gumroad:'Simplest path from idea to revenue for digital products',
+  events:'Face-to-face builds relationships no screen can match',
+  coMarketing:'Doubles your reach by partnering with a complementary brand',
+  charityPartner:'Aligns your brand with a cause your audience cares about',
+  discord:'A community space you own where your audience builds connections',
+  loyalty:'Turns one-time buyers into repeat customers',
+  faire:'Wholesale marketplace that puts your products in retail stores',
+  wholesale:'Gets your products on shelves in front of foot traffic',
+  push:'Instant notifications to people who opted in — high engagement',
+  docs:'Self-serve support that reduces questions and builds confidence',
+  chatbot:'Answers questions and captures leads while you sleep',
+  storefront:'A physical presence builds trust that digital can\'t replicate',
+  popups:'Test a physical presence without the commitment of a lease',
+  print:'Leave-behinds that keep your name on the kitchen counter',
+  merch:'Walking billboards — customers become brand ambassadors',
+  appMktplace:'Puts your product where buyers are already shopping for solutions',
+  integrations:'Embeds your product inside tools your customers already use',
+  tradeAssoc:'Credibility by association — listed alongside established players',
+  awards:'Third-party validation that sets you apart from competitors',
+  wom:'The most trusted marketing channel — nothing beats a personal recommendation',
+  backlinks:'Other sites linking to yours tells Google you\'re worth ranking',
+  tiktokAds:'Reach younger audiences with native video that doesn\'t feel like an ad',
+  linkedinAds:'Precision targeting by job title, company, and industry',
+  googleDisplay:'Visual ads across millions of websites for brand awareness',
+  pinterestAds:'Promoted pins reach people actively planning purchases',
+  redditAds:'Reach niche communities with high engagement',
+  podcastAds:'Audio ads in a high-trust, high-attention environment',
+  medium:'Reach readers on a platform built for long-form content',
+  webinars:'Live education builds authority and captures qualified leads',
+  whitepapers:'Gated content that captures leads and demonstrates expertise',
+  bookshop:'Reach readers who support independent bookselling',
+  crossPromo:'Trade audiences with a complementary brand — free exposure',
+};
+
+const DEMOS={
+demo1:{
+  inputs:{businessModels:['Local Service'],verticals:['Painter'],geoScopes:['local'],businessName:'Inspiring Painting',clientDomain:'inspiringpainting.com',clientEmail:'info@inspiringpainting.com',phone:'(503) 555-0142',address:'Portland, OR',licenseNumber:'CCB# 218493',offerings:['Interior Painting','Exterior Painting','Cabinet Refinishing','Commercial Painting'],serviceArea:['Portland','Lake Oswego','West Linn','Tigard','Beaverton','Hillsboro'],targetAudience:'Homeowners 30-65',budget:'moderate',teamCapacity:'solo',timeline:'standard_6mo'},
+  computed:{primaryConversion:'Call or estimate request',secondaryConversion:'Contact form',conversionPlatform:'Your website',hubPages:['Home','About','Services','Areas Served','Contact','Reviews','Gallery'],totalSpokesInUniverse:103,activeSpokes:33,readySpokes:28,blockedSpokes:5,doneSpokes:0,kpisTrackable:0,kpisDark:52,trackingToolsWired:0},
+  verticalRecommendations:{Painter:{gbpCat:'Painting Contractor',dirs:['Angi','Houzz','Thumbtack','HomeAdvisor','Porch'],social:['Facebook','Instagram','Nextdoor'],paidFocus:'Google Local Services Ads + Search'}},
+  deploymentOrder:[{position:1,id:'gbp',name:'Google Business Profile',status:'ready',timeToValue:'days'},{position:2,id:'phone',name:'Business Phone',status:'ready',timeToValue:'immediate'},{position:3,id:'generalDir',name:'Directory Listings',status:'ready',timeToValue:'days'},{position:4,id:'industryDir',name:'Industry Directories',status:'ready',timeToValue:'days'},{position:5,id:'googleLSA',name:'Google Guaranteed Ads',status:'ready',timeToValue:'days'},{position:6,id:'reviews',name:'Customer Reviews',status:'ready',timeToValue:'weeks'},{position:7,id:'seoOrganic',name:'Search Engine Optimization',status:'ready',timeToValue:'months'},{position:8,id:'email',name:'Email Marketing',status:'ready',timeToValue:'days'},{position:9,id:'facebook',name:'Facebook Page',status:'ready',timeToValue:'days'},{position:10,id:'googleSearch',name:'Google Search Ads',status:'ready',timeToValue:'days'},{position:11,id:'blog',name:'Blog',status:'ready',timeToValue:'months'},{position:12,id:'retargeting',name:'Retargeting Ads',status:'ready',timeToValue:'weeks'},{position:13,id:'referral',name:'Referral Program',status:'ready',timeToValue:'weeks'},{position:14,id:'sms',name:'Text Message Marketing',status:'ready',timeToValue:'days'},{position:15,id:'nextdoor',name:'Nextdoor',status:'ready',timeToValue:'days'},{position:16,id:'signage',name:'Job Site Signage',status:'ready',timeToValue:'days'}],
+  offeringPages:[{page:'Interior Painting'},{page:'Exterior Painting'},{page:'Cabinet Refinishing'},{page:'Commercial Painting'}],
+  areaPages:[{page:'Portland'},{page:'Lake Oswego'},{page:'West Linn'},{page:'Tigard'},{page:'Beaverton'},{page:'Hillsboro'}],
+  crossProductPages:[{page:'Interior Painting in Portland'},{page:'Exterior Painting in Portland'},{page:'Interior Painting in Lake Oswego'},{page:'Cabinet Refinishing in Portland'},{page:'Exterior Painting in Lake Oswego'},{page:'Interior Painting in West Linn'},{page:'Exterior Painting in Beaverton'},{page:'Cabinet Refinishing in Tigard'}],
+  kpis:[{name:'Website Visitors',category:'Website',trackable:false},{name:'Phone Calls',category:'Website',trackable:false},{name:'Form Submissions',category:'Website',trackable:false},{name:'Google Search Ranking',category:'Search',trackable:false},{name:'Google Map Position',category:'Search',trackable:false},{name:'Google Profile Views',category:'Google',trackable:false},{name:'Google Profile Actions',category:'Google',trackable:false},{name:'Ad Clicks',category:'Advertising',trackable:false},{name:'Cost per Lead',category:'Advertising',trackable:false},{name:'Email List Size',category:'Email',trackable:false},{name:'Email Open Rate',category:'Email',trackable:false},{name:'Review Count',category:'Reputation',trackable:false},{name:'Average Rating',category:'Reputation',trackable:false},{name:'New Reviews per Month',category:'Reputation',trackable:false}],
+},
+demo2:{
+  inputs:{businessModels:['E-Commerce / DTC'],verticals:['Beauty / Skincare'],geoScopes:['national'],businessName:'Glow Botanicals',clientDomain:'glowbotanicals.com',clientEmail:'hello@glowbotanicals.com',phone:'',address:'',offerings:['Face Serums','Moisturizers','Cleansers','Body Oils','Gift Sets'],serviceArea:[],targetAudience:'Women 25-45, clean beauty enthusiasts',budget:'moderate',teamCapacity:'small_team',timeline:'standard_6mo'},
+  computed:{primaryConversion:'Purchase',secondaryConversion:'Email signup',conversionPlatform:'Your website',hubPages:['Home','Shop','Product Pages','About / Our Story','FAQ','Contact'],totalSpokesInUniverse:103,activeSpokes:37,readySpokes:30,blockedSpokes:7,doneSpokes:0,kpisTrackable:0,kpisDark:48,trackingToolsWired:0},
+  verticalRecommendations:{'Beauty / Skincare':{dirs:['Amazon','Sephora'],social:['Instagram','TikTok','YouTube'],paidFocus:'Meta Ads + TikTok Ads + Google Shopping'}},
+  deploymentOrder:[{position:1,id:'metaAds',name:'Instagram & Facebook Ads',status:'ready',timeToValue:'days'},{position:2,id:'googleShopping',name:'Google Shopping',status:'ready',timeToValue:'days'},{position:3,id:'email',name:'Email Marketing',status:'ready',timeToValue:'days'},{position:4,id:'seoOrganic',name:'Search Engine Optimization',status:'ready',timeToValue:'months'},{position:5,id:'retargeting',name:'Retargeting Ads',status:'ready',timeToValue:'weeks'},{position:6,id:'amazon',name:'Amazon',status:'ready',timeToValue:'weeks'},{position:7,id:'instagram',name:'Instagram',status:'ready',timeToValue:'days'},{position:8,id:'tiktok',name:'TikTok',status:'ready',timeToValue:'days'},{position:9,id:'affiliate',name:'Affiliate Program',status:'ready',timeToValue:'months'},{position:10,id:'newsletter',name:'Newsletter',status:'ready',timeToValue:'weeks'},{position:11,id:'influencerPaid',name:'Influencer Partnerships',status:'ready',timeToValue:'weeks'},{position:12,id:'ugc',name:'Customer Content',status:'ready',timeToValue:'weeks'},{position:13,id:'programmatic',name:'Display Ads',status:'ready',timeToValue:'weeks'},{position:14,id:'pinterest',name:'Pinterest',status:'ready',timeToValue:'weeks'}],
+  offeringPages:[{page:'Face Serums'},{page:'Moisturizers'},{page:'Cleansers'},{page:'Body Oils'},{page:'Gift Sets'}],
+  areaPages:[],crossProductPages:[],
+  kpis:[{name:'Website Visitors',category:'Website',trackable:false},{name:'Purchases',category:'Website',trackable:false},{name:'Cart Abandonment Rate',category:'Website',trackable:false},{name:'Revenue per Visit',category:'Website',trackable:false},{name:'Google Search Ranking',category:'Search',trackable:false},{name:'Ad Spend Return',category:'Advertising',trackable:false},{name:'Cost per Purchase',category:'Advertising',trackable:false},{name:'Email List Size',category:'Email',trackable:false},{name:'Revenue per Email',category:'Email',trackable:false},{name:'Followers',category:'Social',trackable:false},{name:'Engagement Rate',category:'Social',trackable:false},{name:'Amazon Revenue',category:'Marketplace',trackable:false}],
+},
+demo3:{
+  inputs:{businessModels:['Personal Brand'],verticals:['Coach'],geoScopes:['global'],businessName:'Sarah Chen',clientDomain:'sarahchen.co',clientEmail:'hello@sarahchen.co',phone:'',address:'',offerings:['1:1 Coaching','Group Program','Online Course','Speaking'],serviceArea:[],targetAudience:'Mid-career professionals seeking career transitions',budget:'bootstrapped',teamCapacity:'solo',timeline:'long_term_12mo'},
+  computed:{primaryConversion:'Email signup',secondaryConversion:'Book a call',conversionPlatform:'Your website',hubPages:['Home','About','Work With Me','Speaking','Blog','Contact','Newsletter'],totalSpokesInUniverse:103,activeSpokes:31,readySpokes:26,blockedSpokes:5,doneSpokes:0,kpisTrackable:0,kpisDark:48,trackingToolsWired:0},
+  verticalRecommendations:{Coach:{dirs:['Thumbtack','Yelp','Noomii'],social:['Instagram','LinkedIn','YouTube'],paidFocus:'Meta Ads + Google Search'}},
+  deploymentOrder:[{position:1,id:'instagram',name:'Instagram',status:'ready',timeToValue:'days'},{position:2,id:'linkedin',name:'LinkedIn',status:'ready',timeToValue:'days'},{position:3,id:'newsletter',name:'Newsletter',status:'ready',timeToValue:'weeks'},{position:4,id:'blog',name:'Blog',status:'ready',timeToValue:'months'},{position:5,id:'podcast',name:'Podcast',status:'ready',timeToValue:'months'},{position:6,id:'email',name:'Email Marketing',status:'ready',timeToValue:'days'},{position:7,id:'guestContent',name:'Guest Articles',status:'ready',timeToValue:'weeks'},{position:8,id:'podcastGuest',name:'Podcast Interviews',status:'ready',timeToValue:'weeks'},{position:9,id:'youtube',name:'YouTube',status:'ready',timeToValue:'weeks'},{position:10,id:'speaking',name:'Speaking Engagements',status:'ready',timeToValue:'months'},{position:11,id:'courses',name:'Online Course',status:'ready',timeToValue:'months'},{position:12,id:'metaAds',name:'Instagram & Facebook Ads',status:'ready',timeToValue:'days'},{position:13,id:'affiliate',name:'Affiliate Program',status:'ready',timeToValue:'months'},{position:14,id:'press',name:'Media & Press',status:'ready',timeToValue:'months'}],
+  offeringPages:[{page:'1:1 Coaching'},{page:'Group Program'},{page:'Online Course'},{page:'Speaking'}],
+  areaPages:[],crossProductPages:[],
+  kpis:[{name:'Website Visitors',category:'Website',trackable:false},{name:'Email Signups',category:'Website',trackable:false},{name:'Booking Requests',category:'Website',trackable:false},{name:'Google Search Ranking',category:'Search',trackable:false},{name:'Email List Size',category:'Email',trackable:false},{name:'Email Open Rate',category:'Email',trackable:false},{name:'Followers',category:'Social',trackable:false},{name:'Engagement Rate',category:'Social',trackable:false},{name:'Podcast Downloads',category:'Content',trackable:false},{name:'Course Revenue',category:'Revenue',trackable:false}],
+}
+};
+
+function esc(s){if(!s)return'';const d=document.createElement('div');d.textContent=s;return d.innerHTML;}
+
+function render(data){
+  const i=data.inputs;
+  const c=data.computed;
+  const d=data.deploymentOrder||[];
+  const vr=data.verticalRecommendations||{};
+  const kpis=data.kpis||[];
+  
+  const tlLabel={urgent_3mo:'3 months',standard_6mo:'6 months',long_term_12mo:'12 months'}[i.timeline]||'6 months';
+  const tlMonths={urgent_3mo:3,standard_6mo:6,long_term_12mo:12}[i.timeline]||6;
+  const perMonth=Math.max(1,Math.ceil(d.length/tlMonths));
+  const months=[];
+  for(let x=0;x<d.length;x++){const mi=Math.floor(x/perMonth);if(!months[mi])months[mi]=[];months[mi].push(d[x]);}
+  
+  const vg=s=>`<span class="v">${esc(s)}</span>`;
+  const vb=s=>`<span class="v2">${esc(s)}</span>`;
+  
+  const name=i.businessName||'Your Business';
+  const domain=i.clientDomain||'yourdomain.com';
+  const vert=(i.verticals||[])[0]||'';
+  const model=(i.businessModels||[])[0]||'';
+  const geo=(i.geoScopes||[])[0]||'local';
+  const areas=(i.serviceArea||[]);
+  const offerings=(i.offerings||[]);
+  const audience=i.targetAudience||'your ideal customers';
+  const capLabel={solo:'a solo operator',small_team:'a small team',agency:'a full team'}[i.teamCapacity]||'your team';
+  const first=d[0]?d[0].name:'';
+  const isLocal=geo==='local'||geo==='regional';
+  const areaVars=areas.length?areas.slice(0,3).map(vg).join(', ')+(areas.length>3?`, and ${areas.length-3} more`:''):'your area';
+  const offerVars=offerings.length?offerings.slice(0,3).map(vg).join(', ')+(offerings.length>3?`, and ${offerings.length-3} more`:''):'your services';
+  const vKeys_pre=Object.keys(vr);
+  
+  let h='';
+  
+  h+=`<div class="r-logo">Onit<span class="dot"></span></div>`;
+  
+  h+=`<div class="r-hero">
+    <h1>${esc(name)}</h1>
+    <div class="domain">${esc(domain)}</div>
+    <div class="tags">
+      ${(i.businessModels||[]).map(m=>`<span class="tag">${esc(m)}</span>`).join('')}
+      ${(i.verticals||[]).map(v=>`<span class="tag">${esc(v)}</span>`).join('')}
+      ${(i.geoScopes||[]).map(g=>`<span class="tag">${g.charAt(0).toUpperCase()+g.slice(1)}</span>`).join('')}
+    </div>
+    <div class="export-bar">
+      <span class="export-label">Import plan</span>
+      <button class="export-pill" data-export="notion"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4zM14 14h6v6h-6z"/></svg>Notion</button>
+      <button class="export-pill" data-export="trello"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="18" rx="1"/><rect x="14" y="3" width="7" height="12" rx="1"/></svg>Trello</button>
+      <button class="export-pill" data-export="sheets"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/><line x1="9" y1="3" x2="9" y2="21"/></svg>Google Sheets</button>
+      <button class="export-pill" data-export="asana"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="7" r="4"/><circle cx="5" cy="17" r="4"/><circle cx="19" cy="17" r="4"/></svg>Asana</button>
+      <button class="export-pill" data-export="monday"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="6" cy="8" r="3"/><circle cx="18" cy="8" r="3"/><circle cx="6" cy="16" r="3"/><circle cx="18" cy="16" r="3"/></svg>Monday</button>
+      <button class="export-pill" data-export="pdf"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>PDF</button>
+      <button class="export-pill" data-export="csv"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="16" y2="17"/></svg>CSV</button>
+      <button class="export-pill" data-export="email"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><polyline points="22 4 12 13 2 4"/></svg>Email</button>
+    </div>
+  </div>`;
+  
+  const snapshotLead=isLocal
+    ?`Onit built this plan for ${vg(name)} \u2014 covering ${offerVars} across ${areaVars}. As ${capLabel}, here\u2019s a ${vb(tlLabel)} roadmap with ${vb(c.activeSpokes+' channels')} that Onit will set up and manage.`
+    :geo==='global'
+      ?`Onit built this plan to grow ${vg(name)} globally, reaching ${vg(audience)}. Here\u2019s a ${vb(tlLabel)} roadmap with ${vb(c.activeSpokes+' channels')} that Onit will execute step by step.`
+      :`Onit built this plan to grow ${vg(name)} nationwide, reaching ${vg(audience)}. Here\u2019s a ${vb(tlLabel)} roadmap with ${vb(c.activeSpokes+' channels')} we\u2019ll work through together.`;
+  
+  // Section nav
+  const navItems=[['snapshot','Snapshot'],['goal','Goal'],['website','Website'],['plan','The Plan'],['timeline','Timeline']];
+  if(vKeys_pre.length)navItems.push(['industry','Industry Intel']);
+  navItems.push(['metrics','Metrics'],['profile','Profile']);
+  h+=`<nav class="sec-nav visible" id="secNav">${navItems.map(([id,label])=>`<a href="#sec-${id}">${label}</a>`).join('')}</nav>`;
+
+  h+=`<div class="sec" id="sec-snapshot">
+    <div class="sec-label">The Snapshot</div>
+    <h2>Here\u2019s the plan for ${esc(name)}.</h2>
+    <div class="lead">${snapshotLead}</div>
+    <div class="num-grid">
+      <div class="num-box"><div class="num-val accent">${c.activeSpokes||0}</div><div class="num-lbl">Channels identified</div></div>
+      <div class="num-box"><div class="num-val green">${c.readySpokes||0}</div><div class="num-lbl">Ready to go</div></div>
+      <div class="num-box"><div class="num-val blue">${d.length+1}</div><div class="num-lbl">Steps in plan</div></div>
+      <div class="num-box"><div class="num-val accent">${tlMonths}</div><div class="num-lbl">Month roadmap</div></div>
+    </div>
+    <div class="sec-viz" style="padding:16px 24px;">
+      <div class="channel-ring">
+        <svg width="52" height="52" viewBox="0 0 52 52">
+          <circle cx="26" cy="26" r="20" fill="none" stroke="var(--border)" stroke-width="5"/>
+          <circle cx="26" cy="26" r="20" fill="none" stroke="var(--accent)" stroke-width="5" 
+            stroke-dasharray="${Math.round((c.activeSpokes||0)/103*126)} 126" 
+            stroke-linecap="round" transform="rotate(-90 26 26)" style="filter:drop-shadow(0 0 3px rgba(200,245,64,0.3))"/>
+          <text x="26" y="25" text-anchor="middle" font-family="Unbounded, sans-serif" font-weight="800" font-size="12" fill="var(--accent)">${c.activeSpokes||0}</text>
+          <text x="26" y="35" text-anchor="middle" font-family="Syne Mono, monospace" font-size="6" fill="var(--text-muted)">of 103</text>
+        </svg>
+        <div class="ring-breakdown">
+          <div class="ring-row"><div class="ring-bar" style="width:${Math.round((c.readySpokes||0)/40*60)}px;background:var(--green)"></div>${c.readySpokes||0} ready</div>
+          <div class="ring-row"><div class="ring-bar" style="width:${Math.round((c.blockedSpokes||0)/40*60)}px;background:var(--red)"></div>${c.blockedSpokes||0} blocked</div>
+          <div class="ring-row"><div class="ring-bar" style="width:${Math.round((103-(c.activeSpokes||0))/103*60)}px;background:var(--border)"></div>${103-(c.activeSpokes||0)} not needed</div>
+        </div>
+      </div>
+    </div>
+  </div>`;
+
+  const goalLead=model==='Local Service'
+    ?`When someone in ${areaVars} searches for what ${vg(name)} does, the phone should ring. Onit will set up every channel to make that happen \u2014 starting with the ones that convert fastest.`
+    :model==='E-Commerce / DTC'
+      ?`Onit will build the pipeline that gets ${vg(audience)} to ${vg(domain)} and through checkout. Every channel in this plan is optimized for ${vb(c.primaryConversion?.toLowerCase()||'purchase')}.`
+    :model==='Personal Brand'
+      ?`Onit will build ${vg(name)}\u2019s visibility with ${vg(audience)}, turning discovery into trust and trust into ${vb(c.primaryConversion?.toLowerCase()||'subscribers')}. Here\u2019s the path we\u2019ll execute.`
+    :model==='Nonprofit'
+      ?`Onit will put ${vg(name)}\u2019s mission in front of the people who care most and make it effortless to ${vb(c.primaryConversion?.toLowerCase()||'contribute')}.`
+    :`Onit will build and manage every channel to drive ${vb(c.primaryConversion?.toLowerCase()||'conversions')} for ${vg(name)}.`;
+
+  h+=`<div class="sec" id="sec-goal">
+    <div class="sec-label">The Goal</div>
+    <h2>What we\u2019re building toward.</h2>
+    <div class="lead">${goalLead}</div>
+    <div class="card">
+      <div class="card-row"><span class="card-label">Primary goal</span><span class="card-val">${esc(c.primaryConversion||'\u2014')}</span></div>
+      <div class="card-row"><span class="card-label">Secondary goal</span><span class="card-val">${esc(c.secondaryConversion||'\u2014')}</span></div>
+      <div class="card-row"><span class="card-label">Where it happens</span><span class="card-val">${esc(domain)}</span></div>
+    </div>
+    <div class="sec-viz" id="goalChart">
+      <svg viewBox="0 0 700 310" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="vizGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="var(--accent)" stop-opacity="0.12"/><stop offset="100%" stop-color="var(--accent)" stop-opacity="0"/></linearGradient>
+          <linearGradient id="revGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="var(--green)" stop-opacity="0.10"/><stop offset="100%" stop-color="var(--green)" stop-opacity="0"/></linearGradient>
+        </defs>
+        <text x="350" y="18" text-anchor="middle" font-family="Syne Mono, monospace" font-size="10" letter-spacing="1" fill="var(--text-muted)">${esc(name).toUpperCase()} — ${tlMonths}-MONTH PLAN</text>
+        ${(()=>{
+          const chartL=80,chartR=630,chartT=35,chartB=240;
+          const chartW=chartR-chartL,chartH=chartB-chartT;
+          const totalChannels=d.length+1;
+          let out='';
+          
+          // Grid lines (based on channels)
+          for(let i=0;i<=totalChannels;i+=Math.max(1,Math.ceil(totalChannels/5))){
+            const y=chartB-((i/totalChannels)*chartH);
+            out+=`<line x1="${chartL}" y1="${y}" x2="${chartR}" y2="${y}" stroke="var(--border)" stroke-width="0.5"/>`;
+            out+=`<text x="${chartL-8}" y="${y+3}" text-anchor="end" font-family="Syne Mono, monospace" font-size="8" fill="var(--text-muted)">${i}</text>`;
+          }
+          out+=`<text x="14" y="${chartT+chartH/2}" text-anchor="middle" font-family="Syne Mono, monospace" font-size="8" fill="var(--accent)" transform="rotate(-90 14 ${chartT+chartH/2})">CHANNELS LIVE</text>`;
+          
+          // Right Y axis: qualified leads (compounding from channels)
+          const leadsPerChannel=model==='E-Commerce / DTC'?12:model==='Personal Brand'?6:model==='Nonprofit'?4:8;
+          const leadPts=[];
+          for(let m=0;m<=tlMonths;m++){
+            const x=chartL+m*(chartW/tlMonths);
+            const channelsLive=m===0?1:Math.min(totalChannels, 1+months.slice(0,m).reduce((a,s)=>a+s.length,0));
+            const monthlyLeads=Math.round(channelsLive*leadsPerChannel*(0.2+m*0.15));
+            leadPts.push({x,y:0,leads:monthlyLeads});
+          }
+          const maxLeads=Math.max(...leadPts.map(p=>p.leads));
+          leadPts.forEach(p=>{p.y=chartB-((p.leads/maxLeads)*chartH*0.92);});
+          
+          // Right Y labels
+          const leadTicks=[0,0.25,0.5,0.75,1].map(pct=>Math.round(maxLeads*pct));
+          leadTicks.forEach((v,i)=>{
+            const y=chartB-((v/maxLeads)*chartH*0.92);
+            if(i>0)out+=`<text x="${chartR+8}" y="${y+3}" text-anchor="start" font-family="Syne Mono, monospace" font-size="8" fill="var(--green)">${v}</text>`;
+          });
+          out+=`<text x="${chartR+8}" y="${chartB+3}" text-anchor="start" font-family="Syne Mono, monospace" font-size="8" fill="var(--green)">0</text>`;
+          out+=`<text x="694" y="${chartT+chartH/2}" text-anchor="middle" font-family="Syne Mono, monospace" font-size="8" fill="var(--green)" transform="rotate(90 694 ${chartT+chartH/2})">LEADS / MO</text>`;
+          
+          // Leads fill + line
+          const leadPath='M '+leadPts.map(p=>p.x+' '+p.y).join(' L ');
+          const leadFill=leadPath+` L ${leadPts[leadPts.length-1].x} ${chartB} L ${leadPts[0].x} ${chartB} Z`;
+          out+=`<path d="${leadFill}" fill="url(#revGrad)"/>`;
+          out+=`<path d="${leadPath}" fill="none" stroke="var(--green)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="6 3" opacity="0.7"/>`;
+          
+          // X axis
+          for(let m=0;m<=tlMonths;m++){
+            const x=chartL+m*(chartW/tlMonths);
+            out+=`<text x="${x}" y="${chartB+18}" text-anchor="middle" font-family="Syne Mono, monospace" font-size="8" fill="var(--text-muted)">${m===0?'NOW':'MO '+m}</text>`;
+          }
+          
+          // Plot channel activation points
+          const points=[];
+          let cum=0;
+          cum++;
+          points.push({x:chartL+0.25*(chartW/tlMonths), y:chartB-((cum/totalChannels)*chartH), name:esc(domain), month:0, cum});
+          months.forEach((spokes,mi)=>{
+            spokes.forEach((s,si)=>{
+              cum++;
+              const monthOffset=(mi+0.5+(si*0.4/Math.max(1,spokes.length)));
+              const x=chartL+monthOffset*(chartW/tlMonths);
+              const y=chartB-((cum/totalChannels)*chartH);
+              points.push({x:Math.min(x,chartR), y, name:esc(s.name), month:mi+1, cum});
+            });
+          });
+          
+          // Channel fill + line
+          if(points.length){
+            const fillPath='M '+chartL+' '+chartB+' L '+points.map(p=>p.x+' '+p.y).join(' L ')+' L '+points[points.length-1].x+' '+chartB+' Z';
+            out+=`<path d="${fillPath}" fill="url(#vizGrad)"/>`;
+            const linePath='M '+points.map(p=>p.x+' '+p.y).join(' L ');
+            out+=`<path d="${linePath}" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="filter:drop-shadow(0 0 3px rgba(200,245,64,0.25))"/>`;
+          }
+          
+          // Channel dots with hover
+          points.forEach((p,idx)=>{
+            const own=idx===0?'owned':(SPOKE_OWN[d[idx-1]?.id]||'rented');
+            const dotColor=own==='owned'?'var(--accent)':own==='paid'?'var(--red)':own==='earned'?'var(--orange)':own==='shared'?'var(--purple)':'var(--blue)';
+            out+=`<circle cx="${p.x}" cy="${p.y}" r="4" fill="${dotColor}" class="chart-dot" data-idx="${idx}" style="cursor:pointer;transition:r 0.15s,filter 0.15s;"/>`;
+            out+=`<circle cx="${p.x}" cy="${p.y}" r="14" fill="transparent" class="chart-hover" data-idx="${idx}" style="cursor:pointer;"/>`;
+          });
+          
+          // Tooltip
+          out+=`<g id="chartTooltip" style="display:none;pointer-events:none;">
+            <rect x="0" y="0" width="200" height="42" rx="6" fill="var(--surface)" stroke="var(--border)" stroke-width="1"/>
+            <text x="10" y="17" font-family="Epilogue, sans-serif" font-size="12" font-weight="500" fill="var(--text)" id="ttName"></text>
+            <text x="10" y="33" font-family="Syne Mono, monospace" font-size="9" fill="var(--text-muted)" id="ttDetail"></text>
+          </g>`;
+          
+          // Legend
+          const legendY=chartB+38;
+          out+=`<line x1="120" y1="${legendY}" x2="136" y2="${legendY}" stroke="var(--accent)" stroke-width="2"/><text x="140" y="${legendY+3}" font-family="Syne Mono, monospace" font-size="8" fill="var(--text-muted)">Channels live</text>`;
+          out+=`<line x1="260" y1="${legendY}" x2="276" y2="${legendY}" stroke="var(--green)" stroke-width="1.5" stroke-dasharray="6 3"/><text x="280" y="${legendY+3}" font-family="Syne Mono, monospace" font-size="8" fill="var(--text-muted)">Projected qualified leads</text>`;
+          
+          const legendY2=legendY+16;
+          out+=`<circle cx="128" cy="${legendY2}" r="3" fill="var(--accent)"/><text x="140" y="${legendY2+3}" font-family="Syne Mono, monospace" font-size="7" fill="var(--text-muted)">Owned</text>`;
+          out+=`<circle cx="200" cy="${legendY2}" r="3" fill="var(--blue)"/><text x="210" y="${legendY2+3}" font-family="Syne Mono, monospace" font-size="7" fill="var(--text-muted)">Platform</text>`;
+          out+=`<circle cx="280" cy="${legendY2}" r="3" fill="var(--red)"/><text x="290" y="${legendY2+3}" font-family="Syne Mono, monospace" font-size="7" fill="var(--text-muted)">Paid</text>`;
+          out+=`<circle cx="340" cy="${legendY2}" r="3" fill="var(--orange)"/><text x="350" y="${legendY2+3}" font-family="Syne Mono, monospace" font-size="7" fill="var(--text-muted)">Earned</text>`;
+          out+=`<circle cx="410" cy="${legendY2}" r="3" fill="var(--purple)"/><text x="420" y="${legendY2+3}" font-family="Syne Mono, monospace" font-size="7" fill="var(--text-muted)">Partnership</text>`;
+          
+          return out;
+        })()}
+      </svg>
+    </div>
+  </div>`;
+
+  const op=data.offeringPages||[];
+  const ap=data.areaPages||[];
+  const cp=data.crossProductPages||[];
+  const corePages=(c.hubPages||[]).filter(p=>{
+    if(op.length&&(p.includes('Service')||p.includes('Product')))return false;
+    if(ap.length&&p.includes('Area'))return false;
+    return true;
+  });
+  const totalPages=corePages.length+op.length+ap.length+cp.length;
+  
+  const siteLead=isLocal&&ap.length&&op.length
+    ?`Onit will build ${vg(domain)} with ${vb(totalPages+' pages')} \u2014 dedicated pages for each service and each area ${vg(name)} serves. When someone searches \u201C${esc(offerings[0]||'your service')} in ${esc(areas[0]||'your city')},\u201D this site will be what they find.`
+    :op.length
+      ?`Onit will build ${vg(domain)} with a page for every product: ${offerVars}. Each page is designed to rank in search and convert visitors into buyers.`
+    :`Onit will build ${vg(domain)} as ${vg(name)}\u2019s home base \u2014 ${vb(totalPages+' pages')} that every other channel in this plan points back to.`;
+
+  h+=`<div class="sec" id="sec-website">
+    <div class="sec-label">Your Website</div>
+    <h2>${esc(domain)}</h2>
+    <div class="lead">${siteLead}</div>
+    <div class="page-list">`;
+  // Page icons (inline SVG)
+  const icoPage='<svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><line x1="10" y1="9" x2="8" y2="9"/></svg>';
+  const icoPin='<svg viewBox="0 0 24 24"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>';
+  const icoSearch='<svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>';
+  const icoTag='<svg viewBox="0 0 24 24"><path d="M12 2 2 7l10 5 10-5-10-5Z"/><path d="m2 17 10 5 10-5"/><path d="m2 12 10 5 10-5"/></svg>';
+
+  let pageNum=1;
+  corePages.forEach(p=>{h+=`<div class="page-item type-core"><span class="page-num">${pageNum++}</span><span class="page-icon">${icoPage}</span>${esc(p)}</div>`;});
+  op.forEach(p=>{h+=`<div class="page-item type-offer"><span class="page-num">${pageNum++}</span><span class="page-icon">${icoTag}</span>${esc(p.page)}</div>`;});
+  ap.forEach(p=>{h+=`<div class="page-item type-area"><span class="page-num">${pageNum++}</span><span class="page-icon">${icoPin}</span>${esc(p.page)}</div>`;});
+  h+=`</div>`;
+  
+  if(cp.length){
+    h+=`<div style="margin-top:20px"><div class="card"><h4>Search landing pages (${cp.length})</h4>
+    <div style="font-size:13px;color:var(--text-muted);margin-bottom:10px;font-weight:300">Pages that target what people actually search \u2014 like ${vg(cp[0]?.page||'')}</div>
+    <div class="page-list">`;
+    cp.slice(0,8).forEach(p=>{h+=`<div class="page-item type-search"><span class="page-num">${pageNum++}</span><span class="page-icon">${icoSearch}</span>${esc(p.page)}</div>`;});
+    if(cp.length>8)h+=`<div style="font-size:13px;color:var(--text-muted);padding:8px 0 0 28px">+ ${cp.length-8} more pages</div>`;
+    h+=`</div></div></div>`;
+  }
+  // Map for local businesses
+  if(isLocal&&areas.length){
+    h+=`<div class="map-container" id="roadmapMap"><div class="map-label">${esc(name)} \u2014 ${areas.length} service area${areas.length>1?'s':''}</div></div>`;
+  }
+  h+=`</div>`;
+  
+  const hasWebsite=c.doneSpokes>0||(i.existingAssets||[]).includes('website');
+  const step0Copy=hasWebsite
+    ?'Your site exists but needs to convert. Onit will audit, rebuild, or optimize it before driving any traffic to it.'
+    :'Every channel in this plan points here. Onit builds this first \u2014 live in 24 hours \u2014 before activating anything else.';
+  const totalSteps=d.length+1;
+
+  const planLead=isLocal
+    ?`Onit will work through ${vb(totalSteps+' steps')} for ${vg(name)}, starting with the website. Nothing else runs until the home base is ready to convert visitors from ${areaVars}.`
+    :model==='E-Commerce / DTC'
+      ?`Onit will execute ${vb(totalSteps+' steps')} for ${vg(name)}. The store comes first \u2014 then paid channels drive traffic to it. Organic and community layer on for compounding growth.`
+    :model==='Personal Brand'
+      ?`Onit will build ${vg(name)}\u2019s presence in ${vb(totalSteps+' steps')}. The website comes first as your home base, then audience platforms, content, and monetization \u2014 each step builds on the one before it.`
+    :`Onit will execute ${vb(totalSteps+' steps')} for ${vg(name)}. ${vg(domain)} comes first \u2014 then every channel after it drives traffic back.`;
+
+  h+=`<div class="sec" id="sec-plan">
+    <div class="sec-label">The Plan</div>
+    <h2>What Onit will do for ${esc(name)}.</h2>
+    <div class="lead">${planLead}</div>
+    <div class="step-card">
+      <div class="step">
+        <div class="step-num">0</div>
+        <div><div class="step-name">${esc(domain)}</div><div class="step-detail">${step0Copy}</div></div>
+        <div class="step-badge now">Start here</div>
+      </div>
+    </div>`;
+  d.forEach((s,idx)=>{
+    const phase=idx<5?'now':idx<10?'next':'later';
+    const phaseLabel=idx<5?'Start here':idx<10?'Up next':'Later';
+    const why=SPOKE_VALUE[s.id]||'';
+    h+=`<div class="step">
+      <div class="step-num">${s.position}</div>
+      <div><div class="step-name">${esc(s.name)}</div><div class="step-detail">${why}</div></div>
+      <div class="step-badge ${phase}">${phaseLabel}</div>
+    </div>`;
+  });
+  h+=`</div>`;
+  
+  if(months.length){
+    const tlLead=`Onit starts with ${vg(domain)} in the first week, then works through ${vg(name)}\u2019s ${vb(d.length+' channels')} over ${vb(months.length+' months')}. Month 1 lays the foundation \u2014 each month after builds on what\u2019s already working.`;
+
+    h+=`<div class="sec" id="sec-timeline">
+      <div class="sec-label">Month by Month</div>
+      <h2>${esc(name)}\u2019s ${esc(tlLabel)} roadmap.</h2>
+      <div class="lead">${tlLead}</div>`;
+    months.forEach((spokes,mi)=>{
+      h+=`<div class="month">
+        <div class="month-head">Month ${mi+1}</div>
+        <div class="month-sub">${mi===0?'Website + ':''}${spokes.length} channel${spokes.length>1?'s':''} Onit will activate</div>`;
+      if(mi===0){h+=`<div class="month-item"><span class="own-tag owned">You own it</span><span style="color:var(--accent);font-weight:500">${esc(domain)}</span></div>`;}
+      spokes.forEach(s=>{
+        const own=SPOKE_OWN[s.id]||'rented';
+        h+=`<div class="month-item"><span class="own-tag ${own}">${OWN_LABEL[own]||own}</span>${esc(s.name)}</div>`;
+      });
+      h+=`</div>`;
+    });
+    h+=`</div>`;
+  }
+  
+  const vKeys=Object.keys(vr);
+  if(vKeys.length){
+    const vertRecLead=isLocal
+      ?`When ${vg(audience)} in ${areaVars} are looking for what ${vg(name)} does, they search specific platforms. Onit will make sure ${vg(name)} shows up on every one.`
+      :`${vg(audience)} find businesses like ${vg(name)} in specific places. Onit will build your presence on the platforms that matter most.`;
+    
+    h+=`<div class="sec" id="sec-industry">
+      <div class="sec-label">Industry Intel</div>
+      <h2>What works for ${vKeys.map(esc).join(' & ')}.</h2>
+      <div class="lead">${vertRecLead}</div>`;
+    vKeys.forEach(vk=>{
+      const v=vr[vk];
+      if(v.gbpCat){h+=`<div class="card"><h4>Google Business category</h4><div class="card-row"><span class="card-label">Onit will list ${esc(name)} as</span><span class="card-val">${esc(v.gbpCat)}</span></div></div>`;}
+      if(v.dirs){h+=`<div class="card"><h4>Onit will list ${esc(name)} on</h4><div class="pills">${v.dirs.map(d=>`<span class="pill">${esc(d)}</span>`).join('')}</div></div>`;}
+      if(v.social){h+=`<div class="card"><h4>Best platforms for ${esc(name)}</h4>`;v.social.forEach((s,idx)=>{h+=`<div class="card-row"><span class="card-label">#${idx+1}</span><span class="card-val">${esc(s)}</span></div>`;});h+=`</div>`;}
+      if(v.paidFocus){h+=`<div class="card"><h4>Where Onit will run ads</h4><div class="card-row"><span class="card-label">Recommended</span><span class="card-val">${esc(v.paidFocus)}</span></div></div>`;}
+    });
+    h+=`</div>`;
+  }
+  
+  if(kpis.length){
+    const trackable=kpis.filter(k=>k.trackable).length;
+    const dark=kpis.filter(k=>!k.trackable).length;
+    const measLead=dark===kpis.length
+      ?`${vg(name)} isn\u2019t tracking any of these yet \u2014 that\u2019s normal. Onit will install the tracking tools as each channel goes live so nothing runs without measurement.`
+      :dark
+        ?`${vg(name)} is tracking ${vb(trackable+'')} of ${vb(kpis.length+'')} metrics. Onit will wire the remaining ${vb(dark+'')} as new channels come online.`
+      :`${vg(name)} is tracking all ${vb(kpis.length+'')} metrics. Onit will monitor trends and optimize.`;
+
+    h+=`<div class="sec" id="sec-metrics">
+      <div class="sec-label">Measurement</div>
+      <h2>How we\u2019ll know it\u2019s working.</h2>
+      <div class="lead">${measLead}</div>`;
+    const cats=[...new Set(kpis.map(k=>k.category))];
+    cats.forEach(cat=>{
+      const items=kpis.filter(k=>k.category===cat);
+      h+=`<div class="kpi-group"><div class="kpi-group-head">${esc(cat)}</div>`;
+      items.forEach(k=>{h+=`<div class="kpi-item"><span>${esc(k.name)}</span><span class="${k.trackable?'kpi-on':'kpi-off'}">${k.trackable?'Tracking':'Not yet'}</span></div>`;});
+      h+=`</div>`;
+    });
+    h+=`</div>`;
+  }
+  
+  h+=`<div class="sec" id="sec-profile">
+    <div class="sec-label">Your Profile</div>
+    <h2>${esc(name)} at a glance.</h2>`;
+  if(i.offerings?.length){h+=`<div class="card"><h4>What ${esc(name)} offers</h4><div class="pills">${i.offerings.map(o=>`<span class="pill">${esc(o)}</span>`).join('')}</div></div>`;}
+  if(i.serviceArea?.length){h+=`<div class="card"><h4>Where ${esc(name)} serves</h4><div class="pills">${i.serviceArea.map(a=>`<span class="pill">${esc(a)}</span>`).join('')}</div></div>`;}
+  if(i.targetAudience){h+=`<div class="card"><h4>Who ${esc(name)} serves</h4><div style="font-size:15px;color:var(--text-dim);font-weight:300">${esc(i.targetAudience)}</div></div>`;}
+  h+=`<div class="card"><h4>Contact</h4>`;
+  if(i.clientEmail)h+=`<div class="card-row"><span class="card-label">Email</span><span class="card-val">${esc(i.clientEmail)}</span></div>`;
+  if(i.phone)h+=`<div class="card-row"><span class="card-label">Phone</span><span class="card-val">${esc(i.phone)}</span></div>`;
+  if(i.licenseNumber)h+=`<div class="card-row"><span class="card-label">License</span><span class="card-val">${esc(i.licenseNumber)}</span></div>`;
+  h+=`</div></div>`;
+  
+  h+=`<div class="cta">
+    <h2>Onit is ready to build this.</h2>
+    <p>${esc(domain)} live in 24 hours. Then Onit works through this roadmap month by month \u2014 ${esc(name)} stays focused on the business.</p>
+    <a href="https://askonit.com" class="cta-btn">Get Started</a>
+  </div>`;
+  
+  h+=`<div class="r-footer">
+    <div class="logo">Onit<span class="dot"></span></div>
+    <div class="date">Generated ${new Date().toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'})}</div>
+  </div>`;
+  
+  document.getElementById('roadmap').innerHTML=h;
+  
+  // Chart hover interactions
+  const chartSvg=document.querySelector('#goalChart svg');
+  if(chartSvg){
+    const chartNames=[domain].concat(d.map(s=>s.name));
+    const dots=chartSvg.querySelectorAll('.chart-dot');
+    const hovers=chartSvg.querySelectorAll('.chart-hover');
+    const tooltip=chartSvg.querySelector('#chartTooltip');
+    const ttName=chartSvg.querySelector('#ttName');
+    const ttDetail=chartSvg.querySelector('#ttDetail');
+    function showTip(idx,cx,cy){
+      if(!chartNames[idx])return;
+      ttName.textContent=chartNames[idx];
+      ttDetail.textContent=(idx===0?'Step 0 — Website':'Step '+idx)+' of '+chartNames.length;
+      let tx=cx+12,ty=cy-26;
+      if(tx>520)tx=cx-192;
+      if(ty<30)ty=cy+12;
+      tooltip.setAttribute('transform','translate('+tx+','+ty+')');
+      tooltip.style.display='block';
+      dots[idx].setAttribute('r','7');
+    }
+    function hideTip(idx){tooltip.style.display='none';if(dots[idx])dots[idx].setAttribute('r','4');}
+    hovers.forEach(hv=>{
+      const idx=parseInt(hv.dataset.idx);
+      const dot=dots[idx];
+      hv.addEventListener('mouseenter',()=>showTip(idx,parseFloat(dot.getAttribute('cx')),parseFloat(dot.getAttribute('cy'))));
+      hv.addEventListener('mouseleave',()=>hideTip(idx));
+      hv.addEventListener('touchstart',e=>{e.preventDefault();showTip(idx,parseFloat(dot.getAttribute('cx')),parseFloat(dot.getAttribute('cy')));setTimeout(()=>hideTip(idx),2000);});
+    });
+  }
+  
+  // Initialize map if container exists
+  const mapEl=document.getElementById('roadmapMap');
+  if(mapEl&&typeof L!=='undefined'){
+    const mapAreas=i.serviceArea||[];
+    const addr=i.address||'';
+    const searchTerms=mapAreas.length?mapAreas:addr?[addr]:[];
+    if(searchTerms.length){
+      const map=L.map('roadmapMap',{scrollWheelZoom:false,zoomControl:true,attributionControl:false}).setView([45.5,-122.6],10);
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:16}).addTo(map);
+      const markers=[];
+      const greenIcon=L.divIcon({html:'<div style="width:12px;height:12px;background:#c8f540;border-radius:50%;border:2px solid #0A0A0A;box-shadow:0 0 8px rgba(200,245,64,0.4);"></div>',iconSize:[12,12],iconAnchor:[6,6],className:''});
+      let loaded=0;
+      searchTerms.forEach(term=>{
+        fetch('https://nominatim.openstreetmap.org/search?format=json&q='+encodeURIComponent(term+(i.address?', '+i.address:'')))
+          .then(r=>r.json()).then(results=>{
+            if(results&&results[0]){
+              const lat=parseFloat(results[0].lat);
+              const lon=parseFloat(results[0].lon);
+              const m=L.marker([lat,lon],{icon:greenIcon}).addTo(map);
+              m.bindTooltip(term,{permanent:false,direction:'top',className:'map-tooltip',offset:[0,-8]});
+              markers.push(m);
+            }
+            loaded++;
+            if(loaded===searchTerms.length&&markers.length){
+              const group=L.featureGroup(markers);
+              map.fitBounds(group.getBounds().pad(0.15));
+            }
+          }).catch(()=>{loaded++;});
+      });
+    }
+  }
+  
+  // Scroll observer for nav highlights
+  const nav=document.getElementById('secNav');
+  if(nav){
+    const links=nav.querySelectorAll('a');
+    const sections=[];
+    links.forEach(a=>{const id=a.getAttribute('href').slice(1);const el=document.getElementById(id);if(el)sections.push({el,a});});
+    const obs=new IntersectionObserver(entries=>{
+      entries.forEach(e=>{
+        if(e.isIntersecting){
+          links.forEach(a=>a.classList.remove('active'));
+          const match=sections.find(s=>s.el===e.target);
+          if(match)match.a.classList.add('active');
+        }
+      });
+    },{rootMargin:'-20% 0px -70% 0px'});
+    sections.forEach(s=>obs.observe(s.el));
+    // Smooth scroll
+    links.forEach(a=>{a.onclick=e=>{e.preventDefault();const id=a.getAttribute('href').slice(1);document.getElementById(id)?.scrollIntoView({behavior:'smooth',block:'start'});};});
+  }
+  
+  // Wire export pills
+  const exportLabels={notion:'Notion',trello:'Trello',sheets:'Google Sheets',asana:'Asana',monday:'Monday.com',pdf:'PDF',csv:'CSV',email:'Email'};
+  const exportFormats={notion:'Notion project',trello:'Trello board',sheets:'Google Sheets spreadsheet',asana:'Asana project',monday:'Monday.com board',pdf:'PDF document',csv:'CSV file',email:'email summary'};
+  document.querySelectorAll('.export-pill').forEach(btn=>{
+    btn.onclick=()=>{
+      const type=btn.dataset.export;
+      document.getElementById('modalIcon').textContent={notion:'📋',trello:'📌',sheets:'📊',asana:'✅',monday:'📅',pdf:'📄',csv:'📑',email:'📧'}[type]||'📎';
+      document.getElementById('modalService').textContent=exportLabels[type]||type;
+      document.getElementById('modalFormat').textContent=exportFormats[type]||type;
+      document.getElementById('modalFormat2').textContent=exportFormats[type]||type;
+      document.getElementById('modalForm').classList.remove('hide');
+      document.getElementById('modalSuccess').classList.remove('show');
+      document.getElementById('modalEmail').value='';
+      document.getElementById('modalOverlay').classList.add('open');
+    };
+  });
+}
+
+// Modal handlers (global, wired once)
+document.getElementById('modalClose').onclick=()=>document.getElementById('modalOverlay').classList.remove('open');
+document.getElementById('modalOverlay').onclick=e=>{if(e.target===e.currentTarget)e.currentTarget.classList.remove('open');};
+document.getElementById('modalSubmit').onclick=()=>{
+  const email=document.getElementById('modalEmail').value.trim();
+  if(!email||!email.includes('@')){document.getElementById('modalEmail').style.borderColor='var(--red)';return;}
+  // TODO: POST email + export type + plan JSON to endpoint
+  document.getElementById('modalForm').classList.add('hide');
+  document.getElementById('modalSuccess').classList.add('show');
+  setTimeout(()=>{document.getElementById('modalOverlay').classList.remove('open');},2500);
+};
+
+function loadPlan(json){
+  try{
+    const data=typeof json==='string'?JSON.parse(json):json;
+    if(!data.inputs)throw new Error('Missing inputs');
+    document.getElementById('loadScreen').style.display='none';
+    document.getElementById('roadmap').style.display='block';
+    render(data);
+    try{localStorage.setItem('hubspoke_roadmap',JSON.stringify(data));}catch(e){}
+  }catch(e){
+    document.getElementById('loadErr').textContent='Could not read that JSON — '+e.message;
+  }
+}
+
+document.getElementById('loadBtn').onclick=()=>{
+  const v=document.getElementById('jsonInput').value.trim();
+  if(!v){document.getElementById('loadErr').textContent='Paste your plan first.';return;}
+  loadPlan(v);
+};
+document.getElementById('demo1').onclick=()=>loadPlan(DEMOS.demo1);
+document.getElementById('demo2').onclick=()=>loadPlan(DEMOS.demo2);
+document.getElementById('demo3').onclick=()=>loadPlan(DEMOS.demo3);
+
+// Auto-load from localStorage or URL
+const urlP=new URLSearchParams(window.location.search).get('plan');
+if(urlP){try{loadPlan(atob(urlP));}catch(e){}}
+else{const s=localStorage.getItem('hubspoke_roadmap');if(s)try{loadPlan(s);}catch(e){localStorage.removeItem('hubspoke_roadmap');}}
+</script>
+</body>
+</html>
