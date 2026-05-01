@@ -567,6 +567,72 @@ function renderLeft(){
 // ═══════════════════════════════════════════════════════════════
 // RENDER RIGHT
 // ═══════════════════════════════════════════════════════════════
+function buildExportJSON(pm){
+  const activeList=getActiveSpokes();
+  const spokeDetails=activeList.map(id=>{
+    const s=findSpoke(id);const st=getSpokeStatus(id);
+    const ttv=SPOKE_TTV[id]||null;
+    const kpis=SPOKE_KPIS[id]||[];
+    return{id,name:s?.n,ownership:s?.o,category:s?.cat,status:st.st,blockedBy:st.reason||null,timeToValue:ttv,relatedKPIs:kpis,cost:SPOKE_COST[id]||1,capacityReq:SPOKE_CAP[id]||1};
+  });
+  const conv=CONVERSIONS[pm];
+  const hubPages=(HUB_PAGES[pm]||[]).map(p=>p.page);
+  const deployOrder=(DO[pm]||[]).map((id,i)=>{const s=findSpoke(id);const st=getSpokeStatus(id);return{position:i+1,id,name:s?.n,status:st.st,timeToValue:SPOKE_TTV[id]||null};});
+  const kpiStatus=KPIS.map(k=>{const missing=k.req.filter(r=>!S.tracking[r]);return{id:k.id,name:k.n,category:k.cat,trackable:!missing.length,requires:k.req,missing};});
+  const trackingStatus={};TRACKING_INFRA.forEach(t=>{trackingStatus[t.id]={name:t.n,wired:!!S.tracking[t.id]};});
+  const vertRecs={};
+  S.verticals.forEach(vt=>{S.models.forEach(m=>{const vm=(VERT_MAP[m]||{})[vt];if(vm)vertRecs[vt]=vm;});});
+  return{
+    meta:{framework:'Hub & Spoke',version:'v3',exported:new Date().toISOString()},
+    inputs:{
+      businessModels:S.models.map(m=>MODEL_LABELS[m]),
+      verticals:S.verticals,
+      geoScopes:S.geoScopes,
+      businessName:S.businessName||null,
+      clientDomain:S.clientDomain||null,
+      clientEmail:S.clientDomain?'info@'+S.clientDomain:null,
+      phone:S.phone||null,
+      address:S.address||null,
+      licenseNumber:S.licenseNumber||null,
+      userEmail:S.userEmail||null,
+      recipientEmail:S.recipientEmail||null,
+      offerings:S.offerings,
+      serviceArea:S.serviceArea,
+      targetAudience:S.targetAudience||null,
+      budget:['','bootstrapped','moderate','significant'][S.budget],
+      teamCapacity:['','solo','small_team','agency'][S.teamCapacity],
+      timeline:['','urgent_3mo','standard_6mo','long_term_12mo'][S.timeline]
+    },
+    computed:{
+      primaryConversion:conv?.primary||null,
+      secondaryConversion:conv?.secondary||null,
+      conversionPlatform:conv?.platform||null,
+      hubPages,
+      totalSpokesInUniverse:CATS.reduce((s,c)=>s+c.spokes.length,0),
+      activeSpokes:activeList.length,
+      readySpokes:spokeDetails.filter(s=>s.status==='ready').length,
+      blockedSpokes:spokeDetails.filter(s=>s.status==='blocked').length,
+      doneSpokes:spokeDetails.filter(s=>s.status==='done').length,
+      kpisTrackable:kpiStatus.filter(k=>k.trackable).length,
+      kpisDark:kpiStatus.filter(k=>!k.trackable).length,
+      trackingToolsWired:Object.values(S.tracking).filter(Boolean).length,
+    },
+    verticalRecommendations:Object.keys(vertRecs).length?vertRecs:null,
+    spokes:spokeDetails,
+    deploymentOrder:deployOrder,
+    kpis:kpiStatus,
+    trackingInfrastructure:trackingStatus,
+    offeringPages:S.offerings.map(o=>({page:o,type:'offering_detail'})),
+    areaPages:S.serviceArea.map(a=>({page:a,type:'area_landing'})),
+    crossProductPages:S.offerings.length&&S.serviceArea.length?S.offerings.flatMap(o=>S.serviceArea.map(a=>({page:`${o} in ${a}`,type:'seo_cross_product'}))):[],
+    taskProgress:deployOrder.map(d=>{const tasks=SPOKE_TASKS[d.id]||[];const done=tasks.filter((_,i)=>S.taskState[d.id]&&S.taskState[d.id][i]).length;return{spoke:d.id,name:d.name,total:tasks.length,completed:done,pct:tasks.length?Math.round(done/tasks.length*100):0};}).filter(t=>t.total>0)
+  };
+}
+function openRoadmapWithPlan(){
+  const jsonStr=JSON.stringify(buildExportJSON(primaryModel()));
+  location.href='/roadmap?plan='+btoa(unescape(encodeURIComponent(jsonStr)));
+}
+
 function renderRight(){
   const active=getActiveSpokes();const total=CATS.reduce((s,c)=>s+c.spokes.length,0);
   const oc={};active.forEach(id=>{const s=findSpoke(id);if(s)oc[s.o]=(oc[s.o]||0)+1;});
@@ -821,72 +887,7 @@ function renderRight(){
     rc.innerHTML=h;
 
   }else if(S.tab==='export'){
-    // Build full computed state as JSON
-    const activeList=getActiveSpokes();
-    const spokeDetails=activeList.map(id=>{
-      const s=findSpoke(id);const st=getSpokeStatus(id);
-      const ttv=SPOKE_TTV[id]||null;
-      const kpis=SPOKE_KPIS[id]||[];
-      return{id,name:s?.n,ownership:s?.o,category:s?.cat,status:st.st,blockedBy:st.reason||null,timeToValue:ttv,relatedKPIs:kpis,cost:SPOKE_COST[id]||1,capacityReq:SPOKE_CAP[id]||1};
-    });
-    const conv=CONVERSIONS[pm];
-    const hubPages=(HUB_PAGES[pm]||[]).map(p=>p.page);
-    const deployOrder=(DO[pm]||[]).map((id,i)=>{const s=findSpoke(id);const st=getSpokeStatus(id);return{position:i+1,id,name:s?.n,status:st.st,timeToValue:SPOKE_TTV[id]||null};});
-    const kpiStatus=KPIS.map(k=>{const missing=k.req.filter(r=>!S.tracking[r]);return{id:k.id,name:k.n,category:k.cat,trackable:!missing.length,requires:k.req,missing};});
-    const trackingStatus={};TRACKING_INFRA.forEach(t=>{trackingStatus[t.id]={name:t.n,wired:!!S.tracking[t.id]};});
-    
-    // Vertical recs
-    const vertRecs={};
-    S.verticals.forEach(vt=>{S.models.forEach(m=>{const vm=(VERT_MAP[m]||{})[vt];if(vm)vertRecs[vt]=vm;});});
-
-    const exportObj={
-      meta:{framework:'Hub & Spoke',version:'v3',exported:new Date().toISOString()},
-      inputs:{
-        businessModels:S.models.map(m=>MODEL_LABELS[m]),
-        verticals:S.verticals,
-        geoScopes:S.geoScopes,
-        businessName:S.businessName||null,
-        clientDomain:S.clientDomain||null,
-        clientEmail:S.clientDomain?'info@'+S.clientDomain:null,
-        phone:S.phone||null,
-        address:S.address||null,
-        licenseNumber:S.licenseNumber||null,
-        userEmail:S.userEmail||null,
-        recipientEmail:S.recipientEmail||null,
-        offerings:S.offerings,
-        serviceArea:S.serviceArea,
-        targetAudience:S.targetAudience||null,
-        budget:['','bootstrapped','moderate','significant'][S.budget],
-        teamCapacity:['','solo','small_team','agency'][S.teamCapacity],
-        timeline:['','urgent_3mo','standard_6mo','long_term_12mo'][S.timeline]
-      },
-      computed:{
-        primaryConversion:conv?.primary||null,
-        secondaryConversion:conv?.secondary||null,
-        conversionPlatform:conv?.platform||null,
-        hubPages,
-        totalSpokesInUniverse:CATS.reduce((s,c)=>s+c.spokes.length,0),
-        activeSpokes:activeList.length,
-        readySpokes:spokeDetails.filter(s=>s.status==='ready').length,
-        blockedSpokes:spokeDetails.filter(s=>s.status==='blocked').length,
-        doneSpokes:spokeDetails.filter(s=>s.status==='done').length,
-        kpisTrackable:kpiStatus.filter(k=>k.trackable).length,
-        kpisDark:kpiStatus.filter(k=>!k.trackable).length,
-        trackingToolsWired:Object.values(S.tracking).filter(Boolean).length,
-      },
-      verticalRecommendations:Object.keys(vertRecs).length?vertRecs:null,
-      spokes:spokeDetails,
-      deploymentOrder:deployOrder,
-      kpis:kpiStatus,
-      trackingInfrastructure:trackingStatus,
-      offeringPages:S.offerings.map(o=>({page:o,type:'offering_detail'})),
-      areaPages:S.serviceArea.map(a=>({page:a,type:'area_landing'})),
-      crossProductPages:S.offerings.length&&S.serviceArea.length?S.offerings.flatMap(o=>S.serviceArea.map(a=>({page:`${o} in ${a}`,type:'seo_cross_product'}))):[], 
-      taskProgress:deployOrder.map(d=>{const tasks=SPOKE_TASKS[d.id]||[];const done=tasks.filter((_,i)=>S.taskState[d.id]&&S.taskState[d.id][i]).length;return{spoke:d.id,name:d.name,total:tasks.length,completed:done,pct:tasks.length?Math.round(done/tasks.length*100):0};}).filter(t=>t.total>0)
-    };
-    
-    const jsonStr=JSON.stringify(exportObj,null,2);
-    
+    const jsonStr=JSON.stringify(buildExportJSON(pm),null,2);
     let h=`<div class="section-head">Export</div>
     <p class="section-intro">Full computed state as JSON. Copy and use as input for any downstream system, agent, or document generator.</p>
     <button class="copy-btn" id="openRoadmap">Open Roadmap →</button>
@@ -894,7 +895,7 @@ function renderRight(){
     <button class="copy-btn" id="resetState" style="background:var(--red);margin-left:8px;">Reset All</button>
     <div class="json-box" id="jsonOutput">${esc(jsonStr)}</div>`;
     rc.innerHTML=h;
-    document.getElementById('openRoadmap').onclick=()=>{const p=btoa(unescape(encodeURIComponent(jsonStr)));location.href='/roadmap?plan='+p;};
+    document.getElementById('openRoadmap').onclick=openRoadmapWithPlan;
     document.getElementById('copyJson').onclick=()=>{navigator.clipboard.writeText(jsonStr).then(()=>{document.getElementById('copyJson').textContent='Copied!';setTimeout(()=>{document.getElementById('copyJson').textContent='Copy JSON';},1500);});};
     document.getElementById('resetState').onclick=()=>{if(confirm('Reset all inputs?')){localStorage.removeItem('hubspoke_v3');location.reload();}};
 
@@ -1018,18 +1019,20 @@ ${top5}`;
 
     const emailSubject=`Intake: ${bName} — ${modelsStr}`;
 
-    h+=`<div style="margin-top:24px"><div class="section-head" style="font-size:16px">Email Draft</div>
-    <p class="section-intro">Copy this email. Wire your own send endpoint later.</p>
-    <button class="copy-btn" id="copySubject">Copy Subject</button>
-    <button class="copy-btn" id="copyEmail">Copy Email Body</button>
+    h+=`<div style="margin-top:24px"><div class="section-head" style="font-size:16px">Finalize</div>
+    <p class="section-intro">View the customer-facing roadmap or copy the intake email for your service provider.</p>
+    <button class="copy-btn" id="viewRoadmap">View Roadmap →</button>
+    <button class="copy-btn" id="copySubject" style="margin-left:8px;">Copy Subject</button>
+    <button class="copy-btn" id="copyEmail" style="margin-left:8px;">Copy Email Body</button>
     <div class="email-draft">
       <div class="em-to">To: ${esc(recipient)}</div>
       <div class="em-subject">Subject: ${esc(emailSubject)}</div>
       <div class="em-body">${esc(emailBody)}</div>
     </div></div>`;
-    
+
     rc.innerHTML=h;
     document.getElementById('backToplan').onclick=()=>{S.tab='formula';renderRight();};
+    document.getElementById('viewRoadmap').onclick=openRoadmapWithPlan;
     document.getElementById('copySubject').onclick=()=>{navigator.clipboard.writeText(emailSubject).then(()=>{document.getElementById('copySubject').textContent='Copied!';setTimeout(()=>{document.getElementById('copySubject').textContent='Copy Subject';},1500);});};
     document.getElementById('copyEmail').onclick=()=>{navigator.clipboard.writeText(emailBody).then(()=>{document.getElementById('copyEmail').textContent='Copied!';setTimeout(()=>{document.getElementById('copyEmail').textContent='Copy Email Body';},1500);});};
   }
