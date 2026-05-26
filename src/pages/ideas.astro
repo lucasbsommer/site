@@ -1,5 +1,30 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { ideas, type Idea } from '../data/ideas';
+
+const visible = ideas.filter((i) => !i.hidden);
+
+const order: Record<Idea['depth'], number> = { detailed: 0, draft: 1, sketch: 2, oneliner: 3 };
+const sorted = [...visible].sort((a, b) => order[a.depth] - order[b.depth]);
+
+const detailed = sorted.filter((i) => i.depth === 'detailed');
+const drafts   = sorted.filter((i) => i.depth === 'draft');
+const sketches = sorted.filter((i) => i.depth === 'sketch');
+const oneliners= sorted.filter((i) => i.depth === 'oneliner');
+
+function renderParagraphs(text: string): string[] {
+  return text.split(/\n\n+/).map((p) => p.trim()).filter(Boolean);
+}
+
+// Very light markdown: **bold** only. Keep safe by escaping first.
+function escapeHtml(s: string): string {
+  return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+function md(text: string): string {
+  return escapeHtml(text).replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+}
+
+const totalShown = visible.length;
 ---
 
 <BaseLayout title="Business Ideas — Lucas Sommer" description="A running list of business ideas Lucas Sommer has evaluated, is exploring, or is putting out there for someone else to build.">
@@ -9,129 +34,129 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     <div class="ideas-hero">
       <h1>Business Ideas</h1>
       <p class="ideas-intro">
-        Ideas I've evaluated, am exploring, or am putting out there for someone else to build. Every idea here has been pressure-tested using my <a href="/resources/ideation-flow">ideation framework</a> — sized by market, priced by margin, and ranked by feasibility.
+        A running list — {totalShown} ideas I've collected, evaluated, or jotted down over the years. Some are fully fleshed out. Most are one-liners. All are free to steal. If you want to riff on one, <a href="https://twitter.com/lucasbsommer" target="_blank" rel="noopener">hit me up</a>.
       </p>
       <p class="ideas-sub">
-        Ideas are cheap. Execution is everything. If you want to build one of these, <a href="https://twitter.com/lucasbsommer" target="_blank" rel="noopener">reach out</a>.
+        This replaces the spreadsheet I used to keep in the cloud. Maintained here, in public. You can also browse <a href="/domains">the domains I own</a> if you're hunting for a name for something you're building.
       </p>
     </div>
 
     <!-- Filters -->
     <div class="idea-filters">
-      <button class="filter-btn active" data-filter="all">All</button>
-      <button class="filter-btn" data-filter="open"><span class="filter-dot" style="background:var(--status-active-text);"></span> Open</button>
-      <button class="filter-btn" data-filter="exploring"><span class="filter-dot" style="background:var(--status-exploring-text);"></span> Exploring</button>
-      <button class="filter-btn" data-filter="building"><span class="filter-dot" style="background:var(--status-building-text);"></span> Building</button>
-      <button class="filter-btn" data-filter="parked"><span class="filter-dot" style="background:var(--text-tertiary);"></span> Parked</button>
+      <button class="filter-btn active" data-filter="all">All <span class="count">{totalShown}</span></button>
+      <button class="filter-btn" data-filter="detailed">Detailed <span class="count">{detailed.length}</span></button>
+      <button class="filter-btn" data-filter="draft">Drafts <span class="count">{drafts.length}</span></button>
+      <button class="filter-btn" data-filter="sketch">Sketches <span class="count">{sketches.length}</span></button>
+      <button class="filter-btn" data-filter="oneliner">Seeds <span class="count">{oneliners.length}</span></button>
     </div>
 
-    <!-- Ideas Grid -->
-    <div class="ideas-grid">
+    {detailed.length > 0 && (
+      <section class="depth-block" data-depth="detailed">
+        <h2 class="depth-heading">Detailed</h2>
+        <div class="ideas-grid">
+          {detailed.map((idea, n) => (
+            <article class="idea-card" data-depth="detailed" id={`i-${idea.id}`}>
+              <div class="idea-top">
+                <div class="idea-number">{String(n + 1).padStart(2, '0')}</div>
+                <span class={`idea-status idea-status-${idea.status}`}>{idea.status}</span>
+              </div>
+              <h3 class="idea-title">{idea.name}</h3>
+              {idea.tags && idea.tags.length > 0 && (
+                <div class="idea-tags">
+                  {idea.tags.map((t) => <span class="tag">{t}</span>)}
+                </div>
+              )}
+              {idea.description && (
+                <div class="idea-body">
+                  {renderParagraphs(idea.description).map((p) => (
+                    <p set:html={md(p)}></p>
+                  ))}
+                </div>
+              )}
+              {idea.link && (
+                <a class="idea-link" href={idea.link} target="_blank" rel="noopener">Reference &rarr;</a>
+              )}
+            </article>
+          ))}
+        </div>
+      </section>
+    )}
 
-      <!-- IDEA TEMPLATE - Replace these with real ideas -->
+    {drafts.length > 0 && (
+      <section class="depth-block" data-depth="draft">
+        <h2 class="depth-heading">Drafts <span class="heading-meta">— partially fleshed out</span></h2>
+        <div class="ideas-grid">
+          {drafts.map((idea) => (
+            <article class="idea-card idea-card-compact" data-depth="draft" id={`i-${idea.id}`}>
+              <div class="idea-top">
+                <h3 class="idea-title idea-title-sm">{idea.name}</h3>
+                <span class={`idea-status idea-status-${idea.status}`}>{idea.status}</span>
+              </div>
+              {idea.description && (
+                <div class="idea-body">
+                  {renderParagraphs(idea.description).map((p) => (
+                    <p set:html={md(p)}></p>
+                  ))}
+                </div>
+              )}
+              {idea.link && (
+                <a class="idea-link" href={idea.link} target="_blank" rel="noopener">Reference &rarr;</a>
+              )}
+            </article>
+          ))}
+        </div>
+      </section>
+    )}
 
-      <article class="idea-card" data-status="open">
-        <div class="idea-top">
-          <div class="idea-number">01</div>
-          <span class="idea-status idea-status-open">Open</span>
+    {sketches.length > 0 && (
+      <section class="depth-block" data-depth="sketch">
+        <h2 class="depth-heading">Sketches <span class="heading-meta">— a sentence or two</span></h2>
+        <div class="sketches-grid">
+          {sketches.map((idea) => (
+            <article class="idea-sketch" data-depth="sketch" id={`i-${idea.id}`}>
+              <div class="sketch-name">{idea.name}</div>
+              {idea.description && <p class="sketch-desc">{idea.description}</p>}
+              {idea.link && <a class="idea-link" href={idea.link} target="_blank" rel="noopener">Reference &rarr;</a>}
+            </article>
+          ))}
         </div>
-        <h2 class="idea-title">[Idea Name]</h2>
-        <p class="idea-tagline">One-line description of what it is and who it's for.</p>
-        <div class="idea-tags">
-          <span class="tag">Category</span>
-          <span class="tag">Market Size</span>
-        </div>
-        <div class="idea-details">
-          <div class="idea-detail">
-            <div class="idea-detail-label">The Problem</div>
-            <p>What's broken, slow, expensive, or painful in the market today.</p>
-          </div>
-          <div class="idea-detail">
-            <div class="idea-detail-label">The Opportunity</div>
-            <p>Why now? Why this gap exists. Rough TAM if known.</p>
-          </div>
-          <div class="idea-detail">
-            <div class="idea-detail-label">Who Should Build It</div>
-            <p>The type of founder or team this idea is a fit for.</p>
-          </div>
-        </div>
-      </article>
+      </section>
+    )}
 
-      <article class="idea-card" data-status="exploring">
-        <div class="idea-top">
-          <div class="idea-number">02</div>
-          <span class="idea-status idea-status-exploring">Exploring</span>
-        </div>
-        <h2 class="idea-title">[Idea Name]</h2>
-        <p class="idea-tagline">One-line description of what it is and who it's for.</p>
-        <div class="idea-tags">
-          <span class="tag">Category</span>
-          <span class="tag">Market Size</span>
-        </div>
-        <div class="idea-details">
-          <div class="idea-detail">
-            <div class="idea-detail-label">The Problem</div>
-            <p>What's broken, slow, expensive, or painful in the market today.</p>
-          </div>
-          <div class="idea-detail">
-            <div class="idea-detail-label">The Opportunity</div>
-            <p>Why now? Why this gap exists. Rough TAM if known.</p>
-          </div>
-          <div class="idea-detail">
-            <div class="idea-detail-label">Current Status</div>
-            <p>What I'm doing about it right now.</p>
-          </div>
-        </div>
-      </article>
+    {oneliners.length > 0 && (
+      <section class="depth-block depth-block-seeds" data-depth="oneliner">
+        <h2 class="depth-heading depth-heading-muted">Seeds <span class="heading-meta">— one-liners, unvetted</span></h2>
+        <p class="seeds-note">Raw thoughts from the spreadsheet. Most need work. A few are probably great. If one catches your eye, <a href="https://twitter.com/lucasbsommer" target="_blank" rel="noopener">tell me</a> and I'll promote it.</p>
+        <ul class="seeds-list">
+          {oneliners.map((idea) => (
+            <li class="seed" data-depth="oneliner" id={`i-${idea.id}`}>{idea.name}</li>
+          ))}
+        </ul>
+      </section>
+    )}
 
-      <article class="idea-card" data-status="parked">
-        <div class="idea-top">
-          <div class="idea-number">03</div>
-          <span class="idea-status idea-status-parked">Parked</span>
-        </div>
-        <h2 class="idea-title">[Idea Name]</h2>
-        <p class="idea-tagline">One-line description of what it is and who it's for.</p>
-        <div class="idea-tags">
-          <span class="tag">Category</span>
-        </div>
-        <div class="idea-details">
-          <div class="idea-detail">
-            <div class="idea-detail-label">The Problem</div>
-            <p>What's broken, slow, expensive, or painful.</p>
-          </div>
-          <div class="idea-detail">
-            <div class="idea-detail-label">Why I Parked It</div>
-            <p>What made me decide not to pursue this now — wrong market, wrong timing, wrong fit, etc.</p>
-          </div>
-        </div>
-      </article>
-
-    </div>
-
-    <!-- CTA -->
     <div class="ideas-cta">
       <h3>Have an idea to add?</h3>
-      <p>I collect ideas from conversations, problems I run into, and gaps I notice. If you want to riff on one of these — or share your own — hit me up on <a href="https://twitter.com/lucasbsommer" target="_blank" rel="noopener">Twitter</a>.</p>
+      <p>I collect ideas from conversations, problems I run into, and gaps I notice. Want to riff on one of these — or share your own? <a href="https://twitter.com/lucasbsommer" target="_blank" rel="noopener">Hit me up on Twitter</a>.</p>
     </div>
 
   </article>
 
   <script is:inline>
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function () {
       var buttons = document.querySelectorAll('.filter-btn');
-      var cards = document.querySelectorAll('.idea-card');
+      var blocks = document.querySelectorAll('.depth-block');
 
-      buttons.forEach(function(btn) {
-        btn.addEventListener('click', function() {
-          buttons.forEach(function(b) { b.classList.remove('active'); });
+      buttons.forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          buttons.forEach(function (b) { b.classList.remove('active'); });
           btn.classList.add('active');
           var filter = btn.dataset.filter;
-
-          cards.forEach(function(card) {
-            if (filter === 'all' || card.dataset.status === filter) {
-              card.style.display = '';
+          blocks.forEach(function (block) {
+            if (filter === 'all' || block.dataset.depth === filter) {
+              block.style.display = '';
             } else {
-              card.style.display = 'none';
+              block.style.display = 'none';
             }
           });
         });
@@ -142,223 +167,150 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 </BaseLayout>
 
 <style>
-  .ideas-page {
-    padding-bottom: 4rem;
-  }
+  .ideas-page { padding-bottom: 4rem; }
 
   /* Hero */
-  .ideas-hero {
-    padding-top: 4rem;
-    padding-bottom: 1.5rem;
-  }
-
+  .ideas-hero { padding-top: 4rem; padding-bottom: 1.5rem; }
   .ideas-hero h1 {
-    font-size: 2.5rem;
-    font-weight: 800;
-    letter-spacing: -1.5px;
-    margin-bottom: 1rem;
+    font-size: 2.5rem; font-weight: 800; letter-spacing: -1.5px; margin-bottom: 1rem;
   }
-
   .ideas-intro {
-    font-size: 1.125rem;
-    color: var(--text-secondary);
-    line-height: 1.75;
-    max-width: 640px;
-    margin-bottom: 0.75rem;
+    font-size: 1.125rem; color: var(--text-secondary); line-height: 1.75;
+    max-width: 680px; margin-bottom: 0.75rem;
   }
-
   .ideas-sub {
-    font-size: 0.9375rem;
-    color: var(--text-tertiary);
-    line-height: 1.7;
-    max-width: 640px;
+    font-size: 0.9375rem; color: var(--text-tertiary); line-height: 1.7; max-width: 680px;
   }
 
   /* Filters */
   .idea-filters {
-    display: flex;
-    gap: 0.5rem;
-    padding: 1rem 0 2rem;
-    flex-wrap: wrap;
-    border-bottom: 1px solid var(--border);
-    margin-bottom: 2rem;
+    display: flex; gap: 0.5rem; padding: 1rem 0 2rem; flex-wrap: wrap;
+    border-bottom: 1px solid var(--border); margin-bottom: 2rem;
   }
-
   .filter-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.4rem;
-    padding: 0.4rem 0.85rem;
-    font-family: inherit;
-    font-size: 0.8125rem;
-    font-weight: 500;
-    color: var(--text-secondary);
-    background: var(--surface-1);
-    border: 1px solid var(--border);
-    border-radius: 9999px;
-    cursor: pointer;
-    transition: all 0.15s ease;
+    display: inline-flex; align-items: center; gap: 0.4rem;
+    padding: 0.4rem 0.85rem; font-family: inherit; font-size: 0.8125rem; font-weight: 500;
+    color: var(--text-secondary); background: var(--surface-1); border: 1px solid var(--border);
+    border-radius: 9999px; cursor: pointer; transition: all 0.15s ease;
+  }
+  .filter-btn:hover { border-color: var(--border-hover); color: var(--text-primary); }
+  .filter-btn.active { background: var(--accent); color: #ffffff; border-color: var(--accent); }
+  .filter-btn .count {
+    font-family: var(--font-mono); font-size: 0.6875rem; opacity: 0.7;
+    background: rgba(255,255,255,0.08); padding: 0.05rem 0.45rem; border-radius: 9999px;
+  }
+  .filter-btn.active .count { background: rgba(255,255,255,0.2); opacity: 1; }
+
+  /* Depth blocks */
+  .depth-block { margin-bottom: 3rem; }
+  .depth-heading {
+    font-size: 1.15rem; font-weight: 700; letter-spacing: -0.3px;
+    margin-bottom: 1rem; color: var(--text-primary);
+  }
+  .depth-heading-muted { color: var(--text-secondary); }
+  .heading-meta {
+    font-weight: 400; color: var(--text-tertiary); font-size: 0.875rem;
+    letter-spacing: 0; margin-left: 0.35rem;
   }
 
-  .filter-btn:hover {
-    border-color: var(--border-hover);
-    color: var(--text-primary);
-  }
-
-  .filter-btn.active {
-    background: var(--accent);
-    color: #ffffff;
-    border-color: var(--accent);
-  }
-
-  .filter-dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    display: inline-block;
-  }
-
-  /* Ideas Grid */
-  .ideas-grid {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-  }
-
+  /* Detailed + Draft cards */
+  .ideas-grid { display: flex; flex-direction: column; gap: 0.85rem; }
   .idea-card {
-    background: var(--surface-1);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 1.75rem;
+    background: var(--surface-1); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 1.75rem;
     transition: border-color 0.15s ease, background-color 0.15s ease;
   }
-
-  .idea-card:hover {
-    border-color: var(--border-hover);
-  }
+  .idea-card:hover { border-color: var(--border-hover); }
+  .idea-card-compact { padding: 1.35rem 1.5rem; }
 
   .idea-top {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 0.75rem;
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 1rem; margin-bottom: 0.75rem;
   }
-
   .idea-number {
-    font-family: var(--font-mono);
-    font-size: 0.75rem;
-    font-weight: 600;
-    color: var(--text-tertiary);
-    letter-spacing: 0.05em;
+    font-family: var(--font-mono); font-size: 0.75rem; font-weight: 600;
+    color: var(--text-tertiary); letter-spacing: 0.05em;
   }
-
   .idea-status {
-    font-size: 0.6875rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    padding: 0.15rem 0.5rem;
-    border-radius: 9999px;
+    font-size: 0.6875rem; font-weight: 600; text-transform: uppercase;
+    letter-spacing: 0.05em; padding: 0.15rem 0.5rem; border-radius: 9999px;
+    flex-shrink: 0;
   }
-
-  .idea-status-open {
-    background: var(--status-active-bg);
-    color: var(--status-active-text);
-  }
-
-  .idea-status-exploring {
-    background: var(--status-exploring-bg);
-    color: var(--status-exploring-text);
-  }
-
-  .idea-status-building {
-    background: var(--status-building-bg);
-    color: var(--status-building-text);
-  }
-
-  .idea-status-parked {
-    background: var(--surface-2);
-    color: var(--text-tertiary);
-  }
+  .idea-status-open      { background: var(--status-active-bg);   color: var(--status-active-text); }
+  .idea-status-exploring { background: var(--status-exploring-bg); color: var(--status-exploring-text); }
+  .idea-status-building  { background: var(--status-building-bg);  color: var(--status-building-text); }
+  .idea-status-parked    { background: var(--surface-2);           color: var(--text-tertiary); }
 
   .idea-title {
-    font-size: 1.35rem;
-    font-weight: 700;
-    letter-spacing: -0.5px;
-    margin-bottom: 0.5rem;
-    color: var(--text-primary);
+    font-size: 1.35rem; font-weight: 700; letter-spacing: -0.5px;
+    margin-bottom: 0.5rem; color: var(--text-primary); line-height: 1.25;
   }
+  .idea-title-sm { font-size: 1.05rem; margin-bottom: 0; }
+  .idea-card-compact .idea-top { margin-bottom: 0.65rem; }
 
-  .idea-tagline {
-    font-size: 0.9375rem;
-    color: var(--text-secondary);
-    line-height: 1.65;
-    margin-bottom: 0.85rem;
-  }
-
-  .idea-tags {
-    display: flex;
-    gap: 0.35rem;
-    flex-wrap: wrap;
-    margin-bottom: 1.25rem;
-  }
-
+  .idea-tags { display: flex; gap: 0.35rem; flex-wrap: wrap; margin-bottom: 1rem; }
   .idea-tags .tag {
-    font-size: 0.6875rem;
-    font-weight: 500;
-    color: var(--text-tertiary);
-    background: var(--surface-2);
-    padding: 0.15rem 0.55rem;
-    border-radius: var(--radius-xs);
+    font-size: 0.6875rem; font-weight: 500; color: var(--text-tertiary);
+    background: var(--surface-2); padding: 0.15rem 0.55rem; border-radius: var(--radius-xs);
   }
 
-  .idea-details {
-    display: flex;
-    flex-direction: column;
-    gap: 0.85rem;
-    padding-top: 1rem;
-    border-top: 1px solid var(--border);
+  .idea-body { font-size: 0.9375rem; color: var(--text-secondary); line-height: 1.65; }
+  .idea-card-compact .idea-body { font-size: 0.875rem; }
+  .idea-body p + p { margin-top: 0.85rem; }
+  .idea-body strong { color: var(--text-primary); font-weight: 600; }
+
+  .idea-link {
+    display: inline-block; margin-top: 0.75rem;
+    font-size: 0.75rem; font-weight: 600; color: var(--accent-text);
   }
 
-  .idea-detail-label {
-    font-size: 0.6875rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    color: var(--text-tertiary);
-    margin-bottom: 0.35rem;
+  /* Sketches — denser grid */
+  .sketches-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 0.75rem;
+  }
+  .idea-sketch {
+    background: var(--surface-1); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 1.1rem 1.25rem;
+    transition: border-color 0.15s ease;
+  }
+  .idea-sketch:hover { border-color: var(--border-hover); }
+  .sketch-name {
+    font-size: 0.95rem; font-weight: 600; color: var(--text-primary);
+    letter-spacing: -0.2px; margin-bottom: 0.35rem; line-height: 1.35;
+  }
+  .sketch-desc {
+    font-size: 0.8125rem; color: var(--text-secondary); line-height: 1.55;
   }
 
-  .idea-detail p {
-    font-size: 0.875rem;
-    color: var(--text-secondary);
-    line-height: 1.65;
+  /* Seeds — greyed-out one-liners */
+  .depth-block-seeds {
+    border-top: 1px solid var(--border); padding-top: 2rem; margin-top: 1rem;
   }
-
-  .idea-detail p strong {
-    color: var(--text-primary);
+  .seeds-note {
+    font-size: 0.875rem; color: var(--text-tertiary); line-height: 1.6;
+    max-width: 640px; margin-bottom: 1.25rem;
   }
+  .seeds-list {
+    list-style: none; padding: 0; margin: 0;
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 0.25rem 1.5rem;
+  }
+  .seed {
+    font-size: 0.8125rem; color: var(--text-tertiary); line-height: 1.55;
+    padding: 0.4rem 0; border-bottom: 1px solid transparent;
+    transition: color 0.15s ease, border-color 0.15s ease;
+  }
+  .seed:hover { color: var(--text-secondary); border-bottom-color: var(--border); }
+  .seed::first-letter { text-transform: uppercase; }
 
   /* CTA */
   .ideas-cta {
-    background: var(--surface-1);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 1.75rem;
-    margin-top: 3rem;
-    transition: border-color 0.15s ease, background-color 0.15s ease;
+    background: var(--surface-1); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 1.75rem; margin-top: 3rem;
   }
-
-  .ideas-cta h3 {
-    font-size: 1.125rem;
-    margin-bottom: 0.35rem;
-  }
-
-  .ideas-cta p {
-    font-size: 0.9375rem;
-    color: var(--text-secondary);
-    line-height: 1.65;
-  }
+  .ideas-cta h3 { font-size: 1.125rem; margin-bottom: 0.35rem; }
+  .ideas-cta p { font-size: 0.9375rem; color: var(--text-secondary); line-height: 1.65; }
 
   /* Mobile */
   @media (max-width: 640px) {
@@ -366,6 +318,9 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     .ideas-hero h1 { font-size: 1.75rem; }
     .ideas-intro { font-size: 1rem; }
     .idea-card { padding: 1.35rem; }
+    .idea-card-compact { padding: 1.15rem; }
     .idea-title { font-size: 1.15rem; }
+    .sketches-grid { grid-template-columns: 1fr; }
+    .seeds-list { grid-template-columns: 1fr; }
   }
 </style>

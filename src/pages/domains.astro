@@ -1,0 +1,201 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+// Fill this in. Statuses: 'available' | 'parked' | 'in-use' | 'for-sale'
+const domains: Array<{
+  name: string;
+  status: 'available' | 'parked' | 'in-use' | 'for-sale';
+  note?: string;
+  link?: string;
+}> = [
+  // { name: 'example.com', status: 'parked', note: 'Concept: ...', link: 'https://example.com' },
+];
+
+const statusLabel: Record<string, string> = {
+  'available': 'Available',
+  'parked': 'Parked',
+  'in-use': 'In Use',
+  'for-sale': 'For Sale',
+};
+---
+
+<BaseLayout title="Domains — Lucas Sommer" description="Domains Lucas Sommer owns — parked concepts, active projects, and names available for the right idea.">
+
+  <article class="domains-page container">
+
+    <div class="domains-hero">
+      <h1>Domains</h1>
+      <p class="domains-intro">
+        A curated list of domains I own — parked concepts, active projects, and names available for the right idea or collaborator. I buy names the way some people buy land: when the gap is obvious, the price is right, and the story is worth holding.
+      </p>
+    </div>
+
+    {domains.length === 0 ? (
+      <div class="domains-empty">
+        <div class="empty-badge">Coming soon</div>
+        <h2>Curating the list</h2>
+        <p>Pulling together the decent names worth surfacing. Check back — or <a href="https://twitter.com/lucasbsommer" target="_blank" rel="noopener">ping me</a> if you're looking for a name for a specific concept.</p>
+      </div>
+    ) : (
+      <div class="domains-grid">
+        {domains.map((d) => (
+          <article class={`domain-card status-${d.status}`}>
+            <div class="domain-top">
+              <div class="domain-name">{d.name}</div>
+              <span class={`domain-status domain-status-${d.status}`}>{statusLabel[d.status]}</span>
+            </div>
+            {d.note && <p class="domain-note">{d.note}</p>}
+            {d.link && (
+              <a class="domain-link" href={d.link} target="_blank" rel="noopener">
+                Visit &rarr;
+              </a>
+            )}
+          </article>
+        ))}
+      </div>
+    )}
+
+    <div class="domains-cta">
+      <h3>Have a use for one of these?</h3>
+      <p>If you see a name that fits something you're building, let's talk. I'd rather see a good domain ship than sit parked. <a href="https://twitter.com/lucasbsommer" target="_blank" rel="noopener">Reach out on Twitter</a>.</p>
+    </div>
+
+  </article>
+
+</BaseLayout>
+
+<style>
+  .domains-page { padding-bottom: 4rem; }
+
+  .domains-hero { padding: 4rem 0 1.5rem; }
+  .domains-hero h1 {
+    font-size: 2.5rem;
+    font-weight: 800;
+    letter-spacing: -1.5px;
+    margin-bottom: 1rem;
+  }
+  .domains-intro {
+    font-size: 1.125rem;
+    color: var(--text-secondary);
+    line-height: 1.75;
+    max-width: 640px;
+  }
+
+  .domains-empty {
+    background: var(--surface-1);
+    border: 1px dashed var(--border);
+    border-radius: var(--radius);
+    padding: 2.5rem 1.75rem;
+    text-align: center;
+    margin-top: 1rem;
+  }
+  .empty-badge {
+    display: inline-block;
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--accent-text);
+    background: var(--accent-soft);
+    padding: 0.2rem 0.65rem;
+    border-radius: 9999px;
+    margin-bottom: 1rem;
+  }
+  .domains-empty h2 {
+    font-size: 1.25rem;
+    margin-bottom: 0.5rem;
+  }
+  .domains-empty p {
+    font-size: 0.9375rem;
+    color: var(--text-secondary);
+    line-height: 1.65;
+    max-width: 480px;
+    margin: 0 auto;
+  }
+
+  .domains-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+  }
+
+  .domain-card {
+    background: var(--surface-1);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.25rem;
+    transition: border-color 0.15s ease, background-color 0.15s ease;
+  }
+  .domain-card:hover {
+    border-color: var(--border-hover);
+  }
+
+  .domain-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    margin-bottom: 0.6rem;
+  }
+
+  .domain-name {
+    font-family: var(--font-mono);
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    letter-spacing: -0.2px;
+    word-break: break-all;
+  }
+
+  .domain-status {
+    font-size: 0.6875rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 0.15rem 0.5rem;
+    border-radius: 9999px;
+    flex-shrink: 0;
+  }
+  .domain-status-available { background: var(--status-active-bg); color: var(--status-active-text); }
+  .domain-status-parked    { background: var(--surface-2);       color: var(--text-tertiary); }
+  .domain-status-in-use    { background: var(--status-building-bg); color: var(--status-building-text); }
+  .domain-status-for-sale  { background: var(--status-exploring-bg); color: var(--status-exploring-text); }
+
+  .domain-note {
+    font-size: 0.8125rem;
+    color: var(--text-secondary);
+    line-height: 1.55;
+    margin-bottom: 0.65rem;
+  }
+
+  .domain-link {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--accent-text);
+  }
+
+  .domains-cta {
+    background: var(--surface-1);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.75rem;
+    margin-top: 3rem;
+  }
+  .domains-cta h3 {
+    font-size: 1.125rem;
+    margin-bottom: 0.35rem;
+  }
+  .domains-cta p {
+    font-size: 0.9375rem;
+    color: var(--text-secondary);
+    line-height: 1.65;
+  }
+
+  @media (max-width: 640px) {
+    .domains-hero { padding-top: 3rem; }
+    .domains-hero h1 { font-size: 1.75rem; }
+    .domains-intro { font-size: 1rem; }
+  }
+</style>

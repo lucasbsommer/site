@@ -31,3 +31,13 @@ project-styles.css
 
 # jetbrains setting folder
 .idea/
+
+
+# --- workspace noise sweep ---
+.claude/worktrees/
+.claude/cache/
+.playwright-mcp/
+.wrangler/
+.DS_Store
+*.bak
+

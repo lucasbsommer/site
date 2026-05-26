@@ -216,7 +216,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         <h3>Get updates</h3>
         <span class="email-meta">New projects, resources, and lessons shipped to your inbox.</span>
       </div>
-      <form class="email-form" onsubmit="event.preventDefault(); this.querySelector('button').textContent='You\'re in'; this.querySelector('button').disabled=true;">
+      <form class="email-form">
         <input type="email" placeholder="you@example.com" required />
         <button type="submit">Subscribe</button>
       </form>

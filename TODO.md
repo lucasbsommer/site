@@ -1,19 +1,19 @@
 # lucassommer.com — TODO
 
 ## Content
-- [ ] Fill in /ideas page with real business ideas — first ones captured below
+- [x] Ingest Business Ideas spreadsheet into /ideas — 239 ideas live at `/ideas`, sourced from `src/data/ideas.ts` (edit directly). Ingestion script at `scripts/ingest-ideas.py` (one-shot). 4 detailed, 50 drafts, 24 sketches, 161 seeds. 1 row hidden. Source spreadsheet at `../../Business Ideas.csv` can be archived — TS file is now the source of truth.
 - [ ] Review and finalize 8 Core Truths on /about page
 - [ ] Update the /about timeline with the spreadsheet Lucas's family made (memory prompts + dates)
 - [ ] Comedy document — Lucas has an existing jokes/comedy document (not in this repo, lives locally or in another tool). Get it into the project when ready and figure out what to do with it (site page, content for socials, book material, etc.)
 - [ ] Add referral/affiliate links section — tools Lucas actually uses and recommends, with referral codes for income. Examples: Ramp (corporate cards), Gusto (payroll), Zoho (business suite). Likely lives on /resources or a new /stack page. Gather full list of services + referral URLs, then build out a clean card grid with logo, what it is, why Lucas uses it, and the CTA link.
 - [ ] Pull TLP (The Launch Pad) resources into the site + git repo — ingest all content/resources currently hosted elsewhere, mirror them into this repo, and integrate them into /resources (or a dedicated /launchpad section). Need to identify the source (URL, Notion, Airtable, etc.) and a content format/structure. Probably markdown files per resource, rendered as individual pages with search/filter.
 - [ ] Funny Stories section (new page or homepage block) — once the comedy doc is imported, extract the best stories. Seeds below.
-- [ ] Add a "Domains Owned" section — curate the decent domains for potential projects or to signal breadth of ideas
+- [ ] Curate and populate the Domains Owned list — page scaffold lives at `/domains` (src/pages/domains.astro); fill the `domains` array with `{ name, status, note?, link? }` entries and link it from nav if you want it surfaced
 - [ ] Consider a "Capital T" truths section — philosophical/foundational. Note: /about already has a "Core Truths" section (8 operating principles); decide whether Capital T replaces/renames that or is a separate deeper layer
 
 ## Features
-- [ ] Wire up email capture forms (currently client-side fakes)
-- [ ] OG social preview image for link sharing
+- [ ] Provision Resend (or alternate provider) for email capture — pipeline is live at `functions/api/subscribe.ts`; set `RESEND_API_KEY` + `RESEND_AUDIENCE_ID` in Cloudflare Pages env. Without those, submissions validate and log but don't forward.
+- [x] OG social preview image for link sharing — `/og.png` shipped, meta tags in BaseLayout. Regenerate with `scripts/og/generate.sh`.
 - [ ] Explore Anthropic Managed Agents for Onit (see details below)
 
 ## Infrastructure
@@ -60,6 +60,7 @@ Multiple form factors worth exploring:
 
 - **Chris the office guy** — Suite 100 office mate who was always making weird noises. One day it escalated — "F... u... c..." then he walked out around 4pm. Lucas went Jurassic Park mode — stayed silent, moved chair to block the door — then his phone rang. Connects to the Daniel-the-other-office-mate story (basically lived there).
 - **Chris's wife Victoria** — Weeping in the office the next day after the blowup. Six months prior, she'd snuck into the office late at night with another man. Broken-person material.
+- **The Ground Hogz music video** — Lucas appeared in a music video with the Ground Hogz (Flo-Rida's group, pre/early Flo-Rida). The song is about Florida. Lucas is in a Coogi sweater. It's on YouTube. TODO: find the link, grab a still frame, and decide whether this becomes a /about timeline entry (fits the 2006–2010 Miami music-companies era) or a standalone funny-story writeup. Strong case for both — it's simultaneously a comedy story and a real biographical artifact from the Audimated / 13flat / Breakrecords chapter.
 
 ---
 
