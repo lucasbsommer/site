@@ -2,9 +2,10 @@
 interface Props {
   title: string;
   description?: string;
+  noindex?: boolean;
 }
 
-const { title, description = "Lucas Sommer — serial entrepreneur, builder, investor. Follow along as I build companies across marketing, construction, wine, fintech, and AI." } = Astro.props;
+const { title, description = "Lucas Sommer — serial entrepreneur, builder, investor. Follow along as I build companies across marketing, construction, wine, fintech, and AI.", noindex = false } = Astro.props;
 const currentPath = Astro.url.pathname;
 ---
 
@@ -14,7 +15,7 @@ const currentPath = Astro.url.pathname;
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content={description} />
-    <meta name="robots" content="index, follow" />
+    <meta name="robots" content={noindex ? "noindex, nofollow" : "index, follow"} />
     <link rel="canonical" href={`https://lucassommer.com${currentPath}`} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
