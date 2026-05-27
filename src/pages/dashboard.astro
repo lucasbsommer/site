@@ -1,0 +1,413 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const CONFIG = {
+  title: "Command Center",
+  entities: [
+    { name: "Onit",            color: "violet", quadrant: 1, link: "/projects/onit" },
+    { name: "Boss PDX",        color: "amber",  quadrant: 2, link: "/projects/boss-pdx" },
+    { name: "Grove Vineyard",  color: "green",  quadrant: 3, link: "/projects/grove-vineyard" },
+    { name: "Ad-Apt",          color: "blue",   quadrant: 4, link: "/projects/ad-apt" },
+  ],
+  priorities: ["Now", "This Week", "This Month", "Later"],
+};
+
+const SAMPLE_TASKS = [
+  // Onit
+  { id: "o1", title: "Wire up Anthropic API for strategy generation",       entity: "Onit",           priority: "Now",        url: "#" },
+  { id: "o2", title: "Demo onboarding flow with three prospects",            entity: "Onit",           priority: "Now",        url: "#" },
+  { id: "o3", title: "Build 103-channel framework taxonomy UI",              entity: "Onit",           priority: "This Week",  url: "#" },
+  { id: "o4", title: "Set pricing tiers and billing integration",            entity: "Onit",           priority: "This Month", url: "#" },
+  { id: "o5", title: "Hire first designer",                                  entity: "Onit",           priority: "Later",      url: "#" },
+  // Boss PDX
+  { id: "b1", title: "Submit ADU permit for SE Portland project",            entity: "Boss PDX",       priority: "Now",        url: "#" },
+  { id: "b2", title: "Walkthrough with new client — Beaverton remodel",      entity: "Boss PDX",       priority: "This Week",  url: "#" },
+  { id: "b3", title: "Update AI-assisted estimating template",               entity: "Boss PDX",       priority: "This Week",  url: "#" },
+  { id: "b4", title: "Renew GC license and bond",                            entity: "Boss PDX",       priority: "This Month", url: "#" },
+  { id: "b5", title: "Build referral partner network",                       entity: "Boss PDX",       priority: "Later",      url: "#" },
+  // Grove Vineyard
+  { id: "g1", title: "Schedule veraison check with Jacques",                 entity: "Grove Vineyard", priority: "Now",        url: "#" },
+  { id: "g2", title: "Order 2024 vintage bottles + corks",                   entity: "Grove Vineyard", priority: "This Week",  url: "#" },
+  { id: "g3", title: "Salmon Safe recertification paperwork",                entity: "Grove Vineyard", priority: "This Month", url: "#" },
+  { id: "g4", title: "Plan harvest crew logistics",                          entity: "Grove Vineyard", priority: "This Month", url: "#" },
+  { id: "g5", title: "Tasting room concept exploration",                     entity: "Grove Vineyard", priority: "Later",      url: "#" },
+  // Ad-Apt
+  { id: "a1", title: "Q2 ROAS report for Netflix campaign",                  entity: "Ad-Apt",         priority: "Now",        url: "#" },
+  { id: "a2", title: "Renew Benchmade retainer",                             entity: "Ad-Apt",         priority: "This Week",  url: "#" },
+  { id: "a3", title: "Onboard new junior strategist",                        entity: "Ad-Apt",         priority: "This Month", url: "#" },
+  { id: "a4", title: "Refresh agency portfolio case studies",                entity: "Ad-Apt",         priority: "Later",      url: "#" },
+];
+---
+
+<BaseLayout title="Command Center — Lucas Sommer" description="Personal priority dashboard." noindex={true}>
+
+  <section class="container dash-wrap">
+    <div class="dash-header">
+      <div>
+        <h1>{CONFIG.title}</h1>
+        <p class="dash-sub">Sectors are projects. Rings are priority — innermost is <strong>Now</strong>.</p>
+      </div>
+      <div class="dash-meta" id="last-updated">—</div>
+    </div>
+
+    <div class="dash-layout">
+      <div class="bullseye-card">
+        <svg id="bullseye" viewBox="0 0 680 540" role="img" aria-label="Priority bullseye dashboard">
+          <g id="sectors"></g>
+          <g id="labels"></g>
+          <circle cx="340" cy="270" r="22" fill="var(--surface-1)" stroke="var(--border-hover)" stroke-width="1.5"/>
+          <text x="340" y="270" text-anchor="middle" dominant-baseline="central" font-size="10" font-weight="700" fill="var(--text-primary)" font-family="var(--font-mono)">NOW</text>
+        </svg>
+        <div class="legend" id="legend"></div>
+      </div>
+
+      <div class="detail-card">
+        <h2 id="detail-title">Click a wedge</h2>
+        <div class="detail-sub" id="detail-sub">Tasks for the selected cell appear here.</div>
+        <ul class="task-list" id="task-list"></ul>
+      </div>
+    </div>
+  </section>
+
+</BaseLayout>
+
+<script type="application/json" id="dash-config" set:html={JSON.stringify(CONFIG)}></script>
+<script type="application/json" id="dash-tasks" set:html={JSON.stringify(SAMPLE_TASKS)}></script>
+
+<script is:inline>
+  const CONFIG = JSON.parse(document.getElementById("dash-config").textContent);
+  const TASKS  = JSON.parse(document.getElementById("dash-tasks").textContent);
+
+  // Entity color palettes — 4 shades each, dark → light (matches site dark/light theme)
+  const PALETTES = {
+    violet: ["#5b21b6", "#7c3aed", "#a78bfa", "#c4b5fd"],
+    amber:  ["#92400e", "#d97706", "#f59e0b", "#fcd34d"],
+    green:  ["#166534", "#16a34a", "#4ade80", "#86efac"],
+    blue:   ["#1e40af", "#2563eb", "#60a5fa", "#93c5fd"],
+  };
+
+  const CX = 340, CY = 270;
+  const RADII = [24, 75, 130, 185, 240];
+  const QUADRANT_ANGLES = {
+    1: [0,   90],   // top-right
+    2: [90,  180],  // bottom-right
+    3: [180, 270],  // bottom-left
+    4: [270, 360],  // top-left
+  };
+
+  function polar(angleDeg, r) {
+    const rad = ((angleDeg - 90) * Math.PI) / 180;
+    return [CX + r * Math.cos(rad), CY + r * Math.sin(rad)];
+  }
+
+  function arcPath(r1, r2, a1, a2) {
+    const [x1, y1] = polar(a1, r2);
+    const [x2, y2] = polar(a2, r2);
+    const [x3, y3] = polar(a2, r1);
+    const [x4, y4] = polar(a1, r1);
+    const largeArc = (a2 - a1) > 180 ? 1 : 0;
+    return `M ${x1} ${y1} A ${r2} ${r2} 0 ${largeArc} 1 ${x2} ${y2} L ${x3} ${y3} A ${r1} ${r1} 0 ${largeArc} 0 ${x4} ${y4} Z`;
+  }
+
+  function bucketTasks() {
+    const b = {};
+    for (const e of CONFIG.entities) for (const p of CONFIG.priorities) b[`${e.name}::${p}`] = [];
+    for (const t of TASKS) {
+      const k = `${t.entity}::${t.priority}`;
+      if (k in b) b[k].push(t);
+    }
+    return b;
+  }
+
+  function escapeHtml(s) {
+    return String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+  }
+
+  let SELECTED = null;
+
+  function render() {
+    const buckets = bucketTasks();
+    const sectorsEl = document.getElementById("sectors");
+    const labelsEl  = document.getElementById("labels");
+    sectorsEl.innerHTML = "";
+    labelsEl.innerHTML = "";
+
+    CONFIG.entities.forEach(entity => {
+      const [a1, a2] = QUADRANT_ANGLES[entity.quadrant];
+      const palette = PALETTES[entity.color] || PALETTES.violet;
+      const numRings = CONFIG.priorities.length;
+
+      for (let i = 0; i < numRings; i++) {
+        const r1 = RADII[i];
+        const r2 = RADII[i + 1];
+        const priority = CONFIG.priorities[i];
+        const count = buckets[`${entity.name}::${priority}`].length;
+        const fill = palette[i] || palette[palette.length - 1];
+
+        const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+        path.setAttribute("d", arcPath(r1, r2, a1, a2));
+        path.setAttribute("fill", fill);
+        path.setAttribute("stroke", "var(--bg)");
+        path.setAttribute("stroke-width", "2");
+        path.setAttribute("class", "sector");
+        path.setAttribute("data-entity", entity.name);
+        path.setAttribute("data-priority", priority);
+        path.addEventListener("click", () => selectCell(entity.name, priority));
+        sectorsEl.appendChild(path);
+
+        if (count > 0) {
+          const midAngle = (a1 + a2) / 2;
+          const midR = (r1 + r2) / 2;
+          const [tx, ty] = polar(midAngle, midR);
+          const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+          text.setAttribute("x", tx);
+          text.setAttribute("y", ty);
+          text.setAttribute("text-anchor", "middle");
+          text.setAttribute("dominant-baseline", "central");
+          text.setAttribute("class", "count-badge");
+          text.setAttribute("fill", i <= 1 ? "#fff" : "#0a0a0b");
+          text.textContent = count;
+          labelsEl.appendChild(text);
+        }
+      }
+
+      const midAngle = (a1 + a2) / 2;
+      const [lx, ly] = polar(midAngle, RADII[RADII.length - 1] + 24);
+      const label = document.createElementNS("http://www.w3.org/2000/svg", "text");
+      label.setAttribute("x", lx);
+      label.setAttribute("y", ly);
+      label.setAttribute("text-anchor", "middle");
+      label.setAttribute("dominant-baseline", "central");
+      label.setAttribute("class", "sector-label");
+      label.setAttribute("fill", palette[1]);
+      label.textContent = entity.name;
+      labelsEl.appendChild(label);
+    });
+
+    renderLegend();
+    document.getElementById("last-updated").textContent =
+      `${TASKS.length} tasks · updated ${new Date().toLocaleTimeString([], { hour: "numeric", minute: "2-digit" })}`;
+  }
+
+  function renderLegend() {
+    const el = document.getElementById("legend");
+    let h = '<div class="legend-col"><div class="legend-head">Entities</div>';
+    CONFIG.entities.forEach(e => {
+      const sw = PALETTES[e.color][1];
+      h += `<div class="legend-row"><span class="swatch" style="background:${sw}"></span>${escapeHtml(e.name)}</div>`;
+    });
+    h += '</div><div class="legend-col"><div class="legend-head">Rings (inner → outer)</div>';
+    CONFIG.priorities.forEach((p, i) => {
+      h += `<div class="legend-row"><span class="ring-num">${i + 1}</span>${escapeHtml(p)}</div>`;
+    });
+    h += '</div>';
+    el.innerHTML = h;
+  }
+
+  function selectCell(entity, priority) {
+    SELECTED = { entity, priority };
+    document.querySelectorAll(".sector").forEach(s => s.classList.remove("selected"));
+    document.querySelector(`.sector[data-entity="${entity}"][data-priority="${priority}"]`)?.classList.add("selected");
+
+    const tasks = TASKS.filter(t => t.entity === entity && t.priority === priority);
+    document.getElementById("detail-title").textContent = `${entity} — ${priority}`;
+    document.getElementById("detail-sub").textContent = `${tasks.length} ${tasks.length === 1 ? "task" : "tasks"}`;
+
+    const listEl = document.getElementById("task-list");
+    if (tasks.length === 0) {
+      listEl.innerHTML = '<li class="task-empty">Nothing here. Clean wedge.</li>';
+      return;
+    }
+    listEl.innerHTML = tasks.map(t => `
+      <li class="task-item">
+        <a href="${t.url || '#'}">${escapeHtml(t.title)}</a>
+        ${t.due_date ? `<span class="task-meta">${escapeHtml(t.due_date)}</span>` : ''}
+      </li>
+    `).join("");
+  }
+
+  render();
+</script>
+
+<style>
+  .dash-wrap { padding-top: 3rem; padding-bottom: 5rem; }
+
+  .dash-header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+  }
+
+  .dash-header h1 {
+    font-size: 1.75rem;
+    font-weight: 800;
+    letter-spacing: -0.75px;
+    margin-bottom: 0.25rem;
+  }
+
+  .dash-sub {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+  }
+
+  .dash-meta {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--text-tertiary);
+  }
+
+  .dash-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 340px;
+    gap: 1rem;
+    align-items: start;
+  }
+
+  .bullseye-card,
+  .detail-card {
+    background: var(--surface-1);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.25rem;
+  }
+
+  .detail-card { min-height: 420px; }
+
+  #bullseye {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  .sector {
+    cursor: pointer;
+    transition: filter 0.15s ease, opacity 0.15s ease;
+  }
+  .sector:hover { filter: brightness(1.12); }
+  .sector.selected { stroke: var(--text-primary); stroke-width: 3; }
+
+  .sector-label {
+    pointer-events: none;
+    font-size: 13px;
+    font-weight: 600;
+    font-family: var(--font-sans);
+  }
+  .count-badge {
+    pointer-events: none;
+    font-size: 12px;
+    font-weight: 700;
+    font-family: var(--font-mono);
+  }
+
+  .legend {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.25rem;
+    padding-top: 1rem;
+    margin-top: 1rem;
+    border-top: 1px solid var(--border);
+  }
+
+  .legend-head {
+    font-size: 0.6875rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-tertiary);
+    margin-bottom: 0.5rem;
+    font-family: var(--font-mono);
+  }
+
+  .legend-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.8125rem;
+    color: var(--text-secondary);
+    padding: 0.15rem 0;
+  }
+
+  .swatch {
+    width: 11px;
+    height: 11px;
+    border-radius: 3px;
+    flex-shrink: 0;
+  }
+
+  .ring-num {
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    font-weight: 700;
+    width: 14px;
+    color: var(--text-tertiary);
+  }
+
+  .detail-card h2 {
+    font-size: 1rem;
+    font-weight: 700;
+    letter-spacing: -0.2px;
+    margin-bottom: 0.15rem;
+  }
+
+  .detail-sub {
+    font-size: 0.75rem;
+    color: var(--text-tertiary);
+    font-family: var(--font-mono);
+    margin-bottom: 1rem;
+  }
+
+  .task-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+
+  .task-item {
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 0.65rem 0.85rem;
+    font-size: 0.875rem;
+    line-height: 1.4;
+  }
+
+  .task-item a {
+    color: var(--text-primary);
+    text-decoration: none;
+  }
+  .task-item a:hover { color: var(--accent-text); }
+
+  .task-meta {
+    display: block;
+    margin-top: 0.25rem;
+    font-size: 0.6875rem;
+    color: var(--text-tertiary);
+    font-family: var(--font-mono);
+  }
+
+  .task-empty {
+    font-size: 0.875rem;
+    color: var(--text-tertiary);
+    font-style: italic;
+    text-align: center;
+    padding: 2rem 0;
+  }
+
+  @media (max-width: 800px) {
+    .dash-layout { grid-template-columns: 1fr; }
+    .detail-card { min-height: 0; }
+  }
+
+  @media (max-width: 640px) {
+    .dash-wrap { padding-top: 2rem; }
+    .dash-header h1 { font-size: 1.35rem; }
+    .bullseye-card { padding: 0.75rem; }
+    .sector-label { font-size: 11px; }
+  }
+</style>
