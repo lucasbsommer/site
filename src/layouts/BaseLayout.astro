@@ -34,6 +34,7 @@ const ogImageUrl = ogImage.startsWith('http') ? ogImage : `https://lucassommer.c
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={ogImageUrl} />
     <title>{title}</title>
+    <link rel="stylesheet" href="/curator.css?v=2" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
@@ -167,6 +168,7 @@ const ogImageUrl = ogImage.startsWith('http') ? ogImage : `https://lucassommer.c
         });
       });
     </script>
+    <script src="/curator.js?v=2" defer></script>
   </body>
 </html>
 
