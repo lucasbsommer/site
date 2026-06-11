@@ -19,6 +19,26 @@
 ## Infrastructure
 - [ ] Media asset strategy — small assets in /public (served by Cloudflare CDN), large media on Cloudflare R2 or S3
 
+## Entrepreneurship Tool — Expansion Plan
+Extending the `/hub` framework beyond marketing into a full-scope small-business / entrepreneurship operating tool. Design pattern that already works for `/hub`: **Inputs (situation) + Catalog (interventions) + Rules (what's relevant when) → Sequenced plan → Roadmap**. Same engine, swappable content packs per domain.
+
+- [ ] **Lifecycle shell at `/`** — both styles: a homepage with cards for each stage (Just an idea / Have a concept / Talking to customers / Building MVP / Have early users / Scaling), plus a guided "where are you?" quiz that routes you to the right tool. Cards = transparent reference, quiz = guided next step.
+- [ ] **Domain pack #2: `/validate`** — Idea Validation. Catalog = validation experiments (Mom Test interviews, landing-page smoke test, fake door, concierge MVP, Wizard of Oz, pre-orders, paid-ad demand test, support-forum mining, etc.). Each experiment has cost, time-to-value, prerequisites, and tags which validation questions it answers.
+- [ ] **Future domain packs** — Sales, Operations, Customer Success, Finance, Legal, People, Tech, Governance, Product. Build one at a time; only abstract a shared framework after #2 ships so we learn what actually generalizes.
+- [ ] **Content sourcing** — AI generates the catalog outlines; Lucas edits for accuracy and voice. Bias toward strategic-structure quality over polished copy at this stage.
+
+### Validation framework variants — for future A/B testing
+The first `/validate` build uses a 7-question spine (Is the problem real? / Painful or frequent enough? / Customer reachable? / Will they pay? / Pay enough? / Can you deliver? / Will they stay?). Other established models worth building as variants and testing against each other later:
+
+- [ ] **Lean Riskiest Assumption Test (RAT)** — strip each idea down to its single riskiest assumption and design the cheapest experiment to kill it. Variant where the tool forces you to name one RAT before listing experiments.
+- [ ] **Mom Test only** — Rob Fitzpatrick's interview-only loop. Variant that defers all other experiments until the interview-based problem validation passes.
+- [ ] **Problem → Solution → Market → Business Model → Channel** — linear funnel framing. Variant that gates each stage on the previous one being signed off, instead of running questions in parallel.
+- [ ] **Jobs-To-Be-Done (JTBD)** — frame validation around the "job" the customer is hiring your product to do. Variant that opens with the job-statement template before any experiments are surfaced.
+- [ ] **Lean Canvas / Business Model Canvas** — variant where validation is structured around the 9 canvas boxes, with each box gating its own experiments.
+- [ ] **YC's "talk to users / build something people want"** — minimalist variant: only two experiment categories (talk-to-users / build-and-ship), no taxonomy.
+
+Decision point once we have data: do users find the 7-question spine more useful, or one of these variants? Could become a "pick your validation philosophy" toggle, or we converge on the highest-performing one.
+
 ---
 
 ## Business Ideas to Add to /ideas
