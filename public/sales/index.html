@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sales — Turn Interest Into Paid Commitment</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0a0a0c;--surface:#111114;--surface2:#18181c;--surface3:#1f1f24;
+  --border:#252529;--border-light:#333338;
+  --text:#e8e8ec;--text-dim:#9a9aa5;--text-muted:#5a5a65;
+  --accent:#c8f540;--accent-dim:rgba(200,245,64,0.12);
+  --green:#4ade80;--green-dim:rgba(74,222,128,0.12);
+  --yellow:#facc15;--yellow-dim:rgba(250,204,21,0.12);
+  --red:#f87171;--red-dim:rgba(248,113,113,0.12);
+  --blue:#60a5fa;--blue-dim:rgba(96,165,250,0.12);
+  --purple:#a78bfa;--purple-dim:rgba(167,139,250,0.12);
+  --radius:6px;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);color:var(--text);font-family:'DM Mono',monospace;font-size:12px;line-height:1.55;height:100vh;overflow:hidden;}
+
+.topbar{padding:18px 24px;border-bottom:1px solid var(--border);display:flex;align-items:baseline;gap:16px;flex-shrink:0;}
+.topbar h1{font-family:'Instrument Serif',serif;font-size:28px;font-weight:400;}
+.topbar h1 em{color:var(--accent);font-style:italic;}
+.topbar .sub{color:var(--text-muted);font-size:10px;letter-spacing:0.5px;}
+.topbar .spacer{flex:1;}
+.topbar .stagejump{font-size:10px;color:var(--text-muted);text-decoration:none;border:1px solid var(--border);padding:6px 12px;border-radius:6px;}
+.topbar .stagejump:hover{color:var(--accent);border-color:var(--accent);}
+
+.layout{display:grid;grid-template-columns:360px 1fr;height:calc(100vh - 63px);overflow:hidden;}
+.left{border-right:1px solid var(--border);overflow-y:auto;background:var(--surface);}
+.right{overflow-y:auto;display:flex;flex-direction:column;}
+.left::-webkit-scrollbar,.right::-webkit-scrollbar{width:4px;}
+.left::-webkit-scrollbar-thumb,.right::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px;}
+
+.isec{border-bottom:1px solid var(--border);}
+.isec-head{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;cursor:pointer;user-select:none;transition:background 0.15s;}
+.isec-head:hover{background:var(--surface2);}
+.isec-title{font-size:10px;text-transform:uppercase;letter-spacing:1.5px;color:var(--text-muted);font-weight:500;}
+.isec-arrow{color:var(--text-muted);font-size:10px;transition:transform 0.2s;}
+.isec.open .isec-arrow{transform:rotate(90deg);}
+.isec-body{padding:0 16px 16px;display:none;}
+.isec.open .isec-body{display:block;}
+.isec-badge{font-size:9px;padding:2px 7px;border-radius:10px;margin-left:8px;background:var(--green-dim);color:var(--green);}
+.isec-badge.wip{background:var(--yellow-dim);color:var(--yellow);}
+.tier-label{font-size:9px;color:var(--text-muted);padding:8px 16px 4px;text-transform:uppercase;letter-spacing:1.5px;border-bottom:1px solid var(--border);background:var(--bg);}
+
+.fg{margin-bottom:12px;}
+.fg label{display:block;font-size:10px;color:var(--text-muted);margin-bottom:4px;letter-spacing:0.5px;text-transform:uppercase;}
+.fg input,.fg textarea{width:100%;background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:8px 10px;border-radius:var(--radius);font-family:'DM Mono',monospace;font-size:12px;}
+.fg textarea{resize:vertical;min-height:60px;line-height:1.5;}
+.fg input:focus,.fg textarea:focus{outline:none;border-color:var(--accent);}
+.hint{font-size:10px;color:var(--text-muted);margin-bottom:6px;font-style:italic;line-height:1.5;}
+
+.pill-grid{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px;}
+.pill{font-size:11px;padding:5px 12px;border-radius:20px;border:1px solid var(--border);color:var(--text-muted);cursor:pointer;background:transparent;font-family:'DM Mono',monospace;transition:all 0.15s;user-select:none;}
+.pill:hover{border-color:var(--text-dim);color:var(--text-dim);}
+.pill.selected{border-color:var(--accent);color:var(--accent);background:var(--accent-dim);}
+
+.q-input-block{padding:10px 12px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:10px;}
+.q-input-block .q-key{font-size:10px;color:var(--accent);font-weight:500;letter-spacing:0.5px;margin-bottom:2px;}
+.q-input-block .q-title{font-size:12px;color:var(--text);margin-bottom:6px;}
+.q-input-block textarea{width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text);padding:6px 8px;border-radius:4px;font-family:'DM Mono',monospace;font-size:11px;resize:vertical;min-height:44px;line-height:1.5;}
+.q-input-block textarea:focus{outline:none;border-color:var(--accent);}
+.q-status-row{display:flex;gap:6px;margin-top:6px;}
+.q-status-btn{font-size:9px;padding:3px 8px;border-radius:10px;border:1px solid var(--border);color:var(--text-muted);cursor:pointer;background:transparent;font-family:'DM Mono',monospace;letter-spacing:0.5px;text-transform:uppercase;}
+.q-status-btn:hover{color:var(--text-dim);}
+.q-status-btn.active-done{border-color:var(--green);color:var(--green);background:var(--green-dim);}
+.q-status-btn.active-wip{border-color:var(--yellow);color:var(--yellow);background:var(--yellow-dim);}
+.q-status-btn.active-todo{border-color:var(--text-dim);color:var(--text);background:transparent;}
+
+.submit-bar{display:flex;gap:8px;padding:12px 16px;border-top:1px solid var(--border);background:var(--surface);position:sticky;bottom:0;}
+.bar-btn{padding:8px 12px;background:var(--surface2);border:1px solid var(--border);color:var(--text-dim);border-radius:var(--radius);cursor:pointer;font-family:'DM Mono',monospace;font-size:11px;}
+.bar-btn:hover{border-color:var(--text-dim);color:var(--text);}
+.bar-btn.danger{color:var(--red);}
+.submit-btn{flex:1;padding:8px 12px;background:var(--accent);border:none;color:var(--bg);border-radius:var(--radius);cursor:pointer;font-family:'DM Mono',monospace;font-size:11px;font-weight:500;}
+.submit-btn:hover{opacity:0.9;}
+.submit-btn:disabled{opacity:0.3;cursor:not-allowed;}
+
+.rtabs{display:flex;gap:0;padding:12px 24px 0;border-bottom:1px solid var(--border);background:var(--bg);position:sticky;top:0;z-index:10;}
+.rtab{padding:8px 14px;background:transparent;border:none;color:var(--text-muted);cursor:pointer;font-family:'DM Mono',monospace;font-size:11px;border-bottom:2px solid transparent;transition:all 0.15s;}
+.rtab:hover{color:var(--text-dim);}
+.rtab.active{color:var(--accent);border-bottom-color:var(--accent);}
+
+.rc{padding:24px;}
+.section-head{font-family:'Instrument Serif',serif;font-size:24px;margin-bottom:4px;}
+.section-intro{color:var(--text-dim);font-size:12px;margin-bottom:20px;max-width:640px;line-height:1.65;}
+
+.q-row{display:grid;grid-template-columns:36px 1fr auto;gap:12px;padding:14px 0;border-bottom:1px solid var(--border);align-items:start;}
+.q-num{font-family:'Instrument Serif',serif;font-size:22px;color:var(--accent);font-style:italic;line-height:1;padding-top:2px;}
+.q-txt{color:var(--text);font-size:14px;line-height:1.4;}
+.q-txt small{display:block;color:var(--text-muted);font-size:11px;margin-top:4px;font-style:italic;line-height:1.5;}
+.q-state{font-size:9px;padding:3px 8px;border-radius:10px;letter-spacing:0.5px;text-transform:uppercase;white-space:nowrap;}
+.q-state.done{background:var(--green-dim);color:var(--green);}
+.q-state.wip{background:var(--yellow-dim);color:var(--yellow);}
+.q-state.todo{background:rgba(255,255,255,0.05);color:var(--text-muted);}
+
+.i-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px;margin-bottom:8px;}
+.i-card.hidden-motion{display:none;}
+.i-card-head{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:6px;flex-wrap:wrap;}
+.i-name{font-size:13px;color:var(--text);font-weight:500;}
+.i-cat{font-size:9px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;padding:2px 7px;background:var(--surface2);border-radius:4px;}
+.i-answers{display:flex;gap:4px;flex-wrap:wrap;}
+.i-answer-chip{font-size:9px;color:var(--accent);background:var(--accent-dim);padding:2px 6px;border-radius:8px;letter-spacing:0.3px;}
+.i-motion-chip{font-size:9px;color:var(--purple);background:var(--purple-dim);padding:2px 6px;border-radius:8px;letter-spacing:0.3px;}
+.i-meta{font-size:10px;color:var(--text-muted);display:flex;gap:12px;margin-bottom:8px;flex-wrap:wrap;}
+.i-meta span{color:var(--text-dim);}
+.i-desc{font-size:12px;color:var(--text-dim);margin-bottom:8px;line-height:1.55;}
+.i-fail{font-size:11px;color:var(--red);margin-top:6px;line-height:1.45;}
+.i-fail::before{content:'⚠ ';color:var(--red);}
+.i-check{display:flex;gap:8px;align-items:flex-start;padding-top:8px;border-top:1px solid var(--border);}
+.i-check input{margin:2px 0 0 0;accent-color:var(--accent);flex-shrink:0;}
+.i-check-body{flex:1;display:flex;flex-direction:column;gap:6px;}
+.i-check label{font-size:11px;color:var(--text-dim);cursor:pointer;}
+.i-check textarea{width:100%;background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:6px 8px;border-radius:4px;font-family:'DM Mono',monospace;font-size:11px;resize:vertical;min-height:32px;line-height:1.5;}
+
+.filter-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;padding-bottom:12px;}
+.filter-row+.filter-row{border-top:1px solid var(--border);padding-top:12px;margin-top:-4px;}
+.filter-row-last{border-bottom:1px solid var(--border);padding-bottom:16px;margin-bottom:16px;}
+.fc{font-size:10px;padding:5px 12px;border-radius:20px;border:1px solid var(--border);color:var(--text-muted);cursor:pointer;background:transparent;font-family:'DM Mono',monospace;transition:all 0.15s;}
+.fc:hover{color:var(--text-dim);border-color:var(--text-dim);}
+.fc.active{color:var(--accent);border-color:var(--accent);background:var(--accent-dim);}
+.filter-label{font-size:9px;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase;margin-right:8px;align-self:center;}
+
+.report{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:28px;max-width:720px;}
+.report h2{font-family:'Instrument Serif',serif;font-size:28px;margin-bottom:6px;}
+.report .report-tag{font-size:10px;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:24px;}
+.report-block{margin-bottom:22px;padding-bottom:20px;border-bottom:1px solid var(--border);}
+.report-block:last-child{border-bottom:none;}
+.report-block h3{font-size:11px;color:var(--accent);letter-spacing:1px;text-transform:uppercase;margin-bottom:6px;display:flex;justify-content:space-between;}
+.report-block h3 .st{font-size:9px;padding:2px 7px;border-radius:10px;letter-spacing:0.5px;}
+.report-block h3 .st.done{background:var(--green-dim);color:var(--green);}
+.report-block h3 .st.wip{background:var(--yellow-dim);color:var(--yellow);}
+.report-block h3 .st.todo{background:rgba(255,255,255,0.05);color:var(--text-muted);}
+.report-block .q-title{font-size:14px;color:var(--text);margin-bottom:8px;font-family:'Instrument Serif',serif;}
+.report-block p{color:var(--text-dim);font-size:13px;line-height:1.65;margin-bottom:8px;}
+.report-block .empty{color:var(--text-muted);font-style:italic;}
+.report-block ul{list-style:none;padding-left:0;margin-top:6px;}
+.report-block li{color:var(--text-dim);font-size:12px;line-height:1.7;padding-left:14px;position:relative;}
+.report-block li::before{content:'—';position:absolute;left:0;color:var(--text-muted);}
+
+.copy-btn{background:var(--accent);color:var(--bg);border:none;padding:8px 20px;border-radius:var(--radius);font-family:'DM Mono',monospace;font-size:11px;cursor:pointer;font-weight:500;margin-right:8px;transition:opacity 0.15s;}
+.copy-btn:hover{opacity:0.85;}
+.copy-btn.secondary{background:var(--surface2);color:var(--text);border:1px solid var(--border);}
+.json-box{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px;font-size:10px;color:var(--text-dim);white-space:pre-wrap;word-wrap:break-word;max-height:400px;overflow-y:auto;margin-top:16px;line-height:1.45;}
+
+.identity-summary{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:12px 14px;margin-bottom:14px;}
+.identity-summary .idsum-name{font-family:'Instrument Serif',serif;font-size:16px;color:var(--text);margin-bottom:2px;}
+.identity-summary .idsum-sub{font-size:10px;color:var(--text-muted);}
+.identity-summary .idsum-imported{font-size:9px;color:var(--accent);letter-spacing:0.5px;margin-top:6px;text-transform:uppercase;}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <h1>Sa<em>les</em></h1>
+  <span class="sub">Turn interest into paid commitment</span>
+  <span class="spacer"></span>
+  <a href="/hub" class="stagejump">← /hub</a>
+  <a href="/start" class="stagejump">Start</a>
+  <a href="/roadmap" class="stagejump">Roadmap →</a>
+</div>
+
+<div class="layout">
+  <div class="left" id="leftPanel"></div>
+  <div class="right">
+    <div class="rtabs" id="rtabs"></div>
+    <div class="rc" id="rc"></div>
+  </div>
+</div>
+
+<script>
+// ---- STATE ----
+const S={
+  businessName:'',problem:'',customer:'',
+  motions:[], // multi-select
+  icp:'',acv:'',cycleLength:'',
+  importedFrom:null,
+  qState:{S1:{status:'todo',ev:''},S2:{status:'todo',ev:''},S3:{status:'todo',ev:''},S4:{status:'todo',ev:''},S5:{status:'todo',ev:''},S6:{status:'todo',ev:''},S7:{status:'todo',ev:''}},
+  ran:{},
+  tab:'formula',
+  qFilter:'all',
+  catFilter:'all',
+};
+
+// ---- Q SPINE ----
+const QUESTIONS=[
+  {id:'S1',n:'ICP defined?',hint:'Do you have a written Ideal Customer Profile — sharp, named, with anti-ICP?'},
+  {id:'S2',n:'Lead source working?',hint:'Do you have ≥1 source of qualified leads with predictable output?'},
+  {id:'S3',n:'Discovery process?',hint:'Do you surface real fit and pain in <2 calls?'},
+  {id:'S4',n:'Close rate in band?',hint:'PLG: 2–5% · SMB: 15–30% · mid-market: 20–40% · enterprise: 10–25%'},
+  {id:'S5',n:'Cycle length OK?',hint:'Rough rule: cycle in months ≤ ACV in $1k units.'},
+  {id:'S6',n:'Expansion working?',hint:'NRR > 100% (B2B) or repeat purchase > 30% (B2C)?'},
+  {id:'S7',n:'Scalable beyond founder?',hint:'Can someone other than the founder close a deal?'},
+];
+
+// ---- CATALOG ----
+const CATALOG=[
+  // S1 ICP
+  {id:'icp-write-up',n:'ICP One-Pager',cat:'icp',a:['S1'],motion:['founder-led','inside-sales','field','plg-assisted','channel'],cost:'$',ttv:'2 hr',effort:'solo-hour',
+   d:'Firmographics, trigger event, buyer + user + economic-buyer roles, and explicit anti-ICP. Without this, "qualified lead" means nothing.',
+   fail:'Writing it once, ignoring it forever. Revisit every 90 days as data comes in.'},
+  {id:'icp-50-named',n:'50 Named Accounts',cat:'icp',a:['S1','S2'],motion:['founder-led','inside-sales','field'],cost:'$',ttv:'1 d',effort:'solo-day',
+   d:'50 real, named target accounts (or 100 named individuals for PLG/SMB). If you can\'t write the list, ICP is too broad.',
+   fail:'Listing logos you\'d love that don\'t match your actual ICP.'},
+  {id:'disqualification-criteria',n:'Disqualification Criteria',cat:'icp',a:['S1','S3'],motion:['founder-led','inside-sales','field'],cost:'$',ttv:'1 hr',effort:'solo-hour',
+   d:'3–5 written reasons you\'d hang up on a prospect even if they wanted to buy. Saying no faster is the highest-leverage sales skill.',
+   fail:'Soft disqualifiers ("not a great fit"). Real ones are mechanical.'},
+  // S2 Lead gen
+  {id:'cold-outbound-sprint',n:'Cold Outbound Sprint',cat:'lead-gen',a:['S2','S3','S4'],motion:['founder-led','inside-sales'],cost:'$',ttv:'4 wk',effort:'solo-wk',
+   d:'100–200 personalized email + LinkedIn to the named-account list. Founders do the first 100 personally.',
+   fail:'Templated spray. Real personalization gets 10x the reply rate.'},
+  {id:'inbound-content-system',n:'Inbound Content System',cat:'lead-gen',a:['S2'],motion:['plg-assisted','founder-led'],cost:'$$',ttv:'12+ wk',effort:'solo-wk',
+   d:'Blog / podcast / newsletter targeting ICP\'s keywords. Compounds slowly, pays forever.',
+   fail:'Producing content for your peers, not your buyers.'},
+  {id:'referral-mechanic',n:'Referral Mechanic',cat:'lead-gen',a:['S2'],motion:['founder-led','inside-sales','plg-assisted'],cost:'$',ttv:'4 wk',effort:'solo-wk',
+   d:'Deliberate ask, structured: which moment, who to refer (template), incentive. Best programs use the moment of delight.',
+   fail:'"Tell your friends!" with no mechanic.'},
+  {id:'partner-channel',n:'Partner Channel',cat:'lead-gen',a:['S2'],motion:['channel'],cost:'$$',ttv:'12+ wk',effort:'solo-wk',
+   d:'2–3 signed partners (agencies, vendors, SIs) actively referring or reselling. Commission structure documented.',
+   fail:'Partners without enablement. They need leads-from-you to send leads-to-you.'},
+  {id:'event-presence',n:'Targeted Event Presence',cat:'lead-gen',a:['S2'],motion:['field'],cost:'$$$',ttv:'1–4 wk',effort:'team-wk',
+   d:'Attending or sponsoring 2–3 events. Goal isn\'t booth traffic; it\'s 5–10 hand-shake meetings booked in advance.',
+   fail:'Showing up unprepared. Meetings get booked beforehand via cold outreach.'},
+  // S3 Discovery
+  {id:'discovery-call-script',n:'Discovery Call Script',cat:'discovery',a:['S3','S4'],motion:['founder-led','inside-sales','field'],cost:'$',ttv:'1 d',effort:'solo-day',
+   d:'Repeatable 30-min structure: situation → pain → impact → consequence → urgency → process. A flow, not a checklist.',
+   fail:'Reading the script. The script is rehearsed enough to disappear.'},
+  {id:'meddic-or-bant',n:'Qualification Framework (MEDDIC / BANT / SPICED)',cat:'qualify',a:['S3','S4'],motion:['inside-sales','field'],cost:'$',ttv:'1 d',effort:'solo-day',
+   d:'Picked framework (BANT for SMB, MEDDIC for mid+, SPICED for relationship-led), scored in CRM.',
+   fail:'Adopting a framework you don\'t use. If it\'s not in the CRM, it\'s not a framework.'},
+  {id:'champion-test',n:'Champion Test',cat:'qualify',a:['S3','S5'],motion:['inside-sales','field'],cost:'$',ttv:'concurrent',effort:'solo-hour',
+   d:'Can your "champion" get you a meeting with their boss in <2 weeks, share an internal doc, name the budget approver? If no, they\'re a bystander.',
+   fail:'Mistaking enthusiasm for influence.'},
+  // S4 Demo / Close
+  {id:'demo-script',n:'Demo Script (Pain-First)',cat:'demo',a:['S4'],motion:['founder-led','inside-sales','field'],cost:'$',ttv:'1 d',effort:'solo-day',
+   d:'20 min opening with prospect\'s pain paraphrased back, showing only the slice that addresses it. Save the rest.',
+   fail:'Feature tours. Tour is for marketing; sales is for closing.'},
+  {id:'proof-of-value',n:'Pilot / Proof-of-Value Structure',cat:'close',a:['S4','S5'],motion:['inside-sales','field'],cost:'$$',ttv:'2–6 wk',effort:'solo-wk',
+   d:'Signed pilot: scope, success metric, decision date, conversion path. Time-boxed; auto-converts unless cancelled.',
+   fail:'Open-ended pilots. "Try it for a while" becomes forever.'},
+  {id:'objection-handling-doc',n:'Objection Handling Doc',cat:'close',a:['S4','S5'],motion:['founder-led','inside-sales','field'],cost:'$',ttv:'1 wk',effort:'solo-wk',
+   d:'Top 10 objections, the real concern beneath each, 2 verbal moves for each. Built from listening to lost-deal calls.',
+   fail:'Treating objections as scripts to argue against. They\'re invitations to learn what\'s blocking.'},
+  {id:'discount-discipline',n:'Discount Discipline',cat:'close',a:['S4','S5'],motion:['founder-led','inside-sales','field'],cost:'$',ttv:'1 hr',effort:'solo-hour',
+   d:'When you discount, how much, in exchange for what (multi-year, prepay, case study, logo, larger seat count). Discounts without trades teach expectations.',
+   fail:'Discounting to close. If price is the objection, value isn\'t established.'},
+  // S5 Ops / Pipeline
+  {id:'pipeline-stages',n:'Defined Pipeline Stages',cat:'ops',a:['S5'],motion:['inside-sales','field'],cost:'$',ttv:'1 d',effort:'solo-day',
+   d:'5–7 stages with explicit entry criteria (not "in discovery" but "completed discovery AND identified pain AND confirmed budget owner").',
+   fail:'Stages that describe activity, not commitment.'},
+  {id:'weighted-forecast',n:'Weighted Forecast',cat:'ops',a:['S5'],motion:['inside-sales','field'],cost:'$',ttv:'1 d',effort:'solo-day',
+   d:'Pipeline value × stage-specific close probability. Tracked monthly; calibrated quarterly.',
+   fail:'Letting reps set probabilities by gut. Probabilities come from data.'},
+  {id:'cycle-time-audit',n:'Sales-Cycle Time Audit',cat:'ops',a:['S5'],motion:['inside-sales','field'],cost:'$',ttv:'1 wk',effort:'solo-wk',
+   d:'Median time-in-stage by stage and deal size. Where deals stall = process gap or qual gap.',
+   fail:'Treating cycle as fixed. Identify the single longest stage; attack it.'},
+  // S6 Expansion
+  {id:'expansion-playbook',n:'Expansion Playbook',cat:'expansion',a:['S6'],motion:['inside-sales','field'],cost:'$$',ttv:'4–8 wk',effort:'solo-wk',
+   d:'Documented triggers for expansion (usage hits X, new use case, headcount grows) and the play to run for each.',
+   fail:'Treating CS as expansion without giving them sales skills.'},
+  {id:'qbr-template',n:'Customer QBR Template',cat:'expansion',a:['S6','S7'],motion:['inside-sales','field'],cost:'$',ttv:'2 d',effort:'solo-wk',
+   d:'QBR focused on customer outcomes, not your features. Ends with the customer asking what\'s next.',
+   fail:'QBRs that become status meetings.'},
+  // S7 Enable
+  {id:'founder-to-rep-transition',n:'Founder-to-First-Rep Transition',cat:'enable',a:['S7'],motion:['founder-led','inside-sales'],cost:'$$$',ttv:'12+ wk',effort:'team-wk',
+   d:'90-day plan: ride-alongs, shadowing, joint deals, independent close. Don\'t hire until you have a motion to hand off.',
+   fail:'Hiring a senior AE to "figure out the motion." Reps execute; they don\'t invent.'},
+  {id:'sales-enablement-doc-set',n:'Enablement Doc Set',cat:'enable',a:['S7'],motion:['inside-sales','field'],cost:'$$',ttv:'4 wk',effort:'solo-wk',
+   d:'Pack: ICP, discovery script, demo flow, objections, pricing rules, battle cards, lost patterns. Everything a rep needs to onboard in 30 days.',
+   fail:'Building it after the hire. The doc is the prerequisite.'},
+  {id:'win-loss-analysis',n:'Win/Loss Analysis',cat:'ops',a:['S4','S5','S6','S7'],motion:['founder-led','inside-sales','field'],cost:'$',ttv:'2 wk',effort:'solo-wk',
+   d:'5 won + 5 lost interviews. What they considered, why they chose (or didn\'t), what they wished you\'d done.',
+   fail:'Asking the buyer instead of the loser. Losers tell the truth if you stop selling.'},
+];
+
+const CAT_LABELS={icp:'ICP',['lead-gen']:'Lead gen',qualify:'Qualify',discovery:'Discovery',demo:'Demo',close:'Close',ops:'Pipeline ops',expansion:'Expansion',enable:'Enable'};
+const MOTION_LABELS={['founder-led']:'Founder-led',['inside-sales']:'Inside sales',field:'Field',['plg-assisted']:'PLG-assisted',channel:'Channel'};
+
+// ---- HELPERS ----
+function esc(s){const d=document.createElement('div');d.textContent=s==null?'':String(s);return d.innerHTML;}
+function toggleArr(arr,v){const i=arr.indexOf(v);if(i>-1)arr.splice(i,1);else arr.push(v);}
+function saveState(){try{localStorage.setItem('sales_v1',JSON.stringify(S));}catch(e){}}
+function loadState(){try{const v=localStorage.getItem('sales_v1');if(v){const p=JSON.parse(v);Object.assign(S,p);}}catch(e){}}
+
+function importFromPrior(){
+  const urlP=new URLSearchParams(window.location.search).get('plan');
+  if(!urlP)return false;
+  try{
+    const raw=decodeURIComponent(escape(atob(urlP)));
+    const data=JSON.parse(raw);
+    const fw=data.meta&&data.meta.framework;
+    if(['Ideate','Validate','Product','Hub','Marketing'].includes(fw)&&data.inputs){
+      S.businessName=data.inputs.businessName||S.businessName;
+      S.problem=data.inputs.problem||S.problem;
+      S.customer=data.inputs.customer||data.inputs.targetAudience||S.customer;
+      S.importedFrom=fw;
+      saveState();
+      return true;
+    }
+  }catch(e){console.warn('Could not import from prior tool:',e);}
+  return false;
+}
+
+function qDoneCount(){return QUESTIONS.filter(q=>S.qState[q.id].status==='done').length;}
+function qWipCount(){return QUESTIONS.filter(q=>S.qState[q.id].status==='wip').length;}
+
+// ---- LEFT PANEL ----
+const openSecs=new Set(['identity','s1-3']);
+function renderLeft(){
+  const el=document.getElementById('leftPanel');
+  const doneCt=qDoneCount();const wipCt=qWipCount();
+  el.innerHTML=`
+  <div class="tier-label">The Motion</div>
+  <div class="isec${openSecs.has('identity')?' open':''}" data-sec="identity">
+    <div class="isec-head"><span class="isec-title">What you're selling</span>${S.importedFrom?`<span class="isec-badge wip">from /${S.importedFrom.toLowerCase()}</span>`:''}<span class="isec-arrow">▸</span></div>
+    <div class="isec-body">
+      ${S.importedFrom?`<div class="identity-summary"><div class="idsum-name">${esc(S.businessName||'Your business')}</div><div class="idsum-sub">${esc((S.problem||'').slice(0,80))||'—'}</div><div class="idsum-imported">✓ Imported from /${S.importedFrom.toLowerCase()}</div></div>`:''}
+      <div class="fg"><label>Business Name</label><input type="text" id="inName" value="${esc(S.businessName)}" placeholder="e.g. Business MCP"></div>
+      <div class="fg"><label>What You're Selling</label><textarea id="inProblem" placeholder="One sentence.">${esc(S.problem)}</textarea></div>
+      <div class="fg"><label>Who You're Selling To</label><textarea id="inCustomer" placeholder="ICP shape.">${esc(S.customer)}</textarea></div>
+      <div class="fg"><label>Sales Motion(s)</label>
+        <div class="pill-grid" id="pillMotion">
+          ${Object.entries(MOTION_LABELS).map(([k,l])=>`<div class="pill${S.motions.includes(k)?' selected':''}" data-v="${k}">${l}</div>`).join('')}
+        </div>
+        <div class="hint" style="margin-top:6px">Multi-select. Filters the catalog to what fits your motion. Most early-stage founders start with founder-led + one other.</div>
+      </div>
+      <div class="fg"><label>ICP Summary</label><textarea id="inIcp" placeholder="One line — segment, size, trigger.">${esc(S.icp)}</textarea></div>
+      <div class="fg"><label>ACV (avg)</label><input type="text" id="inAcv" value="${esc(S.acv)}" placeholder="e.g. $2,400/yr"></div>
+      <div class="fg"><label>Sales Cycle (avg)</label><input type="text" id="inCycle" value="${esc(S.cycleLength)}" placeholder="e.g. 3 weeks"></div>
+    </div>
+  </div>
+
+  <div class="tier-label">Progress — S1–S3 (${doneCt} done · ${wipCt} in progress)</div>
+  <div class="isec${openSecs.has('s1-3')?' open':''}" data-sec="s1-3">
+    <div class="isec-head"><span class="isec-title">ICP · Lead source · Discovery</span><span class="isec-arrow">▸</span></div>
+    <div class="isec-body">
+      ${['S1','S2','S3'].map(qid=>renderQInputBlock(qid)).join('')}
+    </div>
+  </div>
+
+  <div class="tier-label">Progress — S4–S7</div>
+  <div class="isec${openSecs.has('s4-7')?' open':''}" data-sec="s4-7">
+    <div class="isec-head"><span class="isec-title">Close · Cycle · Expansion · Scale</span><span class="isec-arrow">▸</span></div>
+    <div class="isec-body">
+      ${['S4','S5','S6','S7'].map(qid=>renderQInputBlock(qid)).join('')}
+    </div>
+  </div>
+
+  <div class="submit-bar">
+    <button class="bar-btn" id="saveBtn">Save</button>
+    <button class="bar-btn danger" id="clearBtn">Clear</button>
+    <button class="submit-btn" id="submitBtn"${doneCt>=4?'':' disabled'}>See Report →</button>
+  </div>`;
+
+  // WIRE
+  document.querySelectorAll('.isec-head').forEach(h=>h.onclick=()=>{const p=h.parentElement;const sec=p.dataset.sec;if(openSecs.has(sec))openSecs.delete(sec);else openSecs.add(sec);p.classList.toggle('open');});
+  document.querySelectorAll('#pillMotion .pill').forEach(p=>p.onclick=()=>{toggleArr(S.motions,p.dataset.v);renderLeft();renderRight();});
+  const tie=(id,k)=>{const el=document.getElementById(id);if(el)el.oninput=()=>{S[k]=el.value;saveState();};};
+  tie('inName','businessName');tie('inProblem','problem');tie('inCustomer','customer');
+  tie('inIcp','icp');tie('inAcv','acv');tie('inCycle','cycleLength');
+  QUESTIONS.forEach(q=>{
+    const ta=document.getElementById('qev-'+q.id);
+    if(ta)ta.oninput=()=>{S.qState[q.id].ev=ta.value;saveState();updateQStatusBadges();};
+    ['todo','wip','done'].forEach(st=>{
+      const btn=document.getElementById(`qs-${q.id}-${st}`);
+      if(btn)btn.onclick=()=>{S.qState[q.id].status=st;saveState();renderLeftStatusOnly();renderRight();};
+    });
+  });
+  document.getElementById('saveBtn').onclick=()=>{saveState();document.getElementById('saveBtn').textContent='Saved';setTimeout(()=>document.getElementById('saveBtn').textContent='Save',1000);};
+  document.getElementById('clearBtn').onclick=()=>{if(confirm('Clear all inputs and start fresh?')){localStorage.removeItem('sales_v1');location.reload();}};
+  document.getElementById('submitBtn').onclick=()=>{S.tab='report';renderRight();};
+}
+
+function renderQInputBlock(qid){
+  const q=QUESTIONS.find(x=>x.id===qid);
+  const s=S.qState[qid];
+  return `<div class="q-input-block">
+    <div class="q-key">${qid}</div>
+    <div class="q-title">${q.n}</div>
+    <div class="hint">${q.hint}</div>
+    <textarea id="qev-${qid}" placeholder="Numbers, notes, or blockers.">${esc(s.ev)}</textarea>
+    <div class="q-status-row">
+      <button id="qs-${qid}-todo" class="q-status-btn${s.status==='todo'?' active-todo':''}">To do</button>
+      <button id="qs-${qid}-wip" class="q-status-btn${s.status==='wip'?' active-wip':''}">In progress</button>
+      <button id="qs-${qid}-done" class="q-status-btn${s.status==='done'?' active-done':''}">Done ✓</button>
+    </div>
+  </div>`;
+}
+
+function renderLeftStatusOnly(){
+  QUESTIONS.forEach(q=>{
+    const s=S.qState[q.id];
+    ['todo','wip','done'].forEach(st=>{
+      const btn=document.getElementById(`qs-${q.id}-${st}`);
+      if(!btn)return;
+      btn.classList.remove('active-todo','active-wip','active-done');
+      if(s.status===st)btn.classList.add('active-'+st);
+    });
+  });
+  updateQStatusBadges();
+  const btn=document.getElementById('submitBtn');
+  if(btn)btn.disabled=qDoneCount()<4;
+}
+function updateQStatusBadges(){
+  const labels=document.querySelectorAll('.tier-label');
+  if(labels[1])labels[1].textContent=`Progress — S1–S3 (${qDoneCount()} done · ${qWipCount()} in progress)`;
+}
+
+// ---- RIGHT PANEL ----
+function renderRight(){
+  const tabs=[['formula','Formula'],['activities','Activities'],['report','Report'],['export','Export']];
+  document.getElementById('rtabs').innerHTML=tabs.map(([t,l])=>`<button class="rtab${S.tab===t?' active':''}" data-t="${t}">${l}</button>`).join('');
+  document.querySelectorAll('.rtab').forEach(el=>el.onclick=()=>{S.tab=el.dataset.t;renderRight();});
+  const rc=document.getElementById('rc');
+
+  if(S.tab==='formula'){
+    let h=`<div class="section-head">The Seven Questions</div>
+    <p class="section-intro">Marketing brings attention. Sales converts it. Different motion, same underlying discipline: seven questions to know your sales machine works before you scale headcount into it.</p>`;
+    QUESTIONS.forEach((q,i)=>{
+      const st=S.qState[q.id].status;const label=st==='done'?'✓ Done':st==='wip'?'In progress':'To do';
+      h+=`<div class="q-row"><div class="q-num">${i+1}</div><div class="q-txt">${q.n}<small>${q.hint}</small></div><div class="q-state ${st}">${label}</div></div>`;
+    });
+    rc.innerHTML=h;
+
+  }else if(S.tab==='activities'){
+    const qFilters=['all','S1','S2','S3','S4','S5','S6','S7'];
+    const catFilters=['all','icp','lead-gen','qualify','discovery','demo','close','ops','expansion','enable'];
+    let h=`<div class="section-head">Activities</div>
+    <p class="section-intro">24 sales activities. Filter by question, category, or motion. Ongoing ops items (pipeline stages, forecast, win/loss) sit next to time-boxed sprints (cold outbound, sales enablement doc set).</p>
+    <div class="filter-row"><span class="filter-label">Question:</span>${qFilters.map(f=>`<button class="fc${S.qFilter===f?' active':''}" data-f="${f}">${f==='all'?'All':f}</button>`).join('')}</div>
+    <div class="filter-row filter-row-last"><span class="filter-label">Category:</span>${catFilters.map(f=>`<button class="fc cat${S.catFilter===f?' active':''}" data-c="${f}">${f==='all'?'All':CAT_LABELS[f]}</button>`).join('')}</div>`;
+    const shown=CATALOG.filter(i=>(S.qFilter==='all'||i.a.includes(S.qFilter))&&(S.catFilter==='all'||i.cat===S.catFilter));
+    for(const i of shown){
+      const hiddenByMotion=S.motions.length>0&&!i.motion.some(m=>S.motions.includes(m));
+      const state=S.ran[i.id]||{done:false,notes:''};
+      h+=`<div class="i-card${hiddenByMotion?' hidden-motion':''}">
+        <div class="i-card-head">
+          <div class="i-name">${esc(i.n)}</div>
+          <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+            <div class="i-answers">${i.a.map(a=>`<span class="i-answer-chip">${a}</span>`).join('')}${i.motion.map(m=>`<span class="i-motion-chip">${MOTION_LABELS[m].split(' ')[0]}</span>`).join('')}</div>
+            <div class="i-cat">${CAT_LABELS[i.cat]}</div>
+          </div>
+        </div>
+        <div class="i-meta">Cost: <span>${i.cost}</span> · TTV: <span>${i.ttv}</span> · Effort: <span>${i.effort}</span></div>
+        <div class="i-desc">${esc(i.d)}</div>
+        <div class="i-fail">${esc(i.fail)}</div>
+        <div class="i-check">
+          <input type="checkbox" id="ck-${i.id}"${state.done?' checked':''}>
+          <div class="i-check-body">
+            <label for="ck-${i.id}">Done / running</label>
+            <textarea data-id="${i.id}" placeholder="Notes, numbers, next step">${esc(state.notes)}</textarea>
+          </div>
+        </div>
+      </div>`;
+    }
+    if(S.motions.length===0){h+=`<p class="section-intro" style="color:var(--yellow);margin-top:16px">Pick your sales motion(s) on the left to filter — otherwise you see everything.</p>`;}
+    rc.innerHTML=h;
+    document.querySelectorAll('.fc:not(.cat)').forEach(b=>b.onclick=()=>{S.qFilter=b.dataset.f;renderRight();});
+    document.querySelectorAll('.fc.cat').forEach(b=>b.onclick=()=>{S.catFilter=b.dataset.c;renderRight();});
+    shown.forEach(i=>{
+      const cb=document.getElementById('ck-'+i.id);
+      if(cb)cb.onchange=()=>{S.ran[i.id]=S.ran[i.id]||{done:false,notes:''};S.ran[i.id].done=cb.checked;saveState();};
+    });
+    document.querySelectorAll('.i-check textarea').forEach(t=>{
+      t.oninput=()=>{const id=t.dataset.id;S.ran[id]=S.ran[id]||{done:false,notes:''};S.ran[id].notes=t.value;saveState();};
+    });
+
+  }else if(S.tab==='report'){
+    const nm=S.businessName||'Untitled Sales Motion';
+    const ranList=Object.entries(S.ran).filter(([_,v])=>v.done).map(([id])=>CATALOG.find(c=>c.id===id)).filter(Boolean);
+    let h=`<div class="report">
+      <div class="report-tag">Sales Status · ${new Date().toISOString().slice(0,10)}</div>
+      <h2>${esc(nm)}</h2>
+      <div class="report-block">
+        <div class="q-title" style="font-size:12px;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px">The Motion</div>
+        <p class="${S.problem?'':'empty'}">${esc(S.problem)||'Not yet articulated.'}</p>
+        ${S.customer?`<p style="color:var(--text-muted);font-size:11px">Customer: ${esc(S.customer)}</p>`:''}
+        ${S.motions.length?`<p style="color:var(--text-muted);font-size:11px">Motion: ${S.motions.map(m=>esc(MOTION_LABELS[m])).join(', ')}</p>`:''}
+        ${S.icp?`<p style="color:var(--text-muted);font-size:11px">ICP: ${esc(S.icp)}</p>`:''}
+        ${(S.acv||S.cycleLength)?`<p style="color:var(--text-muted);font-size:11px">${S.acv?`ACV: ${esc(S.acv)}`:''}${S.acv&&S.cycleLength?' · ':''}${S.cycleLength?`Cycle: ${esc(S.cycleLength)}`:''}</p>`:''}
+      </div>`;
+    QUESTIONS.forEach(q=>{
+      const s=S.qState[q.id];
+      h+=`<div class="report-block">
+        <h3>${q.id} — ${q.n} <span class="st ${s.status}">${s.status==='done'?'✓ Done':s.status==='wip'?'In progress':'To do'}</span></h3>
+        <p class="${s.ev?'':'empty'}">${esc(s.ev)||'No data yet.'}</p>
+      </div>`;
+    });
+    if(ranList.length){
+      h+=`<div class="report-block"><h3>Activities Running / Done</h3><ul>${ranList.map(x=>`<li>${esc(x.n)}${S.ran[x.id].notes?` — <span style="color:var(--text-muted)">${esc(S.ran[x.id].notes)}</span>`:''}</li>`).join('')}</ul></div>`;
+    }
+    const readiness=qDoneCount();
+    const nextStep=readiness>=6?'Motion is repeatable. Consider first rep hire — but ship enablement docs before onboarding them.':readiness>=4?'Solid foundation. Focus S4–S5 (close rate, cycle time) before scaling.':'Foundations first: nail ICP (S1), get one working lead source (S2), and structure discovery (S3).';
+    h+=`<div class="report-block" style="background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:16px;margin-top:12px"><h3>Next</h3><p>${nextStep}</p></div>`;
+    h+=`</div>
+    <div style="margin-top:20px"><button class="copy-btn" id="toRoadmap">Open Roadmap →</button><button class="copy-btn secondary" id="copyReport">Copy Report</button></div>`;
+    rc.innerHTML=h;
+    document.getElementById('toRoadmap').onclick=openRoadmapWithPlan;
+    document.getElementById('copyReport').onclick=()=>{const t=document.querySelector('.report').innerText;navigator.clipboard.writeText(t).then(()=>{document.getElementById('copyReport').textContent='Copied!';setTimeout(()=>document.getElementById('copyReport').textContent='Copy Report',1500);});};
+
+  }else if(S.tab==='export'){
+    const jsonStr=JSON.stringify(buildExportJSON(),null,2);
+    let h=`<div class="section-head">Export</div>
+    <p class="section-intro">Sales state as JSON. Feeds /roadmap for a customer-facing view, or any downstream CRM / dashboard.</p>
+    <button class="copy-btn" id="toRoadmap2">Open Roadmap →</button>
+    <button class="copy-btn secondary" id="copyJson">Copy JSON</button>
+    <div class="json-box">${esc(jsonStr)}</div>`;
+    rc.innerHTML=h;
+    document.getElementById('toRoadmap2').onclick=openRoadmapWithPlan;
+    document.getElementById('copyJson').onclick=()=>{navigator.clipboard.writeText(jsonStr).then(()=>{document.getElementById('copyJson').textContent='Copied!';setTimeout(()=>document.getElementById('copyJson').textContent='Copy JSON',1500);});};
+  }
+  saveState();
+}
+
+function buildExportJSON(){
+  const progress={};QUESTIONS.forEach(q=>{progress[q.id]={status:S.qState[q.id].status,notes:S.qState[q.id].ev||null};});
+  const ran=Object.entries(S.ran).filter(([_,v])=>v.done).map(([id,v])=>{const c=CATALOG.find(x=>x.id===id);return{id,name:c?.n,category:c?.cat,motion:c?.motion,notes:v.notes||null};});
+  return{
+    meta:{framework:'Sales',version:'v1',exported:new Date().toISOString(),importedFrom:S.importedFrom},
+    inputs:{
+      businessName:S.businessName||null,
+      whatYouSell:S.problem||null,
+      customer:S.customer||null,
+      motions:S.motions,
+      icp:S.icp||null,
+      acv:S.acv||null,
+      cycleLength:S.cycleLength||null,
+    },
+    progress,
+    activities:ran,
+    readiness:{
+      questionsDone:qDoneCount(),
+      questionsInProgress:qWipCount(),
+      motionRepeatable:qDoneCount()>=6,
+    },
+  };
+}
+
+function openRoadmapWithPlan(){const s=JSON.stringify(buildExportJSON());const p=btoa(unescape(encodeURIComponent(s)));location.href='/roadmap?plan='+p;}
+
+// ---- INIT ----
+loadState();
+importFromPrior();
+renderLeft();renderRight();
+</script>
+</body>
+</html>

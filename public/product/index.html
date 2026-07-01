@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Product — Ship the Version You'd Defend in Public</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0a0a0c;--surface:#111114;--surface2:#18181c;--surface3:#1f1f24;
+  --border:#252529;--border-light:#333338;
+  --text:#e8e8ec;--text-dim:#9a9aa5;--text-muted:#5a5a65;
+  --accent:#c8f540;--accent-dim:rgba(200,245,64,0.12);
+  --green:#4ade80;--green-dim:rgba(74,222,128,0.12);
+  --yellow:#facc15;--yellow-dim:rgba(250,204,21,0.12);
+  --red:#f87171;--red-dim:rgba(248,113,113,0.12);
+  --blue:#60a5fa;--blue-dim:rgba(96,165,250,0.12);
+  --radius:6px;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);color:var(--text);font-family:'DM Mono',monospace;font-size:12px;line-height:1.55;height:100vh;overflow:hidden;}
+
+.topbar{padding:18px 24px;border-bottom:1px solid var(--border);display:flex;align-items:baseline;gap:16px;flex-shrink:0;}
+.topbar h1{font-family:'Instrument Serif',serif;font-size:28px;font-weight:400;}
+.topbar h1 em{color:var(--accent);font-style:italic;}
+.topbar .sub{color:var(--text-muted);font-size:10px;letter-spacing:0.5px;}
+.topbar .spacer{flex:1;}
+.topbar .stagejump{font-size:10px;color:var(--text-muted);text-decoration:none;border:1px solid var(--border);padding:6px 12px;border-radius:6px;}
+.topbar .stagejump:hover{color:var(--accent);border-color:var(--accent);}
+
+.layout{display:grid;grid-template-columns:360px 1fr;height:calc(100vh - 63px);overflow:hidden;}
+.left{border-right:1px solid var(--border);overflow-y:auto;background:var(--surface);}
+.right{overflow-y:auto;display:flex;flex-direction:column;}
+.left::-webkit-scrollbar,.right::-webkit-scrollbar{width:4px;}
+.left::-webkit-scrollbar-thumb,.right::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px;}
+
+.isec{border-bottom:1px solid var(--border);}
+.isec-head{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;cursor:pointer;user-select:none;transition:background 0.15s;}
+.isec-head:hover{background:var(--surface2);}
+.isec-title{font-size:10px;text-transform:uppercase;letter-spacing:1.5px;color:var(--text-muted);font-weight:500;}
+.isec-arrow{color:var(--text-muted);font-size:10px;transition:transform 0.2s;}
+.isec.open .isec-arrow{transform:rotate(90deg);}
+.isec-body{padding:0 16px 16px;display:none;}
+.isec.open .isec-body{display:block;}
+.isec-badge{font-size:9px;padding:2px 7px;border-radius:10px;margin-left:8px;background:var(--green-dim);color:var(--green);}
+.isec-badge.wip{background:var(--yellow-dim);color:var(--yellow);}
+.tier-label{font-size:9px;color:var(--text-muted);padding:8px 16px 4px;text-transform:uppercase;letter-spacing:1.5px;border-bottom:1px solid var(--border);background:var(--bg);}
+
+.fg{margin-bottom:12px;}
+.fg label{display:block;font-size:10px;color:var(--text-muted);margin-bottom:4px;letter-spacing:0.5px;text-transform:uppercase;}
+.fg input,.fg textarea{width:100%;background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:8px 10px;border-radius:var(--radius);font-family:'DM Mono',monospace;font-size:12px;}
+.fg textarea{resize:vertical;min-height:60px;line-height:1.5;}
+.fg input:focus,.fg textarea:focus{outline:none;border-color:var(--accent);}
+.hint{font-size:10px;color:var(--text-muted);margin-bottom:6px;font-style:italic;line-height:1.5;}
+
+.pill-grid{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px;}
+.pill{font-size:11px;padding:5px 12px;border-radius:20px;border:1px solid var(--border);color:var(--text-muted);cursor:pointer;background:transparent;font-family:'DM Mono',monospace;transition:all 0.15s;user-select:none;}
+.pill:hover{border-color:var(--text-dim);color:var(--text-dim);}
+.pill.selected{border-color:var(--accent);color:var(--accent);background:var(--accent-dim);}
+
+.q-input-block{padding:10px 12px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:10px;}
+.q-input-block .q-key{font-size:10px;color:var(--accent);font-weight:500;letter-spacing:0.5px;margin-bottom:2px;}
+.q-input-block .q-title{font-size:12px;color:var(--text);margin-bottom:6px;}
+.q-input-block textarea{width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text);padding:6px 8px;border-radius:4px;font-family:'DM Mono',monospace;font-size:11px;resize:vertical;min-height:44px;line-height:1.5;}
+.q-input-block textarea:focus{outline:none;border-color:var(--accent);}
+.q-status-row{display:flex;gap:6px;margin-top:6px;}
+.q-status-btn{font-size:9px;padding:3px 8px;border-radius:10px;border:1px solid var(--border);color:var(--text-muted);cursor:pointer;background:transparent;font-family:'DM Mono',monospace;letter-spacing:0.5px;text-transform:uppercase;}
+.q-status-btn:hover{color:var(--text-dim);}
+.q-status-btn.active-done{border-color:var(--green);color:var(--green);background:var(--green-dim);}
+.q-status-btn.active-wip{border-color:var(--yellow);color:var(--yellow);background:var(--yellow-dim);}
+.q-status-btn.active-todo{border-color:var(--text-dim);color:var(--text);background:transparent;}
+
+.submit-bar{display:flex;gap:8px;padding:12px 16px;border-top:1px solid var(--border);background:var(--surface);position:sticky;bottom:0;}
+.bar-btn{padding:8px 12px;background:var(--surface2);border:1px solid var(--border);color:var(--text-dim);border-radius:var(--radius);cursor:pointer;font-family:'DM Mono',monospace;font-size:11px;}
+.bar-btn:hover{border-color:var(--text-dim);color:var(--text);}
+.bar-btn.danger{color:var(--red);}
+.submit-btn{flex:1;padding:8px 12px;background:var(--accent);border:none;color:var(--bg);border-radius:var(--radius);cursor:pointer;font-family:'DM Mono',monospace;font-size:11px;font-weight:500;}
+.submit-btn:hover{opacity:0.9;}
+.submit-btn:disabled{opacity:0.3;cursor:not-allowed;}
+
+.rtabs{display:flex;gap:0;padding:12px 24px 0;border-bottom:1px solid var(--border);background:var(--bg);position:sticky;top:0;z-index:10;}
+.rtab{padding:8px 14px;background:transparent;border:none;color:var(--text-muted);cursor:pointer;font-family:'DM Mono',monospace;font-size:11px;border-bottom:2px solid transparent;transition:all 0.15s;}
+.rtab:hover{color:var(--text-dim);}
+.rtab.active{color:var(--accent);border-bottom-color:var(--accent);}
+
+.rc{padding:24px;}
+.section-head{font-family:'Instrument Serif',serif;font-size:24px;margin-bottom:4px;}
+.section-intro{color:var(--text-dim);font-size:12px;margin-bottom:20px;max-width:640px;line-height:1.65;}
+
+.q-row{display:grid;grid-template-columns:36px 1fr auto;gap:12px;padding:14px 0;border-bottom:1px solid var(--border);align-items:start;}
+.q-num{font-family:'Instrument Serif',serif;font-size:22px;color:var(--accent);font-style:italic;line-height:1;padding-top:2px;}
+.q-txt{color:var(--text);font-size:14px;line-height:1.4;}
+.q-txt small{display:block;color:var(--text-muted);font-size:11px;margin-top:4px;font-style:italic;line-height:1.5;}
+.q-state{font-size:9px;padding:3px 8px;border-radius:10px;letter-spacing:0.5px;text-transform:uppercase;white-space:nowrap;}
+.q-state.done{background:var(--green-dim);color:var(--green);}
+.q-state.wip{background:var(--yellow-dim);color:var(--yellow);}
+.q-state.todo{background:rgba(255,255,255,0.05);color:var(--text-muted);}
+
+.i-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px;margin-bottom:8px;}
+.i-card.hidden-shape{display:none;}
+.i-card-head{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:6px;flex-wrap:wrap;}
+.i-name{font-size:13px;color:var(--text);font-weight:500;}
+.i-cat{font-size:9px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;padding:2px 7px;background:var(--surface2);border-radius:4px;}
+.i-answers{display:flex;gap:4px;flex-wrap:wrap;}
+.i-answer-chip{font-size:9px;color:var(--accent);background:var(--accent-dim);padding:2px 6px;border-radius:8px;letter-spacing:0.3px;}
+.i-shape-chip{font-size:9px;color:var(--blue);background:var(--blue-dim);padding:2px 6px;border-radius:8px;letter-spacing:0.3px;}
+.i-meta{font-size:10px;color:var(--text-muted);display:flex;gap:12px;margin-bottom:8px;flex-wrap:wrap;}
+.i-meta span{color:var(--text-dim);}
+.i-desc{font-size:12px;color:var(--text-dim);margin-bottom:8px;line-height:1.55;}
+.i-fail{font-size:11px;color:var(--red);margin-top:6px;line-height:1.45;}
+.i-fail::before{content:'⚠ ';color:var(--red);}
+.i-check{display:flex;gap:8px;align-items:flex-start;padding-top:8px;border-top:1px solid var(--border);}
+.i-check input{margin:2px 0 0 0;accent-color:var(--accent);flex-shrink:0;}
+.i-check-body{flex:1;display:flex;flex-direction:column;gap:6px;}
+.i-check label{font-size:11px;color:var(--text-dim);cursor:pointer;}
+.i-check textarea{width:100%;background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:6px 8px;border-radius:4px;font-family:'DM Mono',monospace;font-size:11px;resize:vertical;min-height:32px;line-height:1.5;}
+
+.filter-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;padding-bottom:12px;}
+.filter-row+.filter-row{border-top:1px solid var(--border);padding-top:12px;margin-top:-4px;}
+.filter-row-last{border-bottom:1px solid var(--border);padding-bottom:16px;margin-bottom:16px;}
+.fc{font-size:10px;padding:5px 12px;border-radius:20px;border:1px solid var(--border);color:var(--text-muted);cursor:pointer;background:transparent;font-family:'DM Mono',monospace;transition:all 0.15s;}
+.fc:hover{color:var(--text-dim);border-color:var(--text-dim);}
+.fc.active{color:var(--accent);border-color:var(--accent);background:var(--accent-dim);}
+.filter-label{font-size:9px;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase;margin-right:8px;align-self:center;}
+
+.report{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:28px;max-width:720px;}
+.report h2{font-family:'Instrument Serif',serif;font-size:28px;margin-bottom:6px;}
+.report .report-tag{font-size:10px;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:24px;}
+.report-block{margin-bottom:22px;padding-bottom:20px;border-bottom:1px solid var(--border);}
+.report-block:last-child{border-bottom:none;}
+.report-block h3{font-size:11px;color:var(--accent);letter-spacing:1px;text-transform:uppercase;margin-bottom:6px;display:flex;justify-content:space-between;}
+.report-block h3 .st{font-size:9px;padding:2px 7px;border-radius:10px;letter-spacing:0.5px;}
+.report-block h3 .st.done{background:var(--green-dim);color:var(--green);}
+.report-block h3 .st.wip{background:var(--yellow-dim);color:var(--yellow);}
+.report-block h3 .st.todo{background:rgba(255,255,255,0.05);color:var(--text-muted);}
+.report-block .q-title{font-size:14px;color:var(--text);margin-bottom:8px;font-family:'Instrument Serif',serif;}
+.report-block p{color:var(--text-dim);font-size:13px;line-height:1.65;margin-bottom:8px;}
+.report-block .empty{color:var(--text-muted);font-style:italic;}
+.report-block ul{list-style:none;padding-left:0;margin-top:6px;}
+.report-block li{color:var(--text-dim);font-size:12px;line-height:1.7;padding-left:14px;position:relative;}
+.report-block li::before{content:'—';position:absolute;left:0;color:var(--text-muted);}
+
+.copy-btn{background:var(--accent);color:var(--bg);border:none;padding:8px 20px;border-radius:var(--radius);font-family:'DM Mono',monospace;font-size:11px;cursor:pointer;font-weight:500;margin-right:8px;transition:opacity 0.15s;}
+.copy-btn:hover{opacity:0.85;}
+.copy-btn.secondary{background:var(--surface2);color:var(--text);border:1px solid var(--border);}
+.json-box{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px;font-size:10px;color:var(--text-dim);white-space:pre-wrap;word-wrap:break-word;max-height:400px;overflow-y:auto;margin-top:16px;line-height:1.45;}
+
+.identity-summary{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:12px 14px;margin-bottom:14px;}
+.identity-summary .idsum-name{font-family:'Instrument Serif',serif;font-size:16px;color:var(--text);margin-bottom:2px;}
+.identity-summary .idsum-sub{font-size:10px;color:var(--text-muted);}
+.identity-summary .idsum-imported{font-size:9px;color:var(--accent);letter-spacing:0.5px;margin-top:6px;text-transform:uppercase;}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <h1>Prod<em>uct</em></h1>
+  <span class="sub">Ship the version you'd defend in public</span>
+  <span class="spacer"></span>
+  <a href="/validate" class="stagejump">← Back to /validate</a>
+  <a href="/start" class="stagejump">Start</a>
+  <a href="/hub" class="stagejump">Next: /hub →</a>
+</div>
+
+<div class="layout">
+  <div class="left" id="leftPanel"></div>
+  <div class="right">
+    <div class="rtabs" id="rtabs"></div>
+    <div class="rc" id="rc"></div>
+  </div>
+</div>
+
+<script>
+// ---- STATE ----
+const S={
+  businessName:'',problem:'',customer:'',
+  founderShape:'', // technical | non-technical | mixed-team
+  worstV1:'',stack:'',
+  importedFrom:null,
+  qState:{P1:{status:'todo',ev:''},P2:{status:'todo',ev:''},P3:{status:'todo',ev:''},P4:{status:'todo',ev:''},P5:{status:'todo',ev:''},P6:{status:'todo',ev:''},P7:{status:'todo',ev:''}},
+  ran:{},
+  tab:'formula',
+  qFilter:'all',
+  catFilter:'all',
+};
+
+// ---- Q SPINE ----
+const QUESTIONS=[
+  {id:'P1',n:'Scope defined?',hint:'Do you know what the worst-acceptable v1 includes — and explicitly excludes?'},
+  {id:'P2',n:'Stack picked?',hint:'Have you picked tools you can ship a v1 with in <2 weeks?'},
+  {id:'P3',n:'Built?',hint:'Is there a working version a real user (not you) could actually use?'},
+  {id:'P4',n:'Used?',hint:'Have ≥3 real users completed the core action without help?'},
+  {id:'P5',n:'Feedback loop?',hint:'Can you capture, triage, and respond to user feedback within a week?'},
+  {id:'P6',n:'Cadence?',hint:'Are you shipping something user-visible at least weekly?'},
+  {id:'P7',n:'Debt awareness?',hint:'Do you know what you\'ve knowingly traded off, and when it will bite?'},
+];
+
+// ---- CATALOG ----
+const CATALOG=[
+  // P1 Scope
+  {id:'mvp-scope-cut',n:'MVP Scope-Cut Workshop',cat:'scope',a:['P1'],shape:['technical','non-technical','mixed-team'],cost:'$',ttv:'1 d',effort:'solo-day',
+   d:'Three lists: SHIP (in v1), DEFER (post-v1), CUT (won\'t build). Every SHIP item defends its presence.',
+   fail:'Padding SHIP with "while we\'re at it" features.'},
+  {id:'kill-criteria-feature',n:'Per-Feature Kill Criteria',cat:'scope',a:['P1','P7'],shape:['technical','non-technical','mixed-team'],cost:'$',ttv:'2 hr',effort:'solo-hour',
+   d:'For each SHIP item, one sentence on what would tell you to cut it after launch. Pre-committed criteria are the only ones you\'ll use.',
+   fail:'Soft criteria ("if it\'s not working great"). Name a number and a date.'},
+  {id:'worst-version-spike',n:'Worst-Version Spike',cat:'scope',a:['P1','P3'],shape:['technical','non-technical','mixed-team'],cost:'$',ttv:'1 wk',effort:'solo-wk',
+   d:'Throwaway prototype (paper, Figma, Glide, Notion) walking one user end-to-end. Shows what\'s missing before you build.',
+   fail:'Treating the spike as the v1. Throw it away.'},
+  // P2 Stack
+  {id:'stack-pick-day',n:'Stack-Pick Day',cat:'pick',a:['P2'],shape:['technical','mixed-team'],cost:'$',ttv:'1 d',effort:'solo-day',
+   d:'Language, framework, DB, hosting, auth, payment, analytics. One choice each. Pick the most boring stack you can credibly ship with.',
+   fail:'Picking by hotness. Novelty is a tax.'},
+  {id:'no-code-feasibility',n:'No-Code Feasibility Pass',cat:'pick',a:['P2','P3'],shape:['non-technical'],cost:'$',ttv:'2 d',effort:'solo-day',
+   d:'Can the worst-acceptable v1 ship on Webflow + Airtable + Zapier (or Glide, Bubble, Softr)? Default to no-code if yes.',
+   fail:'Picking custom because no-code "doesn\'t scale." V1 doesn\'t need to.'},
+  {id:'find-the-one-engineer',n:'Find the One Engineer',cat:'pick',a:['P2','P3'],shape:['non-technical'],cost:'$$',ttv:'2–4 wk',effort:'solo-wk',
+   d:'One technical builder — cofounder, contractor, agency, or in-network favor. Defined scope, deliverable, exit.',
+   fail:'Hiring an agency to build the whole thing. Agencies ship features; they don\'t iterate.'},
+  // P3 Build
+  {id:'dogfood-loop',n:'Dogfood Loop',cat:'build',a:['P3','P4'],shape:['technical','non-technical','mixed-team'],cost:'$',ttv:'concurrent',effort:'solo-wk',
+   d:'You use your own product every day for the use case it\'s built for. The product you don\'t use is the product nobody uses.',
+   fail:'Dogfooding a different use case than the customer ICP.'},
+  {id:'auth-payment-first',n:'Auth + Payment First',cat:'build',a:['P3'],shape:['technical','mixed-team'],cost:'$',ttv:'2–3 d',effort:'solo-wk',
+   d:'Login working, payment tested end-to-end (real charge, real refund). Week 1, not week 6.',
+   fail:'Deferring "until we know what we\'re charging." Ship a placeholder price.'},
+  {id:'error-handling-floor',n:'Error-Handling Floor',cat:'build',a:['P3','P5'],shape:['technical','mixed-team'],cost:'$',ttv:'1 d',effort:'solo-day',
+   d:'Every form validated. Every API call try/caught. Errors show something useful. Crash reporting (Sentry, Rollbar) hooked up.',
+   fail:'Treating polish as a v2 problem. Errors aren\'t polish; they\'re trust.'},
+  // P4 Used
+  {id:'five-user-usability',n:'Five-User Usability Test',cat:'test',a:['P4'],shape:['technical','non-technical','mixed-team'],cost:'$',ttv:'1 wk',effort:'solo-wk',
+   d:'5 target-ICP users attempting the core action while you watch. Don\'t help them. 5 surfaces ~85% of usability issues.',
+   fail:'Helping them. Or interviewing friends instead of ICP.'},
+  {id:'friction-log',n:'Friction Log',cat:'test',a:['P4','P5'],shape:['technical','non-technical','mixed-team'],cost:'$',ttv:'1 d',effort:'solo-day',
+   d:'Walk through the product as a new user. Log every moment of confusion, wait, dead-end. Fix the top 5.',
+   fail:'Logging without fixing.'},
+  {id:'empty-state-audit',n:'Empty-State Audit',cat:'test',a:['P4'],shape:['technical','non-technical','mixed-team'],cost:'$',ttv:'4 hr',effort:'solo-hour',
+   d:'Every screen has a defined empty state with copy telling the user what to do next.',
+   fail:'A blank page or "No data" text. Where users churn.'},
+  // P5 Feedback
+  {id:'feedback-inbox',n:'Feedback Inbox',cat:'feedback',a:['P5'],shape:['technical','non-technical','mixed-team'],cost:'$',ttv:'1 d',effort:'solo-day',
+   d:'One unified place for user feedback. Source, date, user, raw quote, your inference, your decision.',
+   fail:'Multiple inboxes. Or no inference column — just a wall of quotes.'},
+  {id:'hotline-watching',n:'Hotline Watching',cat:'feedback',a:['P4','P5'],shape:['technical','non-technical','mixed-team'],cost:'$',ttv:'1 d',effort:'solo-wk',
+   d:'Session recordings (FullStory, PostHog) or scheduled screenshare where you watch without prompts.',
+   fail:'Watching reams of sessions without taking notes.'},
+  {id:'triage-cadence',n:'Triage Cadence',cat:'feedback',a:['P5'],shape:['technical','non-technical','mixed-team'],cost:'$',ttv:'weekly',effort:'solo-hour',
+   d:'Weekly 30-min feedback review. Each item: fix-now, fix-soon, won\'t-fix, or theme-emerging. Themes get an interview.',
+   fail:'Treating every request as a roadmap input. Themes count; one-offs rarely do.'},
+  // P6 Ship
+  {id:'friday-ship-ritual',n:'Friday Ship Ritual',cat:'ship',a:['P6'],shape:['technical','non-technical','mixed-team'],cost:'$',ttv:'weekly',effort:'solo-day',
+   d:'Every Friday, ship one user-visible change + one-paragraph changelog. Habit; signal.',
+   fail:'Shipping internal-only changes and calling it shipping.'},
+  {id:'public-changelog',n:'Public Changelog',cat:'ship',a:['P6'],shape:['technical','non-technical','mixed-team'],cost:'$',ttv:'weekly',effort:'solo-hour',
+   d:'A page where you write what you shipped in plain language. Customers love it; trust compounds.',
+   fail:'Marketing copy in the changelog. Write like an engineer.'},
+  {id:'release-checklist',n:'Pre-Release Checklist',cat:'ship',a:['P6'],shape:['technical','mixed-team'],cost:'$',ttv:'1 hr',effort:'solo-hour',
+   d:'5–10 items before any release: tested, error tracking, changelog, customer impact, rollback plan.',
+   fail:'Checklists that are never updated.'},
+  // P7 Debt
+  {id:'debt-ledger',n:'Technical Debt Ledger',cat:'debt',a:['P7'],shape:['technical','mixed-team'],cost:'$',ttv:'2 hr',effort:'solo-hour',
+   d:'Running list of known shortcuts + the threshold or event that triggers paying them off. Visible; shared.',
+   fail:'Confusing debt with "things we want to clean up." Debt has future cost.'},
+  {id:'rebuild-vs-iterate',n:'Rebuild-vs-Iterate Decision',cat:'debt',a:['P7'],shape:['technical','mixed-team'],cost:'$$',ttv:'1 wk',effort:'solo-wk',
+   d:'What does the rewrite not solve? What could refactor achieve instead? Most rewrites fail.',
+   fail:'Rewriting before having a load the current system actually broke under.'},
+  // Coordinate
+  {id:'eng-translation-doc',n:'Founder-to-Engineer Translation Doc',cat:'coordinate',a:['P1','P5'],shape:['non-technical','mixed-team'],cost:'$',ttv:'1 d',effort:'solo-day',
+   d:'Founder writes intent (who, problem, success, scope) in customer-language. Engineer translates to spec.',
+   fail:'Founder writes specs ("add a dropdown"). Wrong direction.'},
+  {id:'weekly-build-sync',n:'Weekly Build Sync',cat:'coordinate',a:['P5','P6'],shape:['mixed-team'],cost:'$',ttv:'weekly',effort:'solo-hour',
+   d:'30-min: what shipped last week (with proof), what\'s shipping this week (with definition of done), what\'s blocked.',
+   fail:'Status updates ("I\'m working on X") instead of committed and completed work.'},
+];
+
+const CAT_LABELS={scope:'Scope',pick:'Pick stack',build:'Build',test:'Test',feedback:'Feedback',ship:'Ship',debt:'Debt',coordinate:'Coordinate'};
+const SHAPE_LABELS={technical:'Technical',['non-technical']:'Non-technical','mixed-team':'Mixed team'};
+
+// ---- HELPERS ----
+function esc(s){const d=document.createElement('div');d.textContent=s==null?'':String(s);return d.innerHTML;}
+function saveState(){try{localStorage.setItem('product_v1',JSON.stringify(S));}catch(e){}}
+function loadState(){try{const v=localStorage.getItem('product_v1');if(v){const p=JSON.parse(v);Object.assign(S,p);}}catch(e){}}
+
+function importFromPrior(){
+  const urlP=new URLSearchParams(window.location.search).get('plan');
+  if(!urlP)return false;
+  try{
+    const raw=decodeURIComponent(escape(atob(urlP)));
+    const data=JSON.parse(raw);
+    const fw=data.meta&&data.meta.framework;
+    if((fw==='Ideate'||fw==='Validate')&&data.inputs){
+      S.businessName=data.inputs.businessName||S.businessName;
+      S.problem=data.inputs.problem||S.problem;
+      S.customer=data.inputs.customer||S.customer;
+      if(data.inputs.worstV1)S.worstV1=data.inputs.worstV1;
+      S.importedFrom=fw;
+      saveState();
+      return true;
+    }
+  }catch(e){console.warn('Could not import from prior tool:',e);}
+  return false;
+}
+
+function qDoneCount(){return QUESTIONS.filter(q=>S.qState[q.id].status==='done').length;}
+function qWipCount(){return QUESTIONS.filter(q=>S.qState[q.id].status==='wip').length;}
+
+// ---- LEFT PANEL ----
+const openSecs=new Set(['identity','p1-3']);
+function renderLeft(){
+  const el=document.getElementById('leftPanel');
+  const doneCt=qDoneCount();const wipCt=qWipCount();
+  el.innerHTML=`
+  <div class="tier-label">The Product</div>
+  <div class="isec${openSecs.has('identity')?' open':''}" data-sec="identity">
+    <div class="isec-head"><span class="isec-title">What you're building</span>${S.importedFrom?`<span class="isec-badge wip">from /${S.importedFrom.toLowerCase()}</span>`:''}<span class="isec-arrow">▸</span></div>
+    <div class="isec-body">
+      ${S.importedFrom?`<div class="identity-summary"><div class="idsum-name">${esc(S.businessName||'Your product')}</div><div class="idsum-sub">${esc(S.problem.slice(0,80))||'—'}</div><div class="idsum-imported">✓ Imported from /${S.importedFrom.toLowerCase()}</div></div>`:''}
+      <div class="fg"><label>Product / Company Name</label><input type="text" id="inName" value="${esc(S.businessName)}" placeholder="e.g. Business MCP"></div>
+      <div class="fg"><label>The Problem</label><textarea id="inProblem" placeholder="One sentence.">${esc(S.problem)}</textarea></div>
+      <div class="fg"><label>The Customer</label><textarea id="inCustomer" placeholder="Named or sharp persona.">${esc(S.customer)}</textarea></div>
+      <div class="fg"><label>Founder Shape</label>
+        <div class="pill-grid" id="pillShape">
+          ${Object.entries(SHAPE_LABELS).map(([k,l])=>`<div class="pill${S.founderShape===k?' selected':''}" data-v="${k}">${l}</div>`).join('')}
+        </div>
+        <div class="hint" style="margin-top:6px">Filters the catalog. Non-technical founders skip stack-pick and see no-code; technical see auth-payment-first and debt ledger; mixed-team see coordinate items.</div>
+      </div>
+      <div class="fg"><label>Worst-Acceptable v1</label><textarea id="inWorstV1" placeholder="What's in, what's deferred, what's manual, what's ugly.">${esc(S.worstV1)}</textarea></div>
+      <div class="fg"><label>Stack (once picked)</label><input type="text" id="inStack" value="${esc(S.stack)}" placeholder="e.g. Next.js + Postgres + Vercel + Stripe"></div>
+    </div>
+  </div>
+
+  <div class="tier-label">Progress — P1–P3 (${doneCt} done · ${wipCt} in progress)</div>
+  <div class="isec${openSecs.has('p1-3')?' open':''}" data-sec="p1-3">
+    <div class="isec-head"><span class="isec-title">Scope · Stack · Build</span><span class="isec-arrow">▸</span></div>
+    <div class="isec-body">
+      ${['P1','P2','P3'].map(qid=>renderQInputBlock(qid)).join('')}
+    </div>
+  </div>
+
+  <div class="tier-label">Progress — P4–P7</div>
+  <div class="isec${openSecs.has('p4-7')?' open':''}" data-sec="p4-7">
+    <div class="isec-head"><span class="isec-title">Used · Feedback · Ship · Debt</span><span class="isec-arrow">▸</span></div>
+    <div class="isec-body">
+      ${['P4','P5','P6','P7'].map(qid=>renderQInputBlock(qid)).join('')}
+    </div>
+  </div>
+
+  <div class="submit-bar">
+    <button class="bar-btn" id="saveBtn">Save</button>
+    <button class="bar-btn danger" id="clearBtn">Clear</button>
+    <button class="submit-btn" id="submitBtn"${doneCt>=4?'':' disabled'}>See Report →</button>
+  </div>`;
+
+  // WIRE
+  document.querySelectorAll('.isec-head').forEach(h=>h.onclick=()=>{const p=h.parentElement;const sec=p.dataset.sec;if(openSecs.has(sec))openSecs.delete(sec);else openSecs.add(sec);p.classList.toggle('open');});
+  document.querySelectorAll('#pillShape .pill').forEach(p=>p.onclick=()=>{S.founderShape=p.dataset.v;renderLeft();renderRight();});
+  const tie=(id,k)=>{const el=document.getElementById(id);if(el)el.oninput=()=>{S[k]=el.value;saveState();};};
+  tie('inName','businessName');tie('inProblem','problem');tie('inCustomer','customer');tie('inWorstV1','worstV1');tie('inStack','stack');
+  QUESTIONS.forEach(q=>{
+    const ta=document.getElementById('qev-'+q.id);
+    if(ta)ta.oninput=()=>{S.qState[q.id].ev=ta.value;saveState();updateQStatusBadges();};
+    ['todo','wip','done'].forEach(st=>{
+      const btn=document.getElementById(`qs-${q.id}-${st}`);
+      if(btn)btn.onclick=()=>{S.qState[q.id].status=st;saveState();renderLeftStatusOnly();renderRight();};
+    });
+  });
+  document.getElementById('saveBtn').onclick=()=>{saveState();document.getElementById('saveBtn').textContent='Saved';setTimeout(()=>document.getElementById('saveBtn').textContent='Save',1000);};
+  document.getElementById('clearBtn').onclick=()=>{if(confirm('Clear all inputs and start fresh?')){localStorage.removeItem('product_v1');location.reload();}};
+  document.getElementById('submitBtn').onclick=()=>{S.tab='report';renderRight();};
+}
+
+function renderQInputBlock(qid){
+  const q=QUESTIONS.find(x=>x.id===qid);
+  const s=S.qState[qid];
+  return `<div class="q-input-block">
+    <div class="q-key">${qid}</div>
+    <div class="q-title">${q.n}</div>
+    <div class="hint">${q.hint}</div>
+    <textarea id="qev-${qid}" placeholder="Evidence, notes, or blockers.">${esc(s.ev)}</textarea>
+    <div class="q-status-row">
+      <button id="qs-${qid}-todo" class="q-status-btn${s.status==='todo'?' active-todo':''}">To do</button>
+      <button id="qs-${qid}-wip" class="q-status-btn${s.status==='wip'?' active-wip':''}">In progress</button>
+      <button id="qs-${qid}-done" class="q-status-btn${s.status==='done'?' active-done':''}">Done ✓</button>
+    </div>
+  </div>`;
+}
+
+function renderLeftStatusOnly(){
+  QUESTIONS.forEach(q=>{
+    const s=S.qState[q.id];
+    ['todo','wip','done'].forEach(st=>{
+      const btn=document.getElementById(`qs-${q.id}-${st}`);
+      if(!btn)return;
+      btn.classList.remove('active-todo','active-wip','active-done');
+      if(s.status===st)btn.classList.add('active-'+st);
+    });
+  });
+  updateQStatusBadges();
+  const btn=document.getElementById('submitBtn');
+  if(btn)btn.disabled=qDoneCount()<4;
+}
+function updateQStatusBadges(){
+  const labels=document.querySelectorAll('.tier-label');
+  if(labels[1])labels[1].textContent=`Progress — P1–P3 (${qDoneCount()} done · ${qWipCount()} in progress)`;
+}
+
+// ---- RIGHT PANEL ----
+function renderRight(){
+  const tabs=[['formula','Formula'],['interventions','Interventions'],['report','Report'],['export','Export']];
+  document.getElementById('rtabs').innerHTML=tabs.map(([t,l])=>`<button class="rtab${S.tab===t?' active':''}" data-t="${t}">${l}</button>`).join('');
+  document.querySelectorAll('.rtab').forEach(el=>el.onclick=()=>{S.tab=el.dataset.t;renderRight();});
+  const rc=document.getElementById('rc');
+
+  if(S.tab==='formula'){
+    let h=`<div class="section-head">The Seven Questions</div>
+    <p class="section-intro">Product is where the wrong tradeoff kills you. The trap isn't "building the wrong feature" — it's building the wrong scope, in the wrong way you can't change. Seven questions to know you're on the right side of each.</p>`;
+    QUESTIONS.forEach((q,i)=>{
+      const st=S.qState[q.id].status;const label=st==='done'?'✓ Done':st==='wip'?'In progress':'To do';
+      h+=`<div class="q-row"><div class="q-num">${i+1}</div><div class="q-txt">${q.n}<small>${q.hint}</small></div><div class="q-state ${st}">${label}</div></div>`;
+    });
+    rc.innerHTML=h;
+
+  }else if(S.tab==='interventions'){
+    const qFilters=['all','P1','P2','P3','P4','P5','P6','P7'];
+    const catFilters=['all','scope','pick','build','test','feedback','ship','debt','coordinate'];
+    let h=`<div class="section-head">Interventions</div>
+    <p class="section-intro">22 build-stage interventions. Filtered by which question they answer, category, and your founder shape.</p>
+    <div class="filter-row"><span class="filter-label">Question:</span>${qFilters.map(f=>`<button class="fc${S.qFilter===f?' active':''}" data-f="${f}">${f==='all'?'All':f}</button>`).join('')}</div>
+    <div class="filter-row filter-row-last"><span class="filter-label">Category:</span>${catFilters.map(f=>`<button class="fc cat${S.catFilter===f?' active':''}" data-c="${f}">${f==='all'?'All':CAT_LABELS[f]}</button>`).join('')}</div>`;
+    const shown=CATALOG.filter(i=>(S.qFilter==='all'||i.a.includes(S.qFilter))&&(S.catFilter==='all'||i.cat===S.catFilter));
+    for(const i of shown){
+      const hiddenByShape=S.founderShape&&!i.shape.includes(S.founderShape);
+      const state=S.ran[i.id]||{done:false,notes:''};
+      h+=`<div class="i-card${hiddenByShape?' hidden-shape':''}">
+        <div class="i-card-head">
+          <div class="i-name">${esc(i.n)}</div>
+          <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+            <div class="i-answers">${i.a.map(a=>`<span class="i-answer-chip">${a}</span>`).join('')}${i.shape.map(sh=>`<span class="i-shape-chip">${SHAPE_LABELS[sh].split(' ')[0]}</span>`).join('')}</div>
+            <div class="i-cat">${CAT_LABELS[i.cat]}</div>
+          </div>
+        </div>
+        <div class="i-meta">Cost: <span>${i.cost}</span> · TTV: <span>${i.ttv}</span> · Effort: <span>${i.effort}</span></div>
+        <div class="i-desc">${esc(i.d)}</div>
+        <div class="i-fail">${esc(i.fail)}</div>
+        <div class="i-check">
+          <input type="checkbox" id="ck-${i.id}"${state.done?' checked':''}>
+          <div class="i-check-body">
+            <label for="ck-${i.id}">Done</label>
+            <textarea data-id="${i.id}" placeholder="Takeaway / notes (optional)">${esc(state.notes)}</textarea>
+          </div>
+        </div>
+      </div>`;
+    }
+    if(!S.founderShape){h+=`<p class="section-intro" style="color:var(--yellow);margin-top:16px">Pick a founder shape on the left to filter the catalog — otherwise you'll see everything.</p>`;}
+    rc.innerHTML=h;
+    document.querySelectorAll('.fc:not(.cat)').forEach(b=>b.onclick=()=>{S.qFilter=b.dataset.f;renderRight();});
+    document.querySelectorAll('.fc.cat').forEach(b=>b.onclick=()=>{S.catFilter=b.dataset.c;renderRight();});
+    shown.forEach(i=>{
+      const cb=document.getElementById('ck-'+i.id);
+      if(cb)cb.onchange=()=>{S.ran[i.id]=S.ran[i.id]||{done:false,notes:''};S.ran[i.id].done=cb.checked;saveState();};
+    });
+    document.querySelectorAll('.i-check textarea').forEach(t=>{
+      t.oninput=()=>{const id=t.dataset.id;S.ran[id]=S.ran[id]||{done:false,notes:''};S.ran[id].notes=t.value;saveState();};
+    });
+
+  }else if(S.tab==='report'){
+    const nm=S.businessName||'Untitled Product';
+    const ranList=Object.entries(S.ran).filter(([_,v])=>v.done).map(([id])=>CATALOG.find(c=>c.id===id)).filter(Boolean);
+    let h=`<div class="report">
+      <div class="report-tag">Product Status · ${new Date().toISOString().slice(0,10)}</div>
+      <h2>${esc(nm)}</h2>
+      <div class="report-block">
+        <div class="q-title" style="font-size:12px;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px">The Product</div>
+        <p class="${S.problem?'':'empty'}">${esc(S.problem)||'Not yet articulated.'}</p>
+        ${S.customer?`<p style="color:var(--text-muted);font-size:11px">Customer: ${esc(S.customer)}</p>`:''}
+        ${S.founderShape?`<p style="color:var(--text-muted);font-size:11px">Founder shape: ${esc(SHAPE_LABELS[S.founderShape])}</p>`:''}
+        ${S.stack?`<p style="color:var(--text-muted);font-size:11px">Stack: ${esc(S.stack)}</p>`:''}
+        ${S.worstV1?`<p style="color:var(--text-muted);font-size:11px;margin-top:8px"><em>Worst-acceptable v1:</em> ${esc(S.worstV1)}</p>`:''}
+      </div>`;
+    QUESTIONS.forEach(q=>{
+      const s=S.qState[q.id];
+      h+=`<div class="report-block">
+        <h3>${q.id} — ${q.n} <span class="st ${s.status}">${s.status==='done'?'✓ Done':s.status==='wip'?'In progress':'To do'}</span></h3>
+        <p class="${s.ev?'':'empty'}">${esc(s.ev)||'No notes yet.'}</p>
+      </div>`;
+    });
+    if(ranList.length){
+      h+=`<div class="report-block"><h3>Interventions Complete</h3><ul>${ranList.map(x=>`<li>${esc(x.n)}${S.ran[x.id].notes?` — <span style="color:var(--text-muted)">${esc(S.ran[x.id].notes)}</span>`:''}</li>`).join('')}</ul></div>`;
+    }
+    const readiness=qDoneCount();
+    const nextStep=readiness>=6?'Ready for /hub — the product ships; time to sell distribution.':readiness>=4?'Progress on P1–P3 — keep shipping. Get P4 (real users) done before ramping build-out.':'Focus P1–P3 first: know your scope, pick a stack, ship the first version.';
+    h+=`<div class="report-block" style="background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:16px;margin-top:12px"><h3>Next</h3><p>${nextStep}</p></div>`;
+    h+=`</div>
+    <div style="margin-top:20px"><button class="copy-btn" id="toHub">Take to /hub →</button><button class="copy-btn secondary" id="copyReport">Copy Report</button></div>`;
+    rc.innerHTML=h;
+    document.getElementById('toHub').onclick=openHubWithPlan;
+    document.getElementById('copyReport').onclick=()=>{const t=document.querySelector('.report').innerText;navigator.clipboard.writeText(t).then(()=>{document.getElementById('copyReport').textContent='Copied!';setTimeout(()=>document.getElementById('copyReport').textContent='Copy Report',1500);});};
+
+  }else if(S.tab==='export'){
+    const jsonStr=JSON.stringify(buildExportJSON(),null,2);
+    let h=`<div class="section-head">Export</div>
+    <p class="section-intro">Product state as JSON. Feeds /hub (marketing/growth planning) or /roadmap (customer-facing).</p>
+    <button class="copy-btn" id="toHub2">Take to /hub →</button>
+    <button class="copy-btn secondary" id="toRoadmap">Open Roadmap →</button>
+    <button class="copy-btn secondary" id="copyJson">Copy JSON</button>
+    <div class="json-box">${esc(jsonStr)}</div>`;
+    rc.innerHTML=h;
+    document.getElementById('toHub2').onclick=openHubWithPlan;
+    document.getElementById('toRoadmap').onclick=openRoadmapWithPlan;
+    document.getElementById('copyJson').onclick=()=>{navigator.clipboard.writeText(jsonStr).then(()=>{document.getElementById('copyJson').textContent='Copied!';setTimeout(()=>document.getElementById('copyJson').textContent='Copy JSON',1500);});};
+  }
+  saveState();
+}
+
+function buildExportJSON(){
+  const progress={};QUESTIONS.forEach(q=>{progress[q.id]={status:S.qState[q.id].status,notes:S.qState[q.id].ev||null};});
+  const ran=Object.entries(S.ran).filter(([_,v])=>v.done).map(([id,v])=>{const c=CATALOG.find(x=>x.id===id);return{id,name:c?.n,category:c?.cat,notes:v.notes||null};});
+  return{
+    meta:{framework:'Product',version:'v1',exported:new Date().toISOString(),importedFrom:S.importedFrom},
+    inputs:{
+      businessName:S.businessName||null,
+      problem:S.problem||null,
+      customer:S.customer||null,
+      founderShape:S.founderShape||null,
+      worstV1:S.worstV1||null,
+      stack:S.stack||null,
+    },
+    progress,
+    interventionsComplete:ran,
+    readiness:{
+      questionsDone:qDoneCount(),
+      questionsInProgress:qWipCount(),
+      readyForHub:qDoneCount()>=6,
+    },
+  };
+}
+
+function openHubWithPlan(){const s=JSON.stringify(buildExportJSON());const p=btoa(unescape(encodeURIComponent(s)));location.href='/hub?plan='+p;}
+function openRoadmapWithPlan(){const s=JSON.stringify(buildExportJSON());const p=btoa(unescape(encodeURIComponent(s)));location.href='/roadmap?plan='+p;}
+
+// ---- INIT ----
+loadState();
+importFromPrior();
+renderLeft();renderRight();
+</script>
+</body>
+</html>

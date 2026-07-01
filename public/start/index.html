@@ -109,11 +109,11 @@ body{background:var(--bg);color:var(--text);font-family:'DM Mono',monospace;font
       <div class="desc">You've talked to people. Now you need money on the table — pre-orders, pilots, deposits. Real signal, not nods.</div>
       <div class="dest">→ /validate</div>
     </a>
-    <a class="card" href="/hub">
+    <a class="card" href="/product">
       <div class="num">3</div><div class="stage">Build</div>
       <div class="verb">Make it.</div>
       <div class="desc">You've earned the right to build. The trap: building too much. Ship the version you'd defend in public.</div>
-      <div class="dest">→ /product (coming)</div>
+      <div class="dest">→ /product</div>
     </a>
     <a class="card" href="/hub">
       <div class="num">4</div><div class="stage">Launch</div>
@@ -121,11 +121,11 @@ body{background:var(--bg);color:var(--text);font-family:'DM Mono',monospace;font
       <div class="desc">A product exists. The constraint is finding first customers and learning what wins them.</div>
       <div class="dest">→ /hub + /sales</div>
     </a>
-    <a class="card" href="/hub">
+    <a class="card" href="/sales">
       <div class="num">5</div><div class="stage">Grow</div>
       <div class="verb">Multiply it.</div>
       <div class="desc">You have repeat customers and channels that work. More of them, more reliably, without the founder bottleneck.</div>
-      <div class="dest">→ /hub, /sales, /cs, /finance</div>
+      <div class="dest">→ /hub + /sales</div>
     </a>
     <a class="card grad" href="#graduate">
       <div class="num">6</div><div class="stage">Scale</div>
@@ -156,9 +156,9 @@ const STAGES=[
   {id:'seed',n:'Seed',verb:'Frame it',route:'/ideate',blurb:'You have an idea (or want one). The next thing to do is sharpen it — who, what problem, why you, why now — until you\'d defend it in one page.'},
   {id:'discover',n:'Discover',verb:'Hear it',route:'/validate',blurb:'The idea is drafted; the customer is still hypothetical. The next thing to do is hear the problem in their language, not yours. Five conversations changes everything.'},
   {id:'validate',n:'Validate',verb:'Prove it',route:'/validate',blurb:'You\'ve talked to people. Nods don\'t count. The next thing to do is put real money on the table — pre-orders, pilots, deposits — from three real customers.'},
-  {id:'build',n:'Build',verb:'Make it',route:'/hub',blurb:'You have evidence. The trap is building too much. The next thing to do is ship the worst-acceptable v1: the version you\'d defend in public, no more.'},
+  {id:'build',n:'Build',verb:'Make it',route:'/product',blurb:'You have evidence. The trap is building too much. The next thing to do is ship the worst-acceptable v1: the version you\'d defend in public, no more.'},
   {id:'launch',n:'Launch',verb:'Sell it',route:'/hub',blurb:'A product exists. The next thing is finding your first 10–20 paying customers and learning what actually works to reach them. That\'s /hub and, eventually, /sales.'},
-  {id:'grow',n:'Grow',verb:'Multiply it',route:'/hub',blurb:'You have repeat customers and channels that work. The next thing is more of both, more reliably. Retention, expansion, and unit economics — not just new logos.'},
+  {id:'grow',n:'Grow',verb:'Multiply it',route:'/sales',blurb:'You have repeat customers and channels that work. The next thing is more of both, more reliably. Retention, expansion, and unit economics — not just new logos.'},
   {id:'scale',n:'Scale',verb:'Operate it',route:'#graduate',blurb:'You\'ve graduated. Product-market fit is real; acquisition is repeatable; the constraint is now organizational. Honest answer: you need a real operator coach, fractional CFO, or experienced board — not a framework.'},
 ];
 
