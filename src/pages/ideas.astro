@@ -28,80 +28,195 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     <!-- Ideas Grid -->
     <div class="ideas-grid">
 
-      <!-- IDEA TEMPLATE - Replace these with real ideas -->
-
-      <article class="idea-card" data-status="open">
+      <article class="idea-card" data-status="building">
         <div class="idea-top">
           <div class="idea-number">01</div>
-          <span class="idea-status idea-status-open">Open</span>
+          <span class="idea-status idea-status-building">Building</span>
         </div>
-        <h2 class="idea-title">[Idea Name]</h2>
-        <p class="idea-tagline">One-line description of what it is and who it's for.</p>
+        <h2 class="idea-title">Business MCP</h2>
+        <p class="idea-tagline">The solo founder's back-office in one Claude integration. Install once — Claude runs your business.</p>
         <div class="idea-tags">
-          <span class="tag">Category</span>
-          <span class="tag">Market Size</span>
+          <span class="tag">AI Tooling</span>
+          <span class="tag">SMB SaaS</span>
+          <span class="tag">$29–$99/mo</span>
         </div>
         <div class="idea-details">
           <div class="idea-detail">
             <div class="idea-detail-label">The Problem</div>
-            <p>What's broken, slow, expensive, or painful in the market today.</p>
+            <p>Solo founders and creators hate the back office — invoicing, expenses, payroll, bank reconciliation, contracts, CRM, scheduling, tax prep, legal filings, state compliance, trademarks, insurance renewals, 1099s. It's rote, repeatable, and endless.</p>
           </div>
           <div class="idea-detail">
             <div class="idea-detail-label">The Opportunity</div>
-            <p>Why now? Why this gap exists. Rough TAM if known.</p>
+            <p>Claude is already the tool they want to use — MCP just makes it capable. One namespace over QuickBooks, Zoho, Gusto, Ramp, DocuSign, Google Workspace. The moat is the guided flows, not the API wrapping: <em>"end of month? here's what Claude needs to close your books in 15 min."</em> Double monetization: subscription + referral revenue from underlying tools.</p>
           </div>
           <div class="idea-detail">
-            <div class="idea-detail-label">Who Should Build It</div>
-            <p>The type of founder or team this idea is a fit for.</p>
+            <div class="idea-detail-label">Current Status</div>
+            <p>Actively shaping. Sits at the intersection of Onit (product), Ad-Apt experience, and 20+ years of running multiple small businesses. Enterprise tier for bookkeepers and agencies running multiple clients through it is the second act.</p>
+          </div>
+        </div>
+      </article>
+
+      <article class="idea-card" data-status="building">
+        <div class="idea-top">
+          <div class="idea-number">02</div>
+          <span class="idea-status idea-status-building">Building</span>
+        </div>
+        <h2 class="idea-title">Managed Agents × Onit</h2>
+        <p class="idea-tagline">Autonomous Claude Code sessions doing real marketing work at scale. Agency-quality output at compute-cost economics.</p>
+        <div class="idea-tags">
+          <span class="tag">AI Agents</span>
+          <span class="tag">MarTech</span>
+          <span class="tag">$1 in / $1,500 out</span>
+        </div>
+        <div class="idea-details">
+          <div class="idea-detail">
+            <div class="idea-detail-label">The Problem</div>
+            <p>Marketing agencies charge $150/hr for work an AI agent can do in minutes: onboarding audits, campaign builds, weekly reports, creative variants, technical SEO, landing pages. Small businesses can't afford agencies but need the deliverables.</p>
+          </div>
+          <div class="idea-detail">
+            <div class="idea-detail-label">The Opportunity</div>
+            <p>Managed Agents = programmatic autonomous Claude sessions with full sandboxes (terminal, browser, filesystem, code execution) at $0.08/session-hour + tokens. Onit onboards a client → spins up an agent → agent runs autonomously and surfaces results. 15-min onboarding audit costs under $1 to produce. Equivalent agency value: ~$1,500.</p>
+          </div>
+          <div class="idea-detail">
+            <div class="idea-detail-label">Current Status</div>
+            <p>Part of Onit's roadmap. First use cases: onboarding audits, campaign builds, weekly reporting narratives. At 1,000 clients: ~$1,000/mo in agent costs vs. millions in agency-equivalent output.</p>
           </div>
         </div>
       </article>
 
       <article class="idea-card" data-status="exploring">
         <div class="idea-top">
-          <div class="idea-number">02</div>
+          <div class="idea-number">03</div>
           <span class="idea-status idea-status-exploring">Exploring</span>
         </div>
-        <h2 class="idea-title">[Idea Name]</h2>
-        <p class="idea-tagline">One-line description of what it is and who it's for.</p>
+        <h2 class="idea-title">Live Site-Editing Chatbot</h2>
+        <p class="idea-tagline">A widget embedded in your own site that lets you talk to your codebase and ship edits from the browser.</p>
         <div class="idea-tags">
-          <span class="tag">Category</span>
-          <span class="tag">Market Size</span>
+          <span class="tag">Dev Tools</span>
+          <span class="tag">Personal Sites</span>
         </div>
         <div class="idea-details">
           <div class="idea-detail">
             <div class="idea-detail-label">The Problem</div>
-            <p>What's broken, slow, expensive, or painful in the market today.</p>
+            <p>Editing your own site — even a personal one on a modern stack — means opening a repo, running dev, editing, committing, pushing, waiting for deploy. For 90% of edits, that's more friction than the edit itself.</p>
           </div>
           <div class="idea-detail">
             <div class="idea-detail-label">The Opportunity</div>
-            <p>Why now? Why this gap exists. Rough TAM if known.</p>
+            <p>A chatbot with page context (knows which page it's on), repo access (same as Claude Code), and a deploy hook. Prompt <em>"swap the hero image here"</em> → edits source → commits → deploys → live. Model selector so you can dial cost/quality. Auth-gated to the site owner.</p>
           </div>
           <div class="idea-detail">
             <div class="idea-detail-label">Current Status</div>
-            <p>What I'm doing about it right now.</p>
+            <p>Prototype-worthy for lucassommer.com itself. Scope-out separately: auth, model API wiring, build pipeline, deploy automation, safety guardrails. Natural fit if paired with the entrepreneurship tool suite as a "self-hosted operator."</p>
           </div>
         </div>
       </article>
 
-      <article class="idea-card" data-status="parked">
+      <article class="idea-card" data-status="open">
         <div class="idea-top">
-          <div class="idea-number">03</div>
-          <span class="idea-status idea-status-parked">Parked</span>
+          <div class="idea-number">04</div>
+          <span class="idea-status idea-status-open">Open</span>
         </div>
-        <h2 class="idea-title">[Idea Name]</h2>
-        <p class="idea-tagline">One-line description of what it is and who it's for.</p>
+        <h2 class="idea-title">Geiger</h2>
+        <p class="idea-tagline">Ambient code-activity monitor. Turns your keyboard and file changes into a productivity-tuned soundtrack.</p>
         <div class="idea-tags">
-          <span class="tag">Category</span>
+          <span class="tag">Desktop App</span>
+          <span class="tag">Developer Tools</span>
+          <span class="tag">$9 one-time or $3/mo</span>
         </div>
         <div class="idea-details">
           <div class="idea-detail">
             <div class="idea-detail-label">The Problem</div>
-            <p>What's broken, slow, expensive, or painful.</p>
+            <p>Two overlapping pains. First: devs already have lofi/music playing to focus, but it's passive — no signal, no feedback. Second: agent-driven coding (Claude Code sessions, long-running scripts) leaves you wondering <em>"is it still working?"</em></p>
           </div>
           <div class="idea-detail">
-            <div class="idea-detail-label">Why I Parked It</div>
-            <p>What made me decide not to pursue this now — wrong market, wrong timing, wrong fit, etc.</p>
+            <div class="idea-detail-label">The Opportunity</div>
+            <p>Listen to the factory. Your code has a rhythm — you can hear when it's running hot, cooling off, or stalled. Pings when activity stops — a subtle nudge when you've drifted, or when a long-running agent goes quiet. Replaces the passive soundtrack with a productivity-tuned one.</p>
+          </div>
+          <div class="idea-detail">
+            <div class="idea-detail-label">Who Should Build It</div>
+            <p>A solo dev who loves ambient/generative music. Weekend vibe-code: Electron or Tauri, filesystem events + OS-level keystroke <em>rate</em> (no content), Web Audio oscillator or sample playback. Niche but sticky.</p>
+          </div>
+        </div>
+      </article>
+
+      <article class="idea-card" data-status="open">
+        <div class="idea-top">
+          <div class="idea-number">05</div>
+          <span class="idea-status idea-status-open">Open</span>
+        </div>
+        <h2 class="idea-title">AR Basketball Training App</h2>
+        <p class="idea-tagline">Smart glasses overlay a digital hoop in any space. Ball-tracked coaching on arc, form, release, follow-through.</p>
+        <div class="idea-tags">
+          <span class="tag">Consumer Hardware</span>
+          <span class="tag">Sports Tech</span>
+          <span class="tag">AR/CV</span>
+        </div>
+        <div class="idea-details">
+          <div class="idea-detail">
+            <div class="idea-detail-label">The Problem</div>
+            <p>Solo shooters (kids, adults, trainers) have no accountability. Real hoops require space and money. Shot-return nets solve the ball problem but give no feedback. Coaches are expensive and only see you occasionally.</p>
+          </div>
+          <div class="idea-detail">
+            <div class="idea-detail-label">The Opportunity</div>
+            <p>AR glasses render a digital hoop anywhere. White dots on the ball enable vision-based shot tracking. Coaching layer gives real-time feedback on shot arc, release point, follow-through, form. Target: solo shooters, youth players, trainers. Adjacent unlocks in coach-remote-analysis.</p>
+          </div>
+          <div class="idea-detail">
+            <div class="idea-detail-label">Who Should Build It</div>
+            <p>A founder with sports-tech distribution + computer-vision chops or partnerships. Best paired with the AR Hoop System below as a two-pronged consumer play.</p>
+          </div>
+        </div>
+      </article>
+
+      <article class="idea-card" data-status="open">
+        <div class="idea-top">
+          <div class="idea-number">06</div>
+          <span class="idea-status idea-status-open">Open</span>
+        </div>
+        <h2 class="idea-title">Physical Net + AR Hoop System</h2>
+        <p class="idea-tagline">Cheap portable net catches shots and returns the ball. AR glasses render the hoop with correct physics.</p>
+        <div class="idea-tags">
+          <span class="tag">Consumer Hardware</span>
+          <span class="tag">Sports Tech</span>
+        </div>
+        <div class="idea-details">
+          <div class="idea-detail">
+            <div class="idea-detail-label">The Problem</div>
+            <p>Existing solo-training options force a tradeoff: shot-return nets are convenient but have no hoop; a real hoop requires permanent installation. Neither product does both.</p>
+          </div>
+          <div class="idea-detail">
+            <div class="idea-detail-label">The Opportunity</div>
+            <p>Combine both. A deployable net catches shots and returns the ball; AR glasses render a virtual rim with correct physics. Counts makes and misses against the virtual hoop. Portable, no installation. Convenience of a shot-return net with the accountability of a real hoop.</p>
+          </div>
+          <div class="idea-detail">
+            <div class="idea-detail-label">Who Should Build It</div>
+            <p>Hardware-plus-software founder. Bundled with idea #05 becomes a full solo-training platform: net + hoop + coaching feedback.</p>
+          </div>
+        </div>
+      </article>
+
+      <article class="idea-card" data-status="open">
+        <div class="idea-top">
+          <div class="idea-number">07</div>
+          <span class="idea-status idea-status-open">Open</span>
+        </div>
+        <h2 class="idea-title">Posture-Correcting Smart Undershirt</h2>
+        <p class="idea-tagline">Embedded sensors read your spine and shoulders. App nudges you when you slouch and tracks improvement over time.</p>
+        <div class="idea-tags">
+          <span class="tag">Wearables</span>
+          <span class="tag">Consumer Health</span>
+        </div>
+        <div class="idea-details">
+          <div class="idea-detail">
+            <div class="idea-detail-label">The Problem</div>
+            <p>Desk work is destroying spines. Existing posture correctors are ugly, uncomfortable straps that people wear for a week and abandon. No baseline measurement, no progress feedback, no accountability past week two.</p>
+          </div>
+          <div class="idea-detail">
+            <div class="idea-detail-label">The Opportunity</div>
+            <p>Best form factor is invisible: a smart undershirt or underwear layer with embedded sensors reading spine posture, shoulder alignment, sitting pressure. Companion app tracks trends and delivers gentle nudges. Adjacent variants worth exploring: office-chair "posture seatbelt", magnet-based systems (chair + shirt magnets that detect slouch proximity).</p>
+          </div>
+          <div class="idea-detail">
+            <div class="idea-detail-label">Who Should Build It</div>
+            <p>Hardware/wearable founder with textile-sensor experience. Distribution through orthopedic and physical-therapist referrals could beat DTC on unit economics.</p>
           </div>
         </div>
       </article>

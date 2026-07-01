@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ideate — Frame the Idea Before You Build It</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0a0a0c;--surface:#111114;--surface2:#18181c;--surface3:#1f1f24;
+  --border:#252529;--border-light:#333338;
+  --text:#e8e8ec;--text-dim:#9a9aa5;--text-muted:#5a5a65;
+  --accent:#c8f540;--accent-dim:rgba(200,245,64,0.12);
+  --green:#4ade80;--green-dim:rgba(74,222,128,0.12);
+  --yellow:#facc15;--yellow-dim:rgba(250,204,21,0.12);
+  --red:#f87171;--red-dim:rgba(248,113,113,0.12);
+  --blue:#60a5fa;--blue-dim:rgba(96,165,250,0.12);
+  --radius:6px;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);color:var(--text);font-family:'DM Mono',monospace;font-size:12px;line-height:1.55;height:100vh;overflow:hidden;}
+
+.topbar{padding:18px 24px;border-bottom:1px solid var(--border);display:flex;align-items:baseline;gap:16px;flex-shrink:0;}
+.topbar h1{font-family:'Instrument Serif',serif;font-size:28px;font-weight:400;}
+.topbar h1 em{color:var(--accent);font-style:italic;}
+.topbar .sub{color:var(--text-muted);font-size:10px;letter-spacing:0.5px;}
+.topbar .spacer{flex:1;}
+.topbar .stagejump{font-size:10px;color:var(--text-muted);text-decoration:none;border:1px solid var(--border);padding:6px 12px;border-radius:6px;}
+.topbar .stagejump:hover{color:var(--accent);border-color:var(--accent);}
+
+.layout{display:grid;grid-template-columns:360px 1fr;height:calc(100vh - 63px);overflow:hidden;}
+.left{border-right:1px solid var(--border);overflow-y:auto;background:var(--surface);}
+.right{overflow-y:auto;display:flex;flex-direction:column;}
+.left::-webkit-scrollbar,.right::-webkit-scrollbar{width:4px;}
+.left::-webkit-scrollbar-thumb,.right::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px;}
+
+.isec{border-bottom:1px solid var(--border);}
+.isec-head{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;cursor:pointer;user-select:none;transition:background 0.15s;}
+.isec-head:hover{background:var(--surface2);}
+.isec-title{font-size:10px;text-transform:uppercase;letter-spacing:1.5px;color:var(--text-muted);font-weight:500;}
+.isec-arrow{color:var(--text-muted);font-size:10px;transition:transform 0.2s;}
+.isec.open .isec-arrow{transform:rotate(90deg);}
+.isec-body{padding:0 16px 16px;display:none;}
+.isec.open .isec-body{display:block;}
+.isec-badge{font-size:9px;padding:2px 7px;border-radius:10px;margin-left:8px;background:var(--green-dim);color:var(--green);}
+.tier-label{font-size:9px;color:var(--text-muted);padding:8px 16px 4px;text-transform:uppercase;letter-spacing:1.5px;border-bottom:1px solid var(--border);background:var(--bg);}
+
+.fg{margin-bottom:12px;}
+.fg label{display:block;font-size:10px;color:var(--text-muted);margin-bottom:4px;letter-spacing:0.5px;text-transform:uppercase;}
+.fg input,.fg textarea{width:100%;background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:8px 10px;border-radius:var(--radius);font-family:'DM Mono',monospace;font-size:12px;}
+.fg textarea{resize:vertical;min-height:60px;line-height:1.5;}
+.fg input:focus,.fg textarea:focus{outline:none;border-color:var(--accent);}
+.hint{font-size:10px;color:var(--text-muted);margin-bottom:6px;font-style:italic;}
+
+.pill-grid{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px;}
+.pill{font-size:11px;padding:5px 12px;border-radius:20px;border:1px solid var(--border);color:var(--text-muted);cursor:pointer;background:transparent;font-family:'DM Mono',monospace;transition:all 0.15s;user-select:none;}
+.pill:hover{border-color:var(--text-dim);color:var(--text-dim);}
+.pill.selected{border-color:var(--accent);color:var(--accent);background:var(--accent-dim);}
+
+.submit-bar{display:flex;gap:8px;padding:12px 16px;border-top:1px solid var(--border);background:var(--surface);position:sticky;bottom:0;}
+.bar-btn{padding:8px 12px;background:var(--surface2);border:1px solid var(--border);color:var(--text-dim);border-radius:var(--radius);cursor:pointer;font-family:'DM Mono',monospace;font-size:11px;}
+.bar-btn:hover{border-color:var(--text-dim);color:var(--text);}
+.bar-btn.danger{color:var(--red);}
+.submit-btn{flex:1;padding:8px 12px;background:var(--accent);border:none;color:var(--bg);border-radius:var(--radius);cursor:pointer;font-family:'DM Mono',monospace;font-size:11px;font-weight:500;}
+.submit-btn:hover{opacity:0.9;}
+.submit-btn:disabled{opacity:0.3;cursor:not-allowed;}
+
+.rtabs{display:flex;gap:0;padding:12px 24px 0;border-bottom:1px solid var(--border);background:var(--bg);position:sticky;top:0;z-index:10;}
+.rtab{padding:8px 14px;background:transparent;border:none;color:var(--text-muted);cursor:pointer;font-family:'DM Mono',monospace;font-size:11px;border-bottom:2px solid transparent;transition:all 0.15s;}
+.rtab:hover{color:var(--text-dim);}
+.rtab.active{color:var(--accent);border-bottom-color:var(--accent);}
+
+.rc{padding:24px;}
+.section-head{font-family:'Instrument Serif',serif;font-size:24px;margin-bottom:4px;}
+.section-intro{color:var(--text-dim);font-size:12px;margin-bottom:20px;max-width:640px;}
+
+.q-row{display:grid;grid-template-columns:32px 1fr auto;gap:12px;padding:14px 0;border-bottom:1px solid var(--border);align-items:start;}
+.q-num{font-family:'Instrument Serif',serif;font-size:20px;color:var(--accent);font-style:italic;}
+.q-txt{color:var(--text);font-size:14px;line-height:1.4;}
+.q-txt small{display:block;color:var(--text-muted);font-size:11px;margin-top:4px;font-style:italic;}
+.q-state{font-size:9px;padding:3px 8px;border-radius:10px;letter-spacing:0.5px;text-transform:uppercase;white-space:nowrap;}
+.q-state.done{background:var(--green-dim);color:var(--green);}
+.q-state.wip{background:var(--yellow-dim);color:var(--yellow);}
+.q-state.todo{background:rgba(255,255,255,0.05);color:var(--text-muted);}
+
+.i-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px;margin-bottom:8px;}
+.i-card-head{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:6px;}
+.i-name{font-size:13px;color:var(--text);font-weight:500;}
+.i-cat{font-size:9px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;padding:2px 7px;background:var(--surface2);border-radius:4px;}
+.i-meta{font-size:10px;color:var(--text-muted);display:flex;gap:12px;margin-bottom:8px;flex-wrap:wrap;}
+.i-meta span{color:var(--text-dim);}
+.i-desc{font-size:12px;color:var(--text-dim);margin-bottom:8px;line-height:1.55;}
+.i-fail{font-size:11px;color:var(--red);margin-top:6px;line-height:1.45;}
+.i-fail::before{content:'⚠ ';color:var(--red);}
+.i-check{display:flex;gap:8px;align-items:center;padding-top:8px;border-top:1px solid var(--border);}
+.i-check input{margin:0;accent-color:var(--accent);}
+.i-check label{font-size:11px;color:var(--text-dim);cursor:pointer;}
+.i-check textarea{flex:1;background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:6px 8px;border-radius:4px;font-family:'DM Mono',monospace;font-size:11px;resize:vertical;min-height:32px;}
+
+.filter-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px;padding-bottom:16px;border-bottom:1px solid var(--border);}
+.fc{font-size:10px;padding:5px 12px;border-radius:20px;border:1px solid var(--border);color:var(--text-muted);cursor:pointer;background:transparent;font-family:'DM Mono',monospace;transition:all 0.15s;}
+.fc:hover{color:var(--text-dim);border-color:var(--text-dim);}
+.fc.active{color:var(--accent);border-color:var(--accent);background:var(--accent-dim);}
+
+.brief{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:28px;max-width:720px;}
+.brief h2{font-family:'Instrument Serif',serif;font-size:28px;margin-bottom:6px;}
+.brief .brief-tag{font-size:10px;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:24px;}
+.brief h3{font-size:11px;color:var(--accent);letter-spacing:1px;text-transform:uppercase;margin:20px 0 6px;}
+.brief p{color:var(--text-dim);font-size:13px;line-height:1.65;}
+.brief .empty{color:var(--text-muted);font-style:italic;}
+.brief ul{list-style:none;padding-left:0;}
+.brief li{color:var(--text-dim);font-size:13px;line-height:1.7;padding-left:14px;position:relative;}
+.brief li::before{content:'—';position:absolute;left:0;color:var(--text-muted);}
+
+.copy-btn{background:var(--accent);color:var(--bg);border:none;padding:8px 20px;border-radius:var(--radius);font-family:'DM Mono',monospace;font-size:11px;cursor:pointer;font-weight:500;margin-right:8px;transition:opacity 0.15s;}
+.copy-btn:hover{opacity:0.85;}
+.copy-btn.secondary{background:var(--surface2);color:var(--text);border:1px solid var(--border);}
+.json-box{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px;font-size:10px;color:var(--text-dim);white-space:pre-wrap;word-wrap:break-word;max-height:400px;overflow-y:auto;margin-top:16px;line-height:1.45;}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <h1>Ide<em>ate</em></h1>
+  <span class="sub">Frame the idea before you build it</span>
+  <span class="spacer"></span>
+  <a href="/start" class="stagejump">← Back to start</a>
+  <a href="/validate" class="stagejump">Next: Validate →</a>
+</div>
+
+<div class="layout">
+  <div class="left" id="leftPanel"></div>
+  <div class="right">
+    <div class="rtabs" id="rtabs"></div>
+    <div class="rc" id="rc"></div>
+  </div>
+</div>
+
+<script>
+// ---- STATE ----
+const S={
+  hasIdea:null, // yes | exploring | none
+  businessName:'',
+  problem:'',
+  customer:'',
+  unfair:'',
+  whyNow:'',
+  worstV1:'',
+  antiVision:'',
+  competitors:'',
+  killCriteria:'',
+  targetPrice:'',
+  ranInterventions:{}, // id -> {done:bool, notes:string}
+  tab:'formula',
+  catFilter:'all'
+};
+
+// ---- CATALOG ----
+const CATALOG=[
+  {id:'pain-inventory',n:'Personal Pain Inventory',cat:'generate',a:['F1'],cost:'$',ttv:'1 day',effort:'solo-hour',
+   d:'List 30–50 frustrations you have personally hit in the last 90 days, ranked by frequency and burn. The 30th item is where the non-obvious patterns show up.',
+   fail:'Stopping at 10. Non-obvious patterns emerge past 25.'},
+  {id:'expertise-scan',n:'Adjacent Expertise Scan',cat:'generate',a:['F3'],cost:'$',ttv:'1 day',effort:'solo-hour',
+   d:'List 5–10 domains where you have unfair access, language fluency, or pattern recognition most builders don\'t. Bias generation toward where you have advantage.',
+   fail:'Listing job titles instead of specific knowledge.'},
+  {id:'pattern-mining',n:'Industry Pattern Mining',cat:'generate',a:['F1','F4'],cost:'$',ttv:'1 week',effort:'solo-week',
+   d:'A doc of what\'s old and broken in industry X — workflows still done in spreadsheets, processes requiring phone calls, UIs from 2008.',
+   fail:'Cosmetic ugliness instead of structural waste.'},
+  {id:'trend-stack',n:'Trend Stacking',cat:'generate',a:['F4'],cost:'$',ttv:'2–3 days',effort:'solo-day',
+   d:'2- and 3-trend collisions (AI agents × regulated industries × old API surfaces). Idea sits at the intersection.',
+   fail:'Stacking trends nobody will pay for yet.'},
+  {id:'steal-with-pride',n:'Steal-With-Pride Lateral Scan',cat:'generate',a:['F1','F3'],cost:'$',ttv:'2–3 days',effort:'solo-day',
+   d:'Working models in one industry that haven\'t shipped in another. Most vertical-SaaS ideas come from this.',
+   fail:'Copying without naming the structural reason it hasn\'t happened.'},
+  {id:'pain-interviews-gen',n:'Generative Pain Interviews',cat:'generate',a:['F1','F2'],cost:'$',ttv:'1–2 weeks',effort:'solo-week',
+   d:'5+ interviews with people in a target role. No product idea. Just listen for what eats their week.',
+   fail:'Showing up with a half-baked idea and contaminating the listening.'},
+  {id:'ai-leverage-lens',n:'AI-Leverage Lens',cat:'generate',a:['F4'],cost:'$',ttv:'1 day',effort:'solo-hour',
+   d:'Jobs that just got 10x cheaper or 10x more tractable with current AI. Target industries that don\'t realize it yet.',
+   fail:'Building "AI for X" without a real workflow to replace.'},
+  {id:'distribution-first',n:'Distribution-First Inversion',cat:'generate',a:['F2','F3'],cost:'$',ttv:'1 day',effort:'solo-hour',
+   d:'Start from audiences you already reach (your newsletter, an industry community). Ask: what would they buy from you?',
+   fail:'"I know people in X" ≠ "I have distribution in X".'},
+
+  {id:'one-page-brief',n:'One-Page Brief',cat:'frame',a:['F1','F2','F3','F4','F5'],cost:'$',ttv:'1 day',effort:'solo-day',
+   d:'The exit deliverable from Ideate. Problem, customer, wedge, why-now, worst-acceptable v1, success. On one page.',
+   fail:'Writing two pages. If you can\'t say it on one, you don\'t know it yet.'},
+  {id:'jtbd-statement',n:'Jobs-To-Be-Done Statement',cat:'frame',a:['F1','F2'],cost:'$',ttv:'2 hours',effort:'solo-hour',
+   d:'"When [situation], I want to [motivation], so I can [outcome]." From the customer\'s POV, in their words. Pick sharpest of three.',
+   fail:'Writing the features you want. That\'s not a JTBD.'},
+  {id:'persona-sketch',n:'Sharp Persona Sketch',cat:'frame',a:['F2'],cost:'$',ttv:'2 hours',effort:'solo-hour',
+   d:'One named, real-feeling person. Role, daily reality, what they read, who they trust, what they\'ve tried, what they spend.',
+   fail:'Demographics instead of behavior.'},
+  {id:'why-now-stack',n:'Why-Now Stack',cat:'frame',a:['F4'],cost:'$',ttv:'2 hours',effort:'solo-hour',
+   d:'Structural shifts (tech, regulation, cost, behavior, competition) that make this makeable/sellable now, not 5 years ago.',
+   fail:'Soft why-nows ("more people work from home").'},
+  {id:'unfair-audit',n:'Unfair-Advantage Audit',cat:'frame',a:['F3'],cost:'$',ttv:'2 hours',effort:'solo-hour',
+   d:'What you have that 99% of would-be competitors don\'t. Specific access, data, relationships, scar tissue.',
+   fail:'Generic advantages ("hard worker"). Those don\'t survive competition.'},
+  {id:'worst-version-test',n:'Worst-Acceptable v1',cat:'frame',a:['F5'],cost:'$',ttv:'1 hour',effort:'solo-hour',
+   d:'The most embarrassing version you\'d still launch — what\'s in, what\'s deferred, what\'s manual, what\'s ugly.',
+   fail:'Describing v3. Or something so embarrassing you wouldn\'t actually ship it.'},
+  {id:'anti-vision',n:'Anti-Vision Statement',cat:'frame',a:['F3','F5'],cost:'$',ttv:'30 min',effort:'solo-hour',
+   d:'What you\'re NOT building, who you\'re NOT serving, where you\'d refuse to go. Constraints reveal shape.',
+   fail:'Lying about anti-vision. Only count what you\'d keep.'},
+
+  {id:'pre-mortem',n:'Pre-Mortem',cat:'pressure-test',a:['F4','F5'],cost:'$',ttv:'1 hour',effort:'solo-hour',
+   d:'It\'s 18 months from now; the project failed. Write the top 5 reasons. For each, what evidence would tell you it\'s happening early?',
+   fail:'Hand-waving. Requires specific, testable failure modes.'},
+  {id:'competitor-honesty',n:'Competitor Honesty Audit',cat:'pressure-test',a:['F3'],cost:'$',ttv:'1 day',effort:'solo-day',
+   d:'Every existing thing solving any part of this — products, hacks, spreadsheets, agencies, "doing nothing." A sentence on why people stick, and how your wedge beats it.',
+   fail:'Saying "no real competitors." The spreadsheet is a competitor.'},
+  {id:'ten-friend-test',n:'Ten-Friend Test',cat:'pressure-test',a:['F1','F4'],cost:'$',ttv:'2 days',effort:'solo-day',
+   d:'Send your One-Page Brief to 10 people whose judgment you trust. Track what they understood, re-read, pushed back on.',
+   fail:'Sending to 10 people who\'ll be polite.'},
+  {id:'pricing-sketch',n:'Pricing Sketch',cat:'pressure-test',a:['F4','F5'],cost:'$',ttv:'2 hours',effort:'solo-hour',
+   d:'Back-of-envelope: target price, gross margin, customers needed for $X, and whether the math implies "you charge $5 to consumers" (hard) or "$5k to mid-market" (easier).',
+   fail:'"We\'ll figure out pricing later."'},
+  {id:'disqualifier-list',n:'Disqualifier List',cat:'pressure-test',a:['F4'],cost:'$',ttv:'1 hour',effort:'solo-hour',
+   d:'Conditions that would make you kill the idea — and would actually make you kill it. Pre-commit; you won\'t kill it in the moment.',
+   fail:'Soft criteria you\'d negotiate around.'},
+];
+
+const F_QUESTIONS=[
+  {id:'F1',n:'Articulated?',hint:'Can you state the problem in one sentence, no jargon?',check:()=>S.problem.length>15},
+  {id:'F2',n:'Specific customer?',hint:'Named human, or sharp persona (not "everyone").',check:()=>S.customer.length>15},
+  {id:'F3',n:'Unfair angle?',hint:'Why you? What do you have that others don\'t?',check:()=>S.unfair.length>15},
+  {id:'F4',n:'Why now?',hint:'What changed in 1–3 years that makes this possible or urgent now?',check:()=>S.whyNow.length>15},
+  {id:'F5',n:'Worst-acceptable v1?',hint:'Can you describe the embarrassing version you\'d still ship?',check:()=>S.worstV1.length>15},
+];
+
+const CAT_LABELS={generate:'Generate',frame:'Frame',['pressure-test']:'Pressure-test'};
+
+// ---- HELPERS ----
+function esc(s){const d=document.createElement('div');d.textContent=s||'';return d.innerHTML;}
+function toggleArr(arr,v){const i=arr.indexOf(v);if(i>-1)arr.splice(i,1);else arr.push(v);}
+function saveState(){try{localStorage.setItem('ideate_v1',JSON.stringify(S));}catch(e){}}
+function loadState(){try{const v=localStorage.getItem('ideate_v1');if(v){const p=JSON.parse(v);Object.assign(S,p);}}catch(e){}}
+
+function fState(f){
+  if(f.check())return 'done';
+  return 'todo';
+}
+function doneCount(){return F_QUESTIONS.filter(f=>fState(f)==='done').length;}
+
+function stageFromHasIdea(){
+  if(S.hasIdea==='none')return 'generate';
+  if(S.hasIdea==='exploring')return 'frame';
+  if(S.hasIdea==='yes')return 'pressure-test';
+  return null;
+}
+
+// ---- LEFT PANEL ----
+const openSecs=new Set(['start','identity']);
+function renderLeft(){
+  const el=document.getElementById('leftPanel');
+  const done=doneCount();
+  el.innerHTML=`
+  <div class="tier-label">Tier 1 — Where you are</div>
+  <div class="isec${openSecs.has('start')?' open':''}" data-sec="start">
+    <div class="isec-head"><span class="isec-title">Do you have an idea?</span>${S.hasIdea?`<span class="isec-badge">${{yes:'Yes',exploring:'Exploring',none:'None yet'}[S.hasIdea]}</span>`:''}<span class="isec-arrow">▸</span></div>
+    <div class="isec-body">
+      <div class="fg"><div class="hint">Pick one</div>
+        <div class="pill-grid" id="pillHasIdea">
+          <div class="pill${S.hasIdea==='yes'?' selected':''}" data-v="yes">Yes, I want to sharpen it</div>
+          <div class="pill${S.hasIdea==='exploring'?' selected':''}" data-v="exploring">Exploring, need shape</div>
+          <div class="pill${S.hasIdea==='none'?' selected':''}" data-v="none">No idea yet</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="tier-label">Tier 2 — Framing (${done}/5)</div>
+  <div class="isec${openSecs.has('identity')?' open':''}" data-sec="identity">
+    <div class="isec-head"><span class="isec-title">The Five Framing Questions</span><span class="isec-arrow">▸</span></div>
+    <div class="isec-body">
+      <div class="fg"><label>Business Name (working title)</label><input type="text" id="inName" value="${esc(S.businessName)}" placeholder="e.g. Geiger, Business MCP, Inspiring Painting"></div>
+      <div class="fg"><label>F1 · The Problem</label><textarea id="inProblem" placeholder="One sentence. Customer's words, no jargon.">${esc(S.problem)}</textarea></div>
+      <div class="fg"><label>F2 · The Customer</label><textarea id="inCustomer" placeholder="Named or sharp persona. Role + daily reality + what they've tried.">${esc(S.customer)}</textarea></div>
+      <div class="fg"><label>F3 · Unfair Angle</label><textarea id="inUnfair" placeholder="What you have that 99% of would-be competitors don't.">${esc(S.unfair)}</textarea></div>
+      <div class="fg"><label>F4 · Why Now</label><textarea id="inWhyNow" placeholder="Structural shift that made this possible now.">${esc(S.whyNow)}</textarea></div>
+      <div class="fg"><label>F5 · Worst-Acceptable v1</label><textarea id="inWorstV1" placeholder="Embarrassing version you'd still ship. Scope, not features.">${esc(S.worstV1)}</textarea></div>
+    </div>
+  </div>
+
+  <div class="tier-label">Tier 3 — Pressure-test inputs</div>
+  <div class="isec${openSecs.has('press')?' open':''}" data-sec="press">
+    <div class="isec-head"><span class="isec-title">Sharpening (optional)</span><span class="isec-arrow">▸</span></div>
+    <div class="isec-body">
+      <div class="fg"><label>Anti-Vision</label><textarea id="inAntiVision" placeholder="What you're NOT building.">${esc(S.antiVision)}</textarea></div>
+      <div class="fg"><label>Real Competitors</label><textarea id="inCompetitors" placeholder="Every existing thing that solves any part of this. Include the spreadsheet.">${esc(S.competitors)}</textarea></div>
+      <div class="fg"><label>Kill Criteria</label><textarea id="inKill" placeholder="What would actually make you kill this idea?">${esc(S.killCriteria)}</textarea></div>
+      <div class="fg"><label>Target Price / Business Shape</label><input type="text" id="inPrice" value="${esc(S.targetPrice)}" placeholder="e.g. $5/mo consumer, $5k/mo mid-market"></div>
+    </div>
+  </div>
+
+  <div class="submit-bar">
+    <button class="bar-btn" id="saveBtn">Save</button>
+    <button class="bar-btn danger" id="clearBtn">Clear</button>
+    <button class="submit-btn" id="submitBtn"${done>=4?'':' disabled'}>Finalize →</button>
+  </div>`;
+
+  // WIRE
+  document.querySelectorAll('.isec-head').forEach(h=>h.onclick=()=>{const p=h.parentElement;const sec=p.dataset.sec;if(openSecs.has(sec))openSecs.delete(sec);else openSecs.add(sec);p.classList.toggle('open');});
+  document.querySelectorAll('#pillHasIdea .pill').forEach(p=>p.onclick=()=>{S.hasIdea=p.dataset.v;renderLeft();renderRight();});
+  const tie=(id,k)=>{const el=document.getElementById(id);if(el)el.oninput=()=>{S[k]=el.value;renderLeftBadges();renderRight();saveState();};};
+  tie('inName','businessName');tie('inProblem','problem');tie('inCustomer','customer');tie('inUnfair','unfair');
+  tie('inWhyNow','whyNow');tie('inWorstV1','worstV1');tie('inAntiVision','antiVision');
+  tie('inCompetitors','competitors');tie('inKill','killCriteria');tie('inPrice','targetPrice');
+  document.getElementById('saveBtn').onclick=()=>{saveState();document.getElementById('saveBtn').textContent='Saved';setTimeout(()=>document.getElementById('saveBtn').textContent='Save',1000);};
+  document.getElementById('clearBtn').onclick=()=>{if(confirm('Clear all inputs and start fresh?')){localStorage.removeItem('ideate_v1');location.reload();}};
+  document.getElementById('submitBtn').onclick=()=>{S.tab='brief';renderRight();};
+}
+
+// Update badges without full re-render (avoids losing input focus while typing)
+function renderLeftBadges(){
+  const doneEl=document.querySelector('.tier-label:nth-of-type(2)');
+  if(doneEl)doneEl.textContent=`Tier 2 — Framing (${doneCount()}/5)`;
+  const btn=document.getElementById('submitBtn');
+  if(btn){if(doneCount()>=4)btn.disabled=false;else btn.disabled=true;}
+}
+
+// ---- RIGHT PANEL ----
+function renderRight(){
+  const tabs=[['formula','Formula'],['interventions','Interventions'],['brief','The Brief'],['export','Export']];
+  document.getElementById('rtabs').innerHTML=tabs.map(([t,l])=>`<button class="rtab${S.tab===t?' active':''}" data-t="${t}">${l}</button>`).join('');
+  document.querySelectorAll('.rtab').forEach(el=>el.onclick=()=>{S.tab=el.dataset.t;renderRight();});
+  const rc=document.getElementById('rc');
+
+  if(S.tab==='formula'){
+    let h=`<div class="section-head">The Formula</div>
+    <p class="section-intro">Ideate has five framing questions. You're out of this stage — ready for /validate — when all five are crisply answered.</p>`;
+    for(let i=0;i<F_QUESTIONS.length;i++){
+      const f=F_QUESTIONS[i];const st=fState(f);
+      h+=`<div class="q-row"><div class="q-num">${i+1}</div><div class="q-txt">${f.n}<small>${f.hint}</small></div><div class="q-state ${st}">${st==='done'?'✓ Done':'To do'}</div></div>`;
+    }
+    h+=`<p class="section-intro" style="margin-top:24px">Fill the five inputs on the left as you sharpen. This tab tracks completion.</p>`;
+    rc.innerHTML=h;
+
+  }else if(S.tab==='interventions'){
+    const stage=stageFromHasIdea();
+    const filters=['all','generate','frame','pressure-test'];
+    let h=`<div class="section-head">Interventions</div>
+    <p class="section-intro">Cheap, opinionated exercises to run — grouped by whether you're generating an idea, framing one you have, or pressure-testing before /validate.</p>
+    <div class="filter-row">${filters.map(f=>`<button class="fc${S.catFilter===f?' active':''}" data-f="${f}">${f==='all'?'All':CAT_LABELS[f]}</button>`).join('')}</div>`;
+    const shown=CATALOG.filter(i=>S.catFilter==='all'||i.cat===S.catFilter);
+    for(const i of shown){
+      const state=S.ranInterventions[i.id]||{done:false,notes:''};
+      h+=`<div class="i-card">
+        <div class="i-card-head"><div class="i-name">${esc(i.n)}</div><div class="i-cat">${CAT_LABELS[i.cat]}</div></div>
+        <div class="i-meta">Cost: <span>${i.cost}</span> · TTV: <span>${i.ttv}</span> · Effort: <span>${i.effort}</span> · Answers: <span>${i.a.join(', ')}</span></div>
+        <div class="i-desc">${esc(i.d)}</div>
+        <div class="i-fail">${esc(i.fail)}</div>
+        <div class="i-check"><input type="checkbox" id="ck-${i.id}"${state.done?' checked':''}><label for="ck-${i.id}">Ran this</label><textarea data-id="${i.id}" placeholder="Takeaway (optional)">${esc(state.notes)}</textarea></div>
+      </div>`;
+    }
+    rc.innerHTML=h;
+    document.querySelectorAll('.fc').forEach(b=>b.onclick=()=>{S.catFilter=b.dataset.f;renderRight();});
+    shown.forEach(i=>{
+      const cb=document.getElementById('ck-'+i.id);
+      cb.onchange=()=>{S.ranInterventions[i.id]=S.ranInterventions[i.id]||{done:false,notes:''};S.ranInterventions[i.id].done=cb.checked;saveState();};
+    });
+    document.querySelectorAll('.i-check textarea').forEach(t=>{
+      t.oninput=()=>{const id=t.dataset.id;S.ranInterventions[id]=S.ranInterventions[id]||{done:false,notes:''};S.ranInterventions[id].notes=t.value;saveState();};
+    });
+
+  }else if(S.tab==='brief'){
+    const nm=S.businessName||'Untitled Idea';
+    const ranList=Object.entries(S.ranInterventions).filter(([_,v])=>v.done).map(([id])=>CATALOG.find(c=>c.id===id)?.n).filter(Boolean);
+    let h=`<div class="brief">
+      <div class="brief-tag">One-page brief · ${new Date().toISOString().slice(0,10)}</div>
+      <h2>${esc(nm)}</h2>
+      <h3>The problem</h3>
+      <p class="${S.problem?'':'empty'}">${esc(S.problem)||'Not yet articulated.'}</p>
+      <h3>The customer</h3>
+      <p class="${S.customer?'':'empty'}">${esc(S.customer)||'Not yet named.'}</p>
+      <h3>Why us</h3>
+      <p class="${S.unfair?'':'empty'}">${esc(S.unfair)||'Unfair angle not yet identified.'}</p>
+      <h3>Why now</h3>
+      <p class="${S.whyNow?'':'empty'}">${esc(S.whyNow)||'Not yet articulated.'}</p>
+      <h3>Worst-acceptable v1</h3>
+      <p class="${S.worstV1?'':'empty'}">${esc(S.worstV1)||'Not yet defined.'}</p>
+      ${S.antiVision?`<h3>Anti-vision</h3><p>${esc(S.antiVision)}</p>`:''}
+      ${S.competitors?`<h3>Real competitors</h3><p>${esc(S.competitors)}</p>`:''}
+      ${S.killCriteria?`<h3>Kill criteria</h3><p>${esc(S.killCriteria)}</p>`:''}
+      ${S.targetPrice?`<h3>Target price / shape</h3><p>${esc(S.targetPrice)}</p>`:''}
+      ${ranList.length?`<h3>Interventions run</h3><ul>${ranList.map(n=>`<li>${esc(n)}</li>`).join('')}</ul>`:''}
+    </div>
+    <div style="margin-top:20px"><button class="copy-btn" id="toValidate">Take to /validate →</button><button class="copy-btn secondary" id="copyBrief">Copy Brief</button></div>`;
+    rc.innerHTML=h;
+    document.getElementById('toValidate').onclick=openValidateWithBrief;
+    document.getElementById('copyBrief').onclick=()=>{const t=document.querySelector('.brief').innerText;navigator.clipboard.writeText(t).then(()=>{document.getElementById('copyBrief').textContent='Copied!';setTimeout(()=>document.getElementById('copyBrief').textContent='Copy Brief',1500);});};
+
+  }else if(S.tab==='export'){
+    const jsonStr=JSON.stringify(buildExportJSON(),null,2);
+    let h=`<div class="section-head">Export</div>
+    <p class="section-intro">One-page brief as JSON. Same schema shape as /hub — feeds /validate, /roadmap, or any downstream tool.</p>
+    <button class="copy-btn" id="toValidate2">Take to /validate →</button>
+    <button class="copy-btn secondary" id="copyJson">Copy JSON</button>
+    <div class="json-box">${esc(jsonStr)}</div>`;
+    rc.innerHTML=h;
+    document.getElementById('toValidate2').onclick=openValidateWithBrief;
+    document.getElementById('copyJson').onclick=()=>{navigator.clipboard.writeText(jsonStr).then(()=>{document.getElementById('copyJson').textContent='Copied!';setTimeout(()=>document.getElementById('copyJson').textContent='Copy JSON',1500);});};
+  }
+  saveState();
+}
+
+function buildExportJSON(){
+  const done=F_QUESTIONS.filter(f=>fState(f)==='done').map(f=>f.id);
+  const ran=Object.entries(S.ranInterventions).filter(([_,v])=>v.done).map(([id,v])=>({id,notes:v.notes||null}));
+  return{
+    meta:{framework:'Ideate',version:'v1',exported:new Date().toISOString()},
+    inputs:{
+      businessName:S.businessName||null,
+      hasIdea:S.hasIdea,
+      problem:S.problem||null,
+      customer:S.customer||null,
+      unfairAngle:S.unfair||null,
+      whyNow:S.whyNow||null,
+      worstV1:S.worstV1||null,
+      antiVision:S.antiVision||null,
+      realCompetitors:S.competitors||null,
+      killCriteria:S.killCriteria||null,
+      targetPriceShape:S.targetPrice||null,
+    },
+    framing:{
+      answered:done,
+      total:5,
+      readyForValidate:done.length>=4,
+    },
+    interventionsRun:ran,
+  };
+}
+
+function openValidateWithBrief(){
+  const s=JSON.stringify(buildExportJSON());
+  const p=btoa(unescape(encodeURIComponent(s)));
+  location.href='/validate?plan='+p;
+}
+
+// ---- INIT ----
+loadState();
+renderLeft();renderRight();
+</script>
+</body>
+</html>

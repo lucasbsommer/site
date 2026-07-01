@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Start — Tools for the founder doing the work</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0a0a0c;--surface:#111114;--surface2:#18181c;
+  --border:#252529;--border-light:#333338;
+  --text:#e8e8ec;--text-dim:#9a9aa5;--text-muted:#5a5a65;
+  --accent:#c8f540;--accent-dim:rgba(200,245,64,0.12);
+  --radius:8px;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);color:var(--text);font-family:'DM Mono',monospace;font-size:13px;line-height:1.6;min-height:100vh;-webkit-font-smoothing:antialiased;}
+
+.wrap{max-width:960px;margin:0 auto;padding:80px 24px 120px;}
+
+.hero{margin-bottom:80px;}
+.hero .kicker{font-size:10px;color:var(--text-muted);letter-spacing:2px;text-transform:uppercase;margin-bottom:16px;}
+.hero h1{font-family:'Instrument Serif',serif;font-size:56px;font-weight:400;line-height:1.05;letter-spacing:-0.02em;margin-bottom:20px;}
+.hero h1 em{color:var(--accent);font-style:italic;}
+.hero p{font-size:15px;color:var(--text-dim);max-width:640px;line-height:1.7;margin-bottom:24px;}
+.hero .cta-row{display:flex;gap:12px;align-items:center;flex-wrap:wrap;}
+.cta-primary{background:var(--accent);color:var(--bg);padding:14px 28px;border:none;border-radius:6px;font-family:'DM Mono',monospace;font-size:13px;font-weight:500;cursor:pointer;text-decoration:none;display:inline-block;transition:opacity 0.15s;}
+.cta-primary:hover{opacity:0.9;}
+.hero .cta-secondary{color:var(--text-dim);font-size:12px;text-decoration:none;padding:6px 0;border-bottom:1px solid var(--border);}
+.hero .cta-secondary:hover{color:var(--accent);border-color:var(--accent);}
+
+.section-label{font-size:10px;color:var(--text-muted);letter-spacing:2px;text-transform:uppercase;margin-bottom:24px;padding-bottom:12px;border-bottom:1px solid var(--border);}
+
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:64px;}
+@media(max-width:800px){.grid{grid-template-columns:repeat(2,1fr);}}
+@media(max-width:520px){.grid{grid-template-columns:1fr;}}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:24px 20px;text-decoration:none;color:inherit;transition:all 0.15s;display:flex;flex-direction:column;min-height:170px;}
+.card:hover{border-color:var(--accent);background:var(--surface2);}
+.card .num{font-family:'Instrument Serif',serif;font-size:34px;color:var(--accent);font-style:italic;line-height:1;margin-bottom:6px;}
+.card .stage{font-size:10px;color:var(--text-muted);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:12px;}
+.card .verb{font-family:'Instrument Serif',serif;font-size:22px;margin-bottom:8px;line-height:1.15;}
+.card .desc{font-size:12px;color:var(--text-dim);line-height:1.55;flex:1;margin-bottom:12px;}
+.card .dest{font-size:10px;color:var(--text-muted);letter-spacing:0.5px;}
+.card:hover .dest{color:var(--accent);}
+.card.grad .num{color:var(--text-muted);}
+.card.grad:hover{border-color:var(--text-dim);}
+
+.not-sure{text-align:center;margin-bottom:80px;color:var(--text-muted);font-size:12px;}
+.not-sure a{color:var(--accent);text-decoration:none;border-bottom:1px solid var(--accent-dim);padding-bottom:1px;}
+
+.footer{text-align:center;color:var(--text-muted);font-size:11px;letter-spacing:0.5px;padding-top:32px;border-top:1px solid var(--border);}
+
+/* QUIZ */
+.quiz-scrim{position:fixed;inset:0;background:rgba(10,10,12,0.9);backdrop-filter:blur(8px);z-index:100;display:none;align-items:center;justify-content:center;padding:24px;}
+.quiz-scrim.open{display:flex;}
+.quiz{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:36px 40px;max-width:640px;width:100%;max-height:90vh;overflow-y:auto;position:relative;}
+.quiz-close{position:absolute;top:16px;right:20px;background:transparent;border:none;color:var(--text-muted);font-size:24px;cursor:pointer;}
+.quiz-close:hover{color:var(--text);}
+.quiz-progress{font-size:10px;color:var(--text-muted);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:24px;}
+.quiz h2{font-family:'Instrument Serif',serif;font-size:26px;line-height:1.2;margin-bottom:22px;font-weight:400;}
+.quiz-opts{display:flex;flex-direction:column;gap:8px;margin-bottom:24px;}
+.qopt{background:var(--bg);border:1px solid var(--border);color:var(--text);padding:14px 18px;border-radius:6px;font-family:'DM Mono',monospace;font-size:13px;cursor:pointer;text-align:left;transition:all 0.15s;line-height:1.4;}
+.qopt:hover{border-color:var(--accent);background:var(--surface2);}
+.qopt.selected{border-color:var(--accent);color:var(--accent);background:var(--accent-dim);}
+.quiz-nav{display:flex;justify-content:space-between;gap:12px;}
+.quiz-nav button{background:var(--surface2);border:1px solid var(--border);color:var(--text-dim);padding:10px 20px;border-radius:6px;font-family:'DM Mono',monospace;font-size:12px;cursor:pointer;}
+.quiz-nav button.primary{background:var(--accent);color:var(--bg);border:none;font-weight:500;}
+.quiz-nav button:disabled{opacity:0.3;cursor:not-allowed;}
+
+/* RESULT */
+.quiz-result h2{font-family:'Instrument Serif',serif;font-size:32px;margin-bottom:12px;line-height:1.15;}
+.quiz-result h2 em{color:var(--accent);font-style:italic;}
+.quiz-result p{color:var(--text-dim);font-size:14px;line-height:1.7;margin-bottom:16px;}
+.quiz-result .subtle{color:var(--text-muted);font-size:12px;font-style:italic;}
+.result-cta{margin-top:24px;display:flex;gap:12px;flex-wrap:wrap;}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <div class="hero">
+    <div class="kicker">A tool by Lucas Sommer</div>
+    <h1>A clearer path from <em>idea</em> to a working business.</h1>
+    <p>Most "how to start a company" advice is either a textbook or a tweet. This is neither — it's a set of tools that ask where you are, tell you what to do next, and keep you out of the mistakes that kill most ideas.</p>
+    <div class="cta-row">
+      <a class="cta-primary" href="#" id="openQuiz">Take the 1-minute quiz →</a>
+      <span class="cta-secondary" onclick="document.getElementById('stages').scrollIntoView({behavior:'smooth'})">or pick your stage below</span>
+    </div>
+  </div>
+
+  <div class="section-label" id="stages">Where are you?</div>
+  <div class="grid">
+    <a class="card" href="/ideate">
+      <div class="num">0</div><div class="stage">Seed</div>
+      <div class="verb">Frame it.</div>
+      <div class="desc">You have an idea (or want one). The work is sharpening: who, what problem, why you, why now.</div>
+      <div class="dest">→ /ideate</div>
+    </a>
+    <a class="card" href="/validate">
+      <div class="num">1</div><div class="stage">Discover</div>
+      <div class="verb">Hear it.</div>
+      <div class="desc">The idea exists; the customer is hypothetical. Job #1 is hearing the problem in their words, not yours.</div>
+      <div class="dest">→ /validate</div>
+    </a>
+    <a class="card" href="/validate">
+      <div class="num">2</div><div class="stage">Validate</div>
+      <div class="verb">Prove it.</div>
+      <div class="desc">You've talked to people. Now you need money on the table — pre-orders, pilots, deposits. Real signal, not nods.</div>
+      <div class="dest">→ /validate</div>
+    </a>
+    <a class="card" href="/hub">
+      <div class="num">3</div><div class="stage">Build</div>
+      <div class="verb">Make it.</div>
+      <div class="desc">You've earned the right to build. The trap: building too much. Ship the version you'd defend in public.</div>
+      <div class="dest">→ /product (coming)</div>
+    </a>
+    <a class="card" href="/hub">
+      <div class="num">4</div><div class="stage">Launch</div>
+      <div class="verb">Sell it.</div>
+      <div class="desc">A product exists. The constraint is finding first customers and learning what wins them.</div>
+      <div class="dest">→ /hub + /sales</div>
+    </a>
+    <a class="card" href="/hub">
+      <div class="num">5</div><div class="stage">Grow</div>
+      <div class="verb">Multiply it.</div>
+      <div class="desc">You have repeat customers and channels that work. More of them, more reliably, without the founder bottleneck.</div>
+      <div class="dest">→ /hub, /sales, /cs, /finance</div>
+    </a>
+    <a class="card grad" href="#graduate">
+      <div class="num">6</div><div class="stage">Scale</div>
+      <div class="verb">Operate it.</div>
+      <div class="desc">You've earned product-market fit. The constraint is now operations, hiring, capital. Here's where we stop adding value.</div>
+      <div class="dest">→ Graduation</div>
+    </a>
+  </div>
+
+  <div class="not-sure">
+    Not sure this is your stage? Most founders are one stage earlier than they think. If you can't honestly check the exit criteria of the stage <em>before</em> this one, the work is back there. <a href="#" id="openQuiz2">Retake the quiz →</a>
+  </div>
+
+  <div class="footer">Built for the founder doing the work, not reading about it.</div>
+
+</div>
+
+<!-- QUIZ MODAL -->
+<div class="quiz-scrim" id="quizScrim">
+  <div class="quiz" id="quizBox">
+    <button class="quiz-close" id="quizClose">&times;</button>
+    <div id="quizBody"></div>
+  </div>
+</div>
+
+<script>
+const STAGES=[
+  {id:'seed',n:'Seed',verb:'Frame it',route:'/ideate',blurb:'You have an idea (or want one). The next thing to do is sharpen it — who, what problem, why you, why now — until you\'d defend it in one page.'},
+  {id:'discover',n:'Discover',verb:'Hear it',route:'/validate',blurb:'The idea is drafted; the customer is still hypothetical. The next thing to do is hear the problem in their language, not yours. Five conversations changes everything.'},
+  {id:'validate',n:'Validate',verb:'Prove it',route:'/validate',blurb:'You\'ve talked to people. Nods don\'t count. The next thing to do is put real money on the table — pre-orders, pilots, deposits — from three real customers.'},
+  {id:'build',n:'Build',verb:'Make it',route:'/hub',blurb:'You have evidence. The trap is building too much. The next thing to do is ship the worst-acceptable v1: the version you\'d defend in public, no more.'},
+  {id:'launch',n:'Launch',verb:'Sell it',route:'/hub',blurb:'A product exists. The next thing is finding your first 10–20 paying customers and learning what actually works to reach them. That\'s /hub and, eventually, /sales.'},
+  {id:'grow',n:'Grow',verb:'Multiply it',route:'/hub',blurb:'You have repeat customers and channels that work. The next thing is more of both, more reliably. Retention, expansion, and unit economics — not just new logos.'},
+  {id:'scale',n:'Scale',verb:'Operate it',route:'#graduate',blurb:'You\'ve graduated. Product-market fit is real; acquisition is repeatable; the constraint is now organizational. Honest answer: you need a real operator coach, fractional CFO, or experienced board — not a framework.'},
+];
+
+const QUIZ=[
+  {q:'How long have you been working on this?',
+   opts:[
+     {t:'Today or this week',s:{seed:3}},
+     {t:'A few weeks',s:{discover:2,validate:1}},
+     {t:'A few months',s:{validate:2,build:1}},
+     {t:'A year or more',s:{build:1,launch:1,grow:1,scale:1}},
+   ]},
+  {q:'Have you spoken to potential customers about the problem — listening, not pitching?',
+   opts:[
+     {t:'Not yet',s:{seed:2,discover:2}},
+     {t:'A few conversations',s:{discover:2,validate:1}},
+     {t:'Ten or more deep interviews',s:{validate:2}},
+     {t:'Past validation — I\'m building or selling',s:{build:1,launch:1}},
+   ]},
+  {q:'Is there a product (even rough) that someone could use?',
+   opts:[
+     {t:'No, still thinking',s:{seed:1,discover:1}},
+     {t:'A clickable mockup or doc',s:{validate:2}},
+     {t:'A working v1, ugly but functional',s:{build:2}},
+     {t:'A polished product in market',s:{launch:1,grow:1,scale:1}},
+   ]},
+  {q:'Has anyone paid you for this?',
+   opts:[
+     {t:'No money has changed hands',s:{seed:0,discover:0,validate:1}},
+     {t:'Pre-orders, deposits, or pilots',s:{validate:3}},
+     {t:'A handful of paying customers',s:{launch:3}},
+     {t:'Tens to hundreds of paying customers',s:{grow:2,scale:1}},
+     {t:'Predictable revenue, growing',s:{scale:3}},
+   ]},
+  {q:'What\'s your biggest constraint right now?',
+   opts:[
+     {t:'I don\'t know if this is a real idea',s:{seed:2,discover:1}},
+     {t:'I don\'t know if anyone will pay',s:{validate:2}},
+     {t:'I don\'t know how to build it (or it isn\'t built)',s:{build:2}},
+     {t:'I can\'t find customers',s:{launch:2}},
+     {t:'I find customers but they don\'t stick',s:{grow:2}},
+     {t:'Hiring, ops, capital — the org can\'t keep up',s:{scale:2}},
+   ]},
+];
+
+// ---- QUIZ STATE ----
+const Q={step:0,answers:Array(QUIZ.length).fill(null),result:null};
+
+function openQuiz(){Q.step=0;Q.answers=Array(QUIZ.length).fill(null);Q.result=null;document.getElementById('quizScrim').classList.add('open');renderQuiz();}
+function closeQuiz(){document.getElementById('quizScrim').classList.remove('open');}
+
+function renderQuiz(){
+  const body=document.getElementById('quizBody');
+  if(Q.step<QUIZ.length){
+    const q=QUIZ[Q.step];
+    const selected=Q.answers[Q.step];
+    body.innerHTML=`
+      <div class="quiz-progress">Question ${Q.step+1} of ${QUIZ.length}</div>
+      <h2>${q.q}</h2>
+      <div class="quiz-opts">
+        ${q.opts.map((o,i)=>`<button class="qopt${selected===i?' selected':''}" data-i="${i}">${o.t}</button>`).join('')}
+      </div>
+      <div class="quiz-nav">
+        <button id="qBack"${Q.step===0?' disabled':''}>← Back</button>
+        <button id="qNext" class="primary"${selected===null?' disabled':''}>${Q.step===QUIZ.length-1?'See result →':'Next →'}</button>
+      </div>
+    `;
+    document.querySelectorAll('.qopt').forEach(b=>b.onclick=()=>{Q.answers[Q.step]=parseInt(b.dataset.i);renderQuiz();});
+    document.getElementById('qBack').onclick=()=>{Q.step--;renderQuiz();};
+    document.getElementById('qNext').onclick=()=>{
+      if(Q.step===QUIZ.length-1){Q.result=scoreQuiz();try{localStorage.setItem('lifecycle_stage',Q.result);}catch(e){}renderQuiz();}
+      else{Q.step++;renderQuiz();}
+    };
+  }else{
+    const stage=STAGES.find(s=>s.id===Q.result);
+    body.innerHTML=`
+      <div class="quiz-result">
+        <div class="quiz-progress">Your stage</div>
+        <h2>You're in <em>Stage ${STAGES.indexOf(stage)} — ${stage.n}</em>.</h2>
+        <p>${stage.blurb}</p>
+        <p class="subtle">Ties go to the earlier stage — we'd rather under-promise than push you forward too fast.</p>
+        <div class="result-cta">
+          <a class="cta-primary" href="${stage.route}">${stage.route==='#graduate'?'See what\'s next →':'Open '+stage.route+' →'}</a>
+          <button class="qopt" style="max-width:200px" onclick="closeQuiz()">Not yet — let me browse</button>
+        </div>
+      </div>
+    `;
+  }
+}
+
+function scoreQuiz(){
+  const tally={};
+  STAGES.forEach(s=>tally[s.id]=0);
+  Q.answers.forEach((ai,qi)=>{
+    if(ai===null)return;
+    const opt=QUIZ[qi].opts[ai];
+    Object.entries(opt.s).forEach(([k,v])=>{tally[k]=(tally[k]||0)+v;});
+  });
+  let best=null,bestScore=-1;
+  // Ties go to earlier stage (iterate in stage order, only update if strictly greater)
+  STAGES.forEach(s=>{if(tally[s.id]>bestScore){best=s.id;bestScore=tally[s.id];}});
+  return best||'seed';
+}
+
+document.getElementById('openQuiz').onclick=(e)=>{e.preventDefault();openQuiz();};
+document.getElementById('openQuiz2').onclick=(e)=>{e.preventDefault();openQuiz();};
+document.getElementById('quizClose').onclick=closeQuiz;
+document.getElementById('quizScrim').onclick=(e)=>{if(e.target.id==='quizScrim')closeQuiz();};
+
+// Pre-highlight current stage if user has one saved
+try{
+  const saved=localStorage.getItem('lifecycle_stage');
+  if(saved){
+    const cards=document.querySelectorAll('.card');
+    const idx=STAGES.findIndex(s=>s.id===saved);
+    if(idx>=0&&cards[idx]){cards[idx].style.borderColor='var(--accent)';cards[idx].style.background='var(--surface2)';}
+  }
+}catch(e){}
+</script>
+</body>
+</html>
