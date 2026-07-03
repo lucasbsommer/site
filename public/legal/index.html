@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Legal — Set Up Right, Hand Off When It Matters</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0a0a0c;--surface:#111114;--surface2:#18181c;--border:#252529;--border-light:#333338;--text:#e8e8ec;--text-dim:#9a9aa5;--text-muted:#5a5a65;--accent:#c8f540;--accent-dim:rgba(200,245,64,0.12);--green:#4ade80;--green-dim:rgba(74,222,128,0.12);--yellow:#facc15;--yellow-dim:rgba(250,204,21,0.12);--red:#f87171;--red-dim:rgba(248,113,113,0.12);--blue:#60a5fa;--blue-dim:rgba(96,165,250,0.12);--radius:6px;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);color:var(--text);font-family:'DM Mono',monospace;font-size:12px;line-height:1.55;height:100vh;overflow:hidden;}
+.topbar{padding:18px 24px;border-bottom:1px solid var(--border);display:flex;align-items:baseline;gap:16px;flex-shrink:0;}
+.topbar h1{font-family:'Instrument Serif',serif;font-size:28px;font-weight:400;}
+.topbar h1 em{color:var(--accent);font-style:italic;}
+.topbar .sub{color:var(--text-muted);font-size:10px;letter-spacing:0.5px;}
+.topbar .spacer{flex:1;}
+.topbar .stagejump{font-size:10px;color:var(--text-muted);text-decoration:none;border:1px solid var(--border);padding:6px 12px;border-radius:6px;}
+.topbar .stagejump:hover{color:var(--accent);border-color:var(--accent);}
+.disclaimer{padding:8px 24px;background:var(--red-dim);border-bottom:1px solid var(--border);font-size:11px;color:var(--red);text-align:center;letter-spacing:0.3px;}
+.layout{display:grid;grid-template-columns:360px 1fr;height:calc(100vh - 63px - 32px);overflow:hidden;}
+.left{border-right:1px solid var(--border);overflow-y:auto;background:var(--surface);}
+.right{overflow-y:auto;display:flex;flex-direction:column;}
+.left::-webkit-scrollbar,.right::-webkit-scrollbar{width:4px;}
+.left::-webkit-scrollbar-thumb,.right::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px;}
+.isec{border-bottom:1px solid var(--border);}
+.isec-head{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;cursor:pointer;user-select:none;transition:background 0.15s;}
+.isec-head:hover{background:var(--surface2);}
+.isec-title{font-size:10px;text-transform:uppercase;letter-spacing:1.5px;color:var(--text-muted);font-weight:500;}
+.isec-arrow{color:var(--text-muted);font-size:10px;transition:transform 0.2s;}
+.isec.open .isec-arrow{transform:rotate(90deg);}
+.isec-body{padding:0 16px 16px;display:none;}
+.isec.open .isec-body{display:block;}
+.isec-badge{font-size:9px;padding:2px 7px;border-radius:10px;margin-left:8px;background:var(--green-dim);color:var(--green);}
+.isec-badge.wip{background:var(--yellow-dim);color:var(--yellow);}
+.tier-label{font-size:9px;color:var(--text-muted);padding:8px 16px 4px;text-transform:uppercase;letter-spacing:1.5px;border-bottom:1px solid var(--border);background:var(--bg);}
+.fg{margin-bottom:12px;}
+.fg label{display:block;font-size:10px;color:var(--text-muted);margin-bottom:4px;letter-spacing:0.5px;text-transform:uppercase;}
+.fg input,.fg textarea{width:100%;background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:8px 10px;border-radius:var(--radius);font-family:'DM Mono',monospace;font-size:12px;}
+.fg textarea{resize:vertical;min-height:60px;line-height:1.5;}
+.fg input:focus,.fg textarea:focus{outline:none;border-color:var(--accent);}
+.hint{font-size:10px;color:var(--text-muted);margin-bottom:6px;font-style:italic;line-height:1.5;}
+.pill-grid{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px;}
+.pill{font-size:11px;padding:5px 12px;border-radius:20px;border:1px solid var(--border);color:var(--text-muted);cursor:pointer;background:transparent;font-family:'DM Mono',monospace;transition:all 0.15s;user-select:none;}
+.pill:hover{border-color:var(--text-dim);color:var(--text-dim);}
+.pill.selected{border-color:var(--accent);color:var(--accent);background:var(--accent-dim);}
+.q-input-block{padding:10px 12px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:10px;}
+.q-input-block .q-key{font-size:10px;color:var(--accent);font-weight:500;letter-spacing:0.5px;margin-bottom:2px;}
+.q-input-block .q-title{font-size:12px;color:var(--text);margin-bottom:6px;}
+.q-input-block textarea{width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text);padding:6px 8px;border-radius:4px;font-family:'DM Mono',monospace;font-size:11px;resize:vertical;min-height:44px;line-height:1.5;}
+.q-status-row{display:flex;gap:6px;margin-top:6px;}
+.q-status-btn{font-size:9px;padding:3px 8px;border-radius:10px;border:1px solid var(--border);color:var(--text-muted);cursor:pointer;background:transparent;font-family:'DM Mono',monospace;letter-spacing:0.5px;text-transform:uppercase;}
+.q-status-btn:hover{color:var(--text-dim);}
+.q-status-btn.active-done{border-color:var(--green);color:var(--green);background:var(--green-dim);}
+.q-status-btn.active-wip{border-color:var(--yellow);color:var(--yellow);background:var(--yellow-dim);}
+.q-status-btn.active-todo{border-color:var(--text-dim);color:var(--text);background:transparent;}
+.submit-bar{display:flex;gap:8px;padding:12px 16px;border-top:1px solid var(--border);background:var(--surface);position:sticky;bottom:0;}
+.bar-btn{padding:8px 12px;background:var(--surface2);border:1px solid var(--border);color:var(--text-dim);border-radius:var(--radius);cursor:pointer;font-family:'DM Mono',monospace;font-size:11px;}
+.bar-btn:hover{border-color:var(--text-dim);color:var(--text);}
+.bar-btn.danger{color:var(--red);}
+.submit-btn{flex:1;padding:8px 12px;background:var(--accent);border:none;color:var(--bg);border-radius:var(--radius);cursor:pointer;font-family:'DM Mono',monospace;font-size:11px;font-weight:500;}
+.submit-btn:hover{opacity:0.9;}
+.submit-btn:disabled{opacity:0.3;cursor:not-allowed;}
+.rtabs{display:flex;gap:0;padding:12px 24px 0;border-bottom:1px solid var(--border);background:var(--bg);position:sticky;top:0;z-index:10;}
+.rtab{padding:8px 14px;background:transparent;border:none;color:var(--text-muted);cursor:pointer;font-family:'DM Mono',monospace;font-size:11px;border-bottom:2px solid transparent;transition:all 0.15s;}
+.rtab:hover{color:var(--text-dim);}
+.rtab.active{color:var(--accent);border-bottom-color:var(--accent);}
+.rc{padding:24px;}
+.section-head{font-family:'Instrument Serif',serif;font-size:24px;margin-bottom:4px;}
+.section-intro{color:var(--text-dim);font-size:12px;margin-bottom:20px;max-width:640px;line-height:1.65;}
+.q-row{display:grid;grid-template-columns:36px 1fr auto;gap:12px;padding:14px 0;border-bottom:1px solid var(--border);align-items:start;}
+.q-num{font-family:'Instrument Serif',serif;font-size:22px;color:var(--accent);font-style:italic;line-height:1;padding-top:2px;}
+.q-txt{color:var(--text);font-size:14px;line-height:1.4;}
+.q-txt small{display:block;color:var(--text-muted);font-size:11px;margin-top:4px;font-style:italic;line-height:1.5;}
+.q-state{font-size:9px;padding:3px 8px;border-radius:10px;letter-spacing:0.5px;text-transform:uppercase;white-space:nowrap;}
+.q-state.done{background:var(--green-dim);color:var(--green);}
+.q-state.wip{background:var(--yellow-dim);color:var(--yellow);}
+.q-state.todo{background:rgba(255,255,255,0.05);color:var(--text-muted);}
+.i-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px;margin-bottom:8px;}
+.i-card.lawyer-required{border-left:3px solid var(--red);}
+.i-card-head{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:6px;flex-wrap:wrap;}
+.i-name{font-size:13px;color:var(--text);font-weight:500;}
+.i-cat{font-size:9px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;padding:2px 7px;background:var(--surface2);border-radius:4px;}
+.i-answers{display:flex;gap:4px;flex-wrap:wrap;}
+.i-answer-chip{font-size:9px;color:var(--accent);background:var(--accent-dim);padding:2px 6px;border-radius:8px;letter-spacing:0.3px;}
+.i-lawyer-chip{font-size:9px;color:var(--red);background:var(--red-dim);padding:2px 6px;border-radius:8px;letter-spacing:0.3px;font-weight:500;}
+.i-meta{font-size:10px;color:var(--text-muted);display:flex;gap:12px;margin-bottom:8px;flex-wrap:wrap;}
+.i-meta span{color:var(--text-dim);}
+.i-desc{font-size:12px;color:var(--text-dim);margin-bottom:8px;line-height:1.55;}
+.i-fail{font-size:11px;color:var(--red);margin-top:6px;line-height:1.45;}
+.i-fail::before{content:'⚠ ';color:var(--red);}
+.i-lawyer-note{font-size:11px;color:var(--red);margin-top:6px;padding:6px 10px;background:var(--red-dim);border-radius:4px;line-height:1.45;}
+.i-check{display:flex;gap:8px;align-items:flex-start;padding-top:8px;border-top:1px solid var(--border);}
+.i-check input{margin:2px 0 0 0;accent-color:var(--accent);flex-shrink:0;}
+.i-check-body{flex:1;display:flex;flex-direction:column;gap:6px;}
+.i-check label{font-size:11px;color:var(--text-dim);cursor:pointer;}
+.i-check textarea{width:100%;background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:6px 8px;border-radius:4px;font-family:'DM Mono',monospace;font-size:11px;resize:vertical;min-height:32px;line-height:1.5;}
+.filter-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;padding-bottom:12px;}
+.filter-row+.filter-row{border-top:1px solid var(--border);padding-top:12px;margin-top:-4px;}
+.filter-row-last{border-bottom:1px solid var(--border);padding-bottom:16px;margin-bottom:16px;}
+.fc{font-size:10px;padding:5px 12px;border-radius:20px;border:1px solid var(--border);color:var(--text-muted);cursor:pointer;background:transparent;font-family:'DM Mono',monospace;transition:all 0.15s;}
+.fc:hover{color:var(--text-dim);border-color:var(--text-dim);}
+.fc.active{color:var(--accent);border-color:var(--accent);background:var(--accent-dim);}
+.filter-label{font-size:9px;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase;margin-right:8px;align-self:center;}
+.report{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:28px;max-width:720px;}
+.report h2{font-family:'Instrument Serif',serif;font-size:28px;margin-bottom:6px;}
+.report .report-tag{font-size:10px;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:24px;}
+.report-block{margin-bottom:22px;padding-bottom:20px;border-bottom:1px solid var(--border);}
+.report-block:last-child{border-bottom:none;}
+.report-block h3{font-size:11px;color:var(--accent);letter-spacing:1px;text-transform:uppercase;margin-bottom:6px;display:flex;justify-content:space-between;}
+.report-block h3 .st{font-size:9px;padding:2px 7px;border-radius:10px;letter-spacing:0.5px;}
+.report-block h3 .st.done{background:var(--green-dim);color:var(--green);}
+.report-block h3 .st.wip{background:var(--yellow-dim);color:var(--yellow);}
+.report-block h3 .st.todo{background:rgba(255,255,255,0.05);color:var(--text-muted);}
+.report-block p{color:var(--text-dim);font-size:13px;line-height:1.65;margin-bottom:8px;}
+.report-block .empty{color:var(--text-muted);font-style:italic;}
+.report-block ul{list-style:none;padding-left:0;margin-top:6px;}
+.report-block li{color:var(--text-dim);font-size:12px;line-height:1.7;padding-left:14px;position:relative;}
+.report-block li::before{content:'—';position:absolute;left:0;color:var(--text-muted);}
+.copy-btn{background:var(--accent);color:var(--bg);border:none;padding:8px 20px;border-radius:var(--radius);font-family:'DM Mono',monospace;font-size:11px;cursor:pointer;font-weight:500;margin-right:8px;transition:opacity 0.15s;}
+.copy-btn:hover{opacity:0.85;}
+.copy-btn.secondary{background:var(--surface2);color:var(--text);border:1px solid var(--border);}
+.json-box{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px;font-size:10px;color:var(--text-dim);white-space:pre-wrap;word-wrap:break-word;max-height:400px;overflow-y:auto;margin-top:16px;line-height:1.45;}
+.identity-summary{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:12px 14px;margin-bottom:14px;}
+.identity-summary .idsum-name{font-family:'Instrument Serif',serif;font-size:16px;color:var(--text);margin-bottom:2px;}
+.identity-summary .idsum-imported{font-size:9px;color:var(--accent);letter-spacing:0.5px;margin-top:6px;text-transform:uppercase;}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <h1>Le<em>gal</em></h1>
+  <span class="sub">Set up right, hand off when it matters</span>
+  <span class="spacer"></span>
+  <a href="/finance" class="stagejump">← /finance</a>
+  <a href="/start" class="stagejump">Start</a>
+  <a href="/roadmap" class="stagejump">Roadmap →</a>
+</div>
+<div class="disclaimer">General guidance only. Not legal advice. Every item marked ⚠ Lawyer requires counsel — don't skip.</div>
+<div class="layout">
+  <div class="left" id="leftPanel"></div>
+  <div class="right"><div class="rtabs" id="rtabs"></div><div class="rc" id="rc"></div></div>
+</div>
+<script>
+const S={businessName:'',entityType:'',state:'',jurisdictions:[],dataFootprint:[],importedFrom:null,qState:{L1:{status:'todo',ev:''},L2:{status:'todo',ev:''},L3:{status:'todo',ev:''},L4:{status:'todo',ev:''},L5:{status:'todo',ev:''},L6:{status:'todo',ev:''}},ran:{},tab:'formula',qFilter:'all',catFilter:'all'};
+const QUESTIONS=[
+  {id:'L1',n:'Entity formed right?',hint:'Right entity for your liability, tax, and funding shape — in the right state?'},
+  {id:'L2',n:'IP owned?',hint:'All IP (code, designs, marks, content) demonstrably owned by the entity, not scattered?'},
+  {id:'L3',n:'Customer contracts?',hint:'ToS, Privacy, MSA/SOW defensible if challenged?'},
+  {id:'L4',n:'Workers classified?',hint:'Employees vs. contractors classified correctly under IRS + state rules?'},
+  {id:'L5',n:'Regulated activity?',hint:'Compliant in every jurisdiction and industry you operate in?'},
+  {id:'L6',n:'Disputes handled?',hint:'A process for the first hours of a legal threat, complaint, or subpoena?'},
+];
+const CATALOG=[
+  {id:'entity-decision',n:'Entity Formation Decision',cat:'entity',a:['L1'],lawyer:'recommended',cost:'$',ttv:'1 wk',effort:'solo-wk',
+   d:'Sole prop / LLC / S-Corp / C-Corp. Sole prop = no liability shield. LLC = default bootstrapped. S-Corp = tax-optimized LLC. C-Corp = VC-track default.',
+   fail:'Defaulting to LLC because it sounds sophisticated when sole prop is fine. Or C-Corp because a friend "raised" and now you owe franchise taxes.',
+   note:'Recommended if raising, taking partners, or in regulated industries. Optional for solo consultants.'},
+  {id:'state-inc',n:'State of Incorporation',cat:'entity',a:['L1'],lawyer:'',cost:'$',ttv:'2 hr',effort:'solo-hour',
+   d:'Delaware for C-Corp (investor default). Home state for most LLCs. Wyoming/Nevada = limited real benefit for most.',
+   fail:'Delaware LLC when you operate only in your home state — two annual fees and foreign-qualification for zero benefit.'},
+  {id:'ein',n:'EIN Application',cat:'entity',a:['L1'],lawyer:'',cost:'$',ttv:'1 hr',effort:'solo-hour',
+   d:'IRS website, free, instant. Required for bank accounts, hiring, entity taxes.',
+   fail:'Paying a service $100 for what the IRS does free in 10 minutes.'},
+  {id:'operating-agreement',n:'Operating Agreement / Bylaws',cat:'entity',a:['L1'],lawyer:'required',cost:'$',ttv:'1 wk',effort:'solo-wk',
+   d:'Internal governance: ownership, voting, distributions, transfer restrictions, dissolution.',
+   fail:'No operating agreement between co-founders. When you fight, state defaults apply — they favor whoever files first.',
+   note:'Required if multiple founders. Single-member LLC can use templates.'},
+  {id:'founder-ip',n:'Founder IP Assignment',cat:'ip',a:['L2'],lawyer:'required',cost:'$',ttv:'1 wk',effort:'solo-wk',
+   d:'Written agreement assigning each founder\'s pre-formation work to the entity.',
+   fail:'"We\'re friends, we don\'t need paper." Investors will require it before funding; buyers require it in diligence.',
+   note:'Yes.'},
+  {id:'contractor-ip',n:'Contractor IP Assignment + Work-for-Hire',cat:'ip',a:['L2'],lawyer:'required',cost:'$',ttv:'2 hr per',effort:'solo-hour',
+   d:'Signed IP-assignment in every contractor contract before work begins. Work-for-hire PLUS present-tense assignment backstop.',
+   fail:'Getting the deliverable but not the assignment. Freelancer now owns the code your product runs on.',
+   note:'Yes for the template; then reuse.'},
+  {id:'trademark-scan',n:'Trademark Scan',cat:'ip',a:['L2'],lawyer:'',cost:'$',ttv:'1 d',effort:'solo-day',
+   d:'Knock-out search: USPTO TESS, common-law web search, domain, social handles. If used in your class, choose differently now.',
+   fail:'Assuming an available .com means the name is free. Trademark and domain are separate.'},
+  {id:'trademark-file',n:'Trademark Filing',cat:'ip',a:['L2'],lawyer:'recommended',cost:'$$',ttv:'8–14 mo',effort:'solo-wk',
+   d:'Federal application (USPTO) for the name/logo you\'ve committed to. Nationwide priority; enables enforcement.',
+   fail:'Too early on a name you might change. Too late, after someone else files.',
+   note:'Strongly recommended — attorneys catch class-selection and description errors.'},
+  {id:'tos-privacy',n:'Terms of Service + Privacy Policy',cat:'contracts',a:['L3'],lawyer:'required',cost:'$$',ttv:'2–3 wk',effort:'solo-wk',
+   d:'Tailored to your actual data flows and jurisdictions. Free generators are a starting point but over-promise or under-cover.',
+   fail:'Copying a competitor\'s docs verbatim (their business isn\'t yours; may have infringing clauses).',
+   note:'Yes, at least for review.'},
+  {id:'msa-sow',n:'MSA / SOW Templates (B2B)',cat:'contracts',a:['L3'],lawyer:'required',cost:'$$',ttv:'2 wk',effort:'solo-wk',
+   d:'MSA (governs relationship) + SOW template (governs engagement). Your standard terms; customer red-lines negotiated case-by-case.',
+   fail:'Signing customer paper by default. Their terms protect them.',
+   note:'Yes, for templates.'},
+  {id:'data-protection',n:'Data-Protection Compliance Gate',cat:'contracts',a:['L3','L5'],lawyer:'required',cost:'$$',ttv:'4–12 wk',effort:'solo-wk',
+   d:'GDPR (EU users), CCPA (Cal at scale), HIPAA (PHI), PCI (card data), SOC2 (enterprise). Consent flows, DPIA/DPA, encryption, audits.',
+   fail:'Deferring until an enterprise deal demands it in 2 weeks — you can\'t retrofit; you lose the deal.',
+   note:'Yes for GDPR/HIPAA. Consultant + lawyer for SOC2.'},
+  {id:'worker-class',n:'Worker Classification Check',cat:'workers',a:['L4'],lawyer:'recommended',cost:'$',ttv:'2 hr per',effort:'solo-hour',
+   d:'Employee or contractor? IRS 20-factor test + state (California AB5, Massachusetts, others stricter). Document rationale.',
+   fail:'Misclassifying integrated ongoing workers as contractors. Back-taxes, penalties, private lawsuits result.',
+   note:'Recommended for edge cases, especially California.'},
+  {id:'offer-letter',n:'Employment Offer Letter',cat:'workers',a:['L4'],lawyer:'required',cost:'$',ttv:'1 d',effort:'solo-day',
+   d:'Role, start, comp, benefits, at-will (in at-will states), confidentiality, IP assignment reference. Reviewed once by lawyer; reused.',
+   fail:'Verbal offers without paper. Or unenforceable non-competes in states that ban them.',
+   note:'Yes, for first template.'},
+  {id:'sales-tax-nexus',n:'Sales-Tax Nexus Check',cat:'regulated',a:['L5'],lawyer:'',cost:'$$',ttv:'1–2 wk',effort:'solo-wk',
+   d:'Every state where you have customers/employees/inventory: sales-tax obligation? Post-Wayfair, economic nexus triggers in nearly every state ($100k or 200 transactions).',
+   fail:'"We\'re online, we\'re fine." That reasoning ended in 2018.',
+   note:'Sales-tax accountant or platform (Avalara / TaxJar).'},
+  {id:'industry-license',n:'Industry Licensing Check',cat:'regulated',a:['L5'],lawyer:'required',cost:'$',ttv:'1 wk',effort:'solo-wk',
+   d:'Financial services, health/HIPAA, food (FDA), alcohol, professional services. Common triggers vary by industry.',
+   fail:'Believing "we\'re just a marketplace" or "just software" exempts you. Regulators disagree with startups monthly.',
+   note:'Yes, industry-specific.'},
+  {id:'insurance-pack',n:'Insurance Pack',cat:'disputes',a:['L6'],lawyer:'',cost:'$',ttv:'2 wk',effort:'solo-wk',
+   d:'General Liability, E&O/Professional, Cyber Liability, D&O (board), Workers\' Comp (required by state once you have employees).',
+   fail:'Under-buying to save premium. First claim reveals the gap.'},
+  {id:'dispute-protocol',n:'Dispute Response Protocol',cat:'disputes',a:['L6'],lawyer:'required',cost:'$',ttv:'1 wk',effort:'solo-wk',
+   d:'First hours of ANY dispute: silence-window (no reply until counsel), 24-hr lawyer contact, no public statements, evidence preservation (delete nothing).',
+   fail:'Replying to a demand letter in the moment. First-response instincts weaken the legal position.',
+   note:'Yes, on receipt.'},
+];
+const CAT_LABELS={entity:'Entity',ip:'IP',contracts:'Contracts',workers:'Workers',regulated:'Regulated',disputes:'Disputes'};
+function esc(s){const d=document.createElement('div');d.textContent=s==null?'':String(s);return d.innerHTML;}
+function saveState(){try{localStorage.setItem('legal_v1',JSON.stringify(S));}catch(e){}}
+function loadState(){try{const v=localStorage.getItem('legal_v1');if(v){const p=JSON.parse(v);Object.assign(S,p);}}catch(e){}}
+function importFromPrior(){const urlP=new URLSearchParams(window.location.search).get('plan');if(!urlP)return false;try{const raw=decodeURIComponent(escape(atob(urlP)));const data=JSON.parse(raw);if(data.inputs){S.businessName=data.inputs.businessName||S.businessName;if(data.inputs.entity)S.entityType=data.inputs.entity;S.importedFrom=data.meta&&data.meta.framework;saveState();return true;}}catch(e){console.warn(e);}return false;}
+function qDoneCount(){return QUESTIONS.filter(q=>S.qState[q.id].status==='done').length;}
+function qWipCount(){return QUESTIONS.filter(q=>S.qState[q.id].status==='wip').length;}
+const openSecs=new Set(['identity','l1-3']);
+function renderLeft(){
+  const el=document.getElementById('leftPanel');const doneCt=qDoneCount();const wipCt=qWipCount();
+  el.innerHTML=`
+  <div class="tier-label">The Entity</div>
+  <div class="isec${openSecs.has('identity')?' open':''}" data-sec="identity">
+    <div class="isec-head"><span class="isec-title">Context</span>${S.importedFrom?`<span class="isec-badge wip">from /${S.importedFrom.toLowerCase()}</span>`:''}<span class="isec-arrow">▸</span></div>
+    <div class="isec-body">
+      ${S.importedFrom?`<div class="identity-summary"><div class="idsum-name">${esc(S.businessName||'Your business')}</div><div class="idsum-imported">✓ Imported from /${S.importedFrom.toLowerCase()}</div></div>`:''}
+      <div class="fg"><label>Business Name</label><input type="text" id="inName" value="${esc(S.businessName)}"></div>
+      <div class="fg"><label>Entity Type</label><input type="text" id="inEntity" value="${esc(S.entityType)}" placeholder="e.g. Delaware C-Corp, LLC in TX"></div>
+      <div class="fg"><label>Operating State(s)</label><input type="text" id="inState" value="${esc(S.state)}" placeholder="e.g. CA, TX, NY"></div>
+    </div>
+  </div>
+  <div class="tier-label">Progress — L1–L3 (${doneCt} done · ${wipCt} in progress)</div>
+  <div class="isec${openSecs.has('l1-3')?' open':''}" data-sec="l1-3">
+    <div class="isec-head"><span class="isec-title">Entity · IP · Contracts</span><span class="isec-arrow">▸</span></div>
+    <div class="isec-body">${['L1','L2','L3'].map(qid=>renderQInputBlock(qid)).join('')}</div>
+  </div>
+  <div class="tier-label">Progress — L4–L6</div>
+  <div class="isec${openSecs.has('l4-6')?' open':''}" data-sec="l4-6">
+    <div class="isec-head"><span class="isec-title">Workers · Regulated · Disputes</span><span class="isec-arrow">▸</span></div>
+    <div class="isec-body">${['L4','L5','L6'].map(qid=>renderQInputBlock(qid)).join('')}</div>
+  </div>
+  <div class="submit-bar">
+    <button class="bar-btn" id="saveBtn">Save</button>
+    <button class="bar-btn danger" id="clearBtn">Clear</button>
+    <button class="submit-btn" id="submitBtn"${doneCt>=3?'':' disabled'}>See Report →</button>
+  </div>`;
+  document.querySelectorAll('.isec-head').forEach(h=>h.onclick=()=>{const p=h.parentElement;const sec=p.dataset.sec;if(openSecs.has(sec))openSecs.delete(sec);else openSecs.add(sec);p.classList.toggle('open');});
+  const tie=(id,k)=>{const el=document.getElementById(id);if(el)el.oninput=()=>{S[k]=el.value;saveState();};};
+  tie('inName','businessName');tie('inEntity','entityType');tie('inState','state');
+  QUESTIONS.forEach(q=>{const ta=document.getElementById('qev-'+q.id);if(ta)ta.oninput=()=>{S.qState[q.id].ev=ta.value;saveState();updateQStatusBadges();};['todo','wip','done'].forEach(st=>{const btn=document.getElementById(`qs-${q.id}-${st}`);if(btn)btn.onclick=()=>{S.qState[q.id].status=st;saveState();renderLeftStatusOnly();renderRight();};});});
+  document.getElementById('saveBtn').onclick=()=>{saveState();document.getElementById('saveBtn').textContent='Saved';setTimeout(()=>document.getElementById('saveBtn').textContent='Save',1000);};
+  document.getElementById('clearBtn').onclick=()=>{if(confirm('Clear all inputs?')){localStorage.removeItem('legal_v1');location.reload();}};
+  document.getElementById('submitBtn').onclick=()=>{S.tab='report';renderRight();};
+}
+function renderQInputBlock(qid){const q=QUESTIONS.find(x=>x.id===qid);const s=S.qState[qid];return `<div class="q-input-block"><div class="q-key">${qid}</div><div class="q-title">${q.n}</div><div class="hint">${q.hint}</div><textarea id="qev-${qid}" placeholder="Status, lawyer engaged, notes.">${esc(s.ev)}</textarea><div class="q-status-row"><button id="qs-${qid}-todo" class="q-status-btn${s.status==='todo'?' active-todo':''}">To do</button><button id="qs-${qid}-wip" class="q-status-btn${s.status==='wip'?' active-wip':''}">In progress</button><button id="qs-${qid}-done" class="q-status-btn${s.status==='done'?' active-done':''}">Done ✓</button></div></div>`;}
+function renderLeftStatusOnly(){QUESTIONS.forEach(q=>{const s=S.qState[q.id];['todo','wip','done'].forEach(st=>{const btn=document.getElementById(`qs-${q.id}-${st}`);if(!btn)return;btn.classList.remove('active-todo','active-wip','active-done');if(s.status===st)btn.classList.add('active-'+st);});});updateQStatusBadges();const btn=document.getElementById('submitBtn');if(btn)btn.disabled=qDoneCount()<3;}
+function updateQStatusBadges(){const labels=document.querySelectorAll('.tier-label');if(labels[1])labels[1].textContent=`Progress — L1–L3 (${qDoneCount()} done · ${qWipCount()} in progress)`;}
+function renderRight(){
+  const tabs=[['formula','Formula'],['items','Items'],['report','Report'],['export','Export']];
+  document.getElementById('rtabs').innerHTML=tabs.map(([t,l])=>`<button class="rtab${S.tab===t?' active':''}" data-t="${t}">${l}</button>`).join('');
+  document.querySelectorAll('.rtab').forEach(el=>el.onclick=()=>{S.tab=el.dataset.t;renderRight();});
+  const rc=document.getElementById('rc');
+  if(S.tab==='formula'){
+    let h=`<div class="section-head">The Six Questions</div><p class="section-intro">Legal is where being wrong is expensive and being unclear is fatal. Most items are set-up-once, correctly. Very few experiments; many decisions. The value here is knowing when a lawyer is required — not replacing one.</p>`;
+    QUESTIONS.forEach((q,i)=>{const st=S.qState[q.id].status;const label=st==='done'?'✓ Done':st==='wip'?'In progress':'To do';h+=`<div class="q-row"><div class="q-num">${i+1}</div><div class="q-txt">${q.n}<small>${q.hint}</small></div><div class="q-state ${st}">${label}</div></div>`;});
+    rc.innerHTML=h;
+  }else if(S.tab==='items'){
+    const qF=['all','L1','L2','L3','L4','L5','L6'];const catF=['all','entity','ip','contracts','workers','regulated','disputes'];
+    let h=`<div class="section-head">Items</div><p class="section-intro">16 legal items. Red-bordered = lawyer required. Amber (recommended) = strongly recommended. Skip a red one, and the problem lives in your future.</p>
+    <div class="filter-row"><span class="filter-label">Question:</span>${qF.map(f=>`<button class="fc${S.qFilter===f?' active':''}" data-f="${f}">${f==='all'?'All':f}</button>`).join('')}</div>
+    <div class="filter-row filter-row-last"><span class="filter-label">Category:</span>${catF.map(f=>`<button class="fc cat${S.catFilter===f?' active':''}" data-c="${f}">${f==='all'?'All':CAT_LABELS[f]}</button>`).join('')}</div>`;
+    const shown=CATALOG.filter(i=>(S.qFilter==='all'||i.a.includes(S.qFilter))&&(S.catFilter==='all'||i.cat===S.catFilter));
+    for(const i of shown){const st=S.ran[i.id]||{done:false,notes:''};const lawyerCls=i.lawyer==='required'?'lawyer-required':'';h+=`<div class="i-card ${lawyerCls}"><div class="i-card-head"><div class="i-name">${esc(i.n)}</div><div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><div class="i-answers">${i.a.map(a=>`<span class="i-answer-chip">${a}</span>`).join('')}${i.lawyer==='required'?'<span class="i-lawyer-chip">⚠ Lawyer required</span>':i.lawyer==='recommended'?'<span class="i-lawyer-chip">⚠ Lawyer recommended</span>':''}</div><div class="i-cat">${CAT_LABELS[i.cat]}</div></div></div><div class="i-meta">Cost: <span>${i.cost}</span> · TTV: <span>${i.ttv}</span> · Effort: <span>${i.effort}</span></div><div class="i-desc">${esc(i.d)}</div><div class="i-fail">${esc(i.fail)}</div>${i.note?`<div class="i-lawyer-note"><strong>Lawyer:</strong> ${esc(i.note)}</div>`:''}<div class="i-check"><input type="checkbox" id="ck-${i.id}"${st.done?' checked':''}><div class="i-check-body"><label for="ck-${i.id}">Done</label><textarea data-id="${i.id}" placeholder="Firm engaged, docs status, notes">${esc(st.notes)}</textarea></div></div></div>`;}
+    rc.innerHTML=h;
+    document.querySelectorAll('.fc:not(.cat)').forEach(b=>b.onclick=()=>{S.qFilter=b.dataset.f;renderRight();});
+    document.querySelectorAll('.fc.cat').forEach(b=>b.onclick=()=>{S.catFilter=b.dataset.c;renderRight();});
+    shown.forEach(i=>{const cb=document.getElementById('ck-'+i.id);if(cb)cb.onchange=()=>{S.ran[i.id]=S.ran[i.id]||{done:false,notes:''};S.ran[i.id].done=cb.checked;saveState();};});
+    document.querySelectorAll('.i-check textarea').forEach(t=>{t.oninput=()=>{const id=t.dataset.id;S.ran[id]=S.ran[id]||{done:false,notes:''};S.ran[id].notes=t.value;saveState();};});
+  }else if(S.tab==='report'){
+    const nm=S.businessName||'Untitled Legal';const ranList=Object.entries(S.ran).filter(([_,v])=>v.done).map(([id])=>CATALOG.find(c=>c.id===id)).filter(Boolean);const lawyerRequiredMissing=CATALOG.filter(i=>i.lawyer==='required'&&!(S.ran[i.id]&&S.ran[i.id].done));
+    let h=`<div class="report"><div class="report-tag">Legal Status · ${new Date().toISOString().slice(0,10)}</div><h2>${esc(nm)}</h2>
+    <div class="report-block">
+      ${S.entityType?`<p style="color:var(--text-muted);font-size:11px">Entity: ${esc(S.entityType)}</p>`:''}
+      ${S.state?`<p style="color:var(--text-muted);font-size:11px">State(s): ${esc(S.state)}</p>`:''}
+    </div>`;
+    QUESTIONS.forEach(q=>{const s=S.qState[q.id];h+=`<div class="report-block"><h3>${q.id} — ${q.n} <span class="st ${s.status}">${s.status==='done'?'✓ Done':s.status==='wip'?'In progress':'To do'}</span></h3><p class="${s.ev?'':'empty'}">${esc(s.ev)||'No data yet.'}</p></div>`;});
+    if(ranList.length){h+=`<div class="report-block"><h3>Items Complete</h3><ul>${ranList.map(x=>`<li>${esc(x.n)}${S.ran[x.id].notes?` — <span style="color:var(--text-muted)">${esc(S.ran[x.id].notes)}</span>`:''}</li>`).join('')}</ul></div>`;}
+    if(lawyerRequiredMissing.length){h+=`<div class="report-block" style="background:var(--red-dim);border:1px solid var(--red);border-radius:6px;padding:16px"><h3 style="color:var(--red)">⚠ Lawyer-required items still open (${lawyerRequiredMissing.length})</h3><ul>${lawyerRequiredMissing.map(x=>`<li>${esc(x.n)}</li>`).join('')}</ul></div>`;}
+    const nextStep=qDoneCount()>=5?'Foundation solid. Revisit annually.':'Focus L1–L3 first. Entity + IP + Contracts are the layer everything else sits on.';
+    h+=`<div class="report-block" style="background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:16px;margin-top:12px"><h3>Next</h3><p>${nextStep}</p></div></div>
+    <div style="margin-top:20px"><button class="copy-btn" id="toRoadmap">Open Roadmap →</button><button class="copy-btn secondary" id="copyReport">Copy Report</button></div>`;
+    rc.innerHTML=h;
+    document.getElementById('toRoadmap').onclick=openRoadmap;
+    document.getElementById('copyReport').onclick=()=>{navigator.clipboard.writeText(document.querySelector('.report').innerText).then(()=>{document.getElementById('copyReport').textContent='Copied!';setTimeout(()=>document.getElementById('copyReport').textContent='Copy Report',1500);});};
+  }else if(S.tab==='export'){
+    const jsonStr=JSON.stringify(buildExportJSON(),null,2);
+    let h=`<div class="section-head">Export</div><p class="section-intro">Legal state as JSON.</p><button class="copy-btn" id="toRoadmap2">Open Roadmap →</button><button class="copy-btn secondary" id="copyJson">Copy JSON</button><div class="json-box">${esc(jsonStr)}</div>`;
+    rc.innerHTML=h;
+    document.getElementById('toRoadmap2').onclick=openRoadmap;
+    document.getElementById('copyJson').onclick=()=>{navigator.clipboard.writeText(jsonStr).then(()=>{document.getElementById('copyJson').textContent='Copied!';setTimeout(()=>document.getElementById('copyJson').textContent='Copy JSON',1500);});};
+  }
+  saveState();
+}
+function buildExportJSON(){const progress={};QUESTIONS.forEach(q=>{progress[q.id]={status:S.qState[q.id].status,notes:S.qState[q.id].ev||null};});const ran=Object.entries(S.ran).filter(([_,v])=>v.done).map(([id,v])=>{const c=CATALOG.find(x=>x.id===id);return{id,name:c?.n,category:c?.cat,lawyerRequired:c?.lawyer,notes:v.notes||null};});return{meta:{framework:'Legal',version:'v1',exported:new Date().toISOString(),importedFrom:S.importedFrom},inputs:{businessName:S.businessName||null,entityType:S.entityType||null,state:S.state||null},progress,itemsComplete:ran,readiness:{questionsDone:qDoneCount(),foundationSolid:qDoneCount()>=5}};}
+function openRoadmap(){const s=JSON.stringify(buildExportJSON());location.href='/roadmap?plan='+btoa(unescape(encodeURIComponent(s)));}
+loadState();importFromPrior();renderLeft();renderRight();
+</script>
+</body>
+</html>

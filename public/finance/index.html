@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Finance — Know Your Runway and Unit Economics</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0a0a0c;--surface:#111114;--surface2:#18181c;--border:#252529;--border-light:#333338;--text:#e8e8ec;--text-dim:#9a9aa5;--text-muted:#5a5a65;--accent:#c8f540;--accent-dim:rgba(200,245,64,0.12);--green:#4ade80;--green-dim:rgba(74,222,128,0.12);--yellow:#facc15;--yellow-dim:rgba(250,204,21,0.12);--red:#f87171;--red-dim:rgba(248,113,113,0.12);--blue:#60a5fa;--blue-dim:rgba(96,165,250,0.12);--purple:#a78bfa;--purple-dim:rgba(167,139,250,0.12);--orange:#fb923c;--orange-dim:rgba(251,146,60,0.12);--radius:6px;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);color:var(--text);font-family:'DM Mono',monospace;font-size:12px;line-height:1.55;height:100vh;overflow:hidden;}
+.topbar{padding:18px 24px;border-bottom:1px solid var(--border);display:flex;align-items:baseline;gap:16px;flex-shrink:0;}
+.topbar h1{font-family:'Instrument Serif',serif;font-size:28px;font-weight:400;}
+.topbar h1 em{color:var(--accent);font-style:italic;}
+.topbar .sub{color:var(--text-muted);font-size:10px;letter-spacing:0.5px;}
+.topbar .spacer{flex:1;}
+.topbar .stagejump{font-size:10px;color:var(--text-muted);text-decoration:none;border:1px solid var(--border);padding:6px 12px;border-radius:6px;}
+.topbar .stagejump:hover{color:var(--accent);border-color:var(--accent);}
+.disclaimer{padding:8px 24px;background:var(--yellow-dim);border-bottom:1px solid var(--border);font-size:11px;color:var(--yellow);text-align:center;letter-spacing:0.3px;}
+.layout{display:grid;grid-template-columns:360px 1fr;height:calc(100vh - 63px - 32px);overflow:hidden;}
+.left{border-right:1px solid var(--border);overflow-y:auto;background:var(--surface);}
+.right{overflow-y:auto;display:flex;flex-direction:column;}
+.left::-webkit-scrollbar,.right::-webkit-scrollbar{width:4px;}
+.left::-webkit-scrollbar-thumb,.right::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px;}
+.isec{border-bottom:1px solid var(--border);}
+.isec-head{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;cursor:pointer;user-select:none;transition:background 0.15s;}
+.isec-head:hover{background:var(--surface2);}
+.isec-title{font-size:10px;text-transform:uppercase;letter-spacing:1.5px;color:var(--text-muted);font-weight:500;}
+.isec-arrow{color:var(--text-muted);font-size:10px;transition:transform 0.2s;}
+.isec.open .isec-arrow{transform:rotate(90deg);}
+.isec-body{padding:0 16px 16px;display:none;}
+.isec.open .isec-body{display:block;}
+.isec-badge{font-size:9px;padding:2px 7px;border-radius:10px;margin-left:8px;background:var(--green-dim);color:var(--green);}
+.isec-badge.wip{background:var(--yellow-dim);color:var(--yellow);}
+.tier-label{font-size:9px;color:var(--text-muted);padding:8px 16px 4px;text-transform:uppercase;letter-spacing:1.5px;border-bottom:1px solid var(--border);background:var(--bg);}
+.fg{margin-bottom:12px;}
+.fg label{display:block;font-size:10px;color:var(--text-muted);margin-bottom:4px;letter-spacing:0.5px;text-transform:uppercase;}
+.fg input,.fg textarea{width:100%;background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:8px 10px;border-radius:var(--radius);font-family:'DM Mono',monospace;font-size:12px;}
+.fg textarea{resize:vertical;min-height:60px;line-height:1.5;}
+.fg input:focus,.fg textarea:focus{outline:none;border-color:var(--accent);}
+.hint{font-size:10px;color:var(--text-muted);margin-bottom:6px;font-style:italic;line-height:1.5;}
+.q-input-block{padding:10px 12px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:10px;}
+.q-input-block .q-key{font-size:10px;color:var(--accent);font-weight:500;letter-spacing:0.5px;margin-bottom:2px;}
+.q-input-block .q-title{font-size:12px;color:var(--text);margin-bottom:6px;}
+.q-input-block textarea{width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text);padding:6px 8px;border-radius:4px;font-family:'DM Mono',monospace;font-size:11px;resize:vertical;min-height:44px;line-height:1.5;}
+.q-status-row{display:flex;gap:6px;margin-top:6px;}
+.q-status-btn{font-size:9px;padding:3px 8px;border-radius:10px;border:1px solid var(--border);color:var(--text-muted);cursor:pointer;background:transparent;font-family:'DM Mono',monospace;letter-spacing:0.5px;text-transform:uppercase;}
+.q-status-btn:hover{color:var(--text-dim);}
+.q-status-btn.active-done{border-color:var(--green);color:var(--green);background:var(--green-dim);}
+.q-status-btn.active-wip{border-color:var(--yellow);color:var(--yellow);background:var(--yellow-dim);}
+.q-status-btn.active-todo{border-color:var(--text-dim);color:var(--text);background:transparent;}
+.submit-bar{display:flex;gap:8px;padding:12px 16px;border-top:1px solid var(--border);background:var(--surface);position:sticky;bottom:0;}
+.bar-btn{padding:8px 12px;background:var(--surface2);border:1px solid var(--border);color:var(--text-dim);border-radius:var(--radius);cursor:pointer;font-family:'DM Mono',monospace;font-size:11px;}
+.bar-btn:hover{border-color:var(--text-dim);color:var(--text);}
+.bar-btn.danger{color:var(--red);}
+.submit-btn{flex:1;padding:8px 12px;background:var(--accent);border:none;color:var(--bg);border-radius:var(--radius);cursor:pointer;font-family:'DM Mono',monospace;font-size:11px;font-weight:500;}
+.submit-btn:hover{opacity:0.9;}
+.submit-btn:disabled{opacity:0.3;cursor:not-allowed;}
+.rtabs{display:flex;gap:0;padding:12px 24px 0;border-bottom:1px solid var(--border);background:var(--bg);position:sticky;top:0;z-index:10;}
+.rtab{padding:8px 14px;background:transparent;border:none;color:var(--text-muted);cursor:pointer;font-family:'DM Mono',monospace;font-size:11px;border-bottom:2px solid transparent;transition:all 0.15s;}
+.rtab:hover{color:var(--text-dim);}
+.rtab.active{color:var(--accent);border-bottom-color:var(--accent);}
+.rc{padding:24px;}
+.section-head{font-family:'Instrument Serif',serif;font-size:24px;margin-bottom:4px;}
+.section-intro{color:var(--text-dim);font-size:12px;margin-bottom:20px;max-width:640px;line-height:1.65;}
+.q-row{display:grid;grid-template-columns:36px 1fr auto;gap:12px;padding:14px 0;border-bottom:1px solid var(--border);align-items:start;}
+.q-num{font-family:'Instrument Serif',serif;font-size:22px;color:var(--accent);font-style:italic;line-height:1;padding-top:2px;}
+.q-txt{color:var(--text);font-size:14px;line-height:1.4;}
+.q-txt small{display:block;color:var(--text-muted);font-size:11px;margin-top:4px;font-style:italic;line-height:1.5;}
+.q-state{font-size:9px;padding:3px 8px;border-radius:10px;letter-spacing:0.5px;text-transform:uppercase;white-space:nowrap;}
+.q-state.done{background:var(--green-dim);color:var(--green);}
+.q-state.wip{background:var(--yellow-dim);color:var(--yellow);}
+.q-state.todo{background:rgba(255,255,255,0.05);color:var(--text-muted);}
+.i-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px;margin-bottom:8px;}
+.i-card.pattern-tree{border-left:3px solid var(--purple);}
+.i-card.pattern-dashboard{border-left:3px solid var(--blue);}
+.i-card.pattern-spoke{border-left:3px solid var(--accent);}
+.i-card-head{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:6px;flex-wrap:wrap;}
+.i-name{font-size:13px;color:var(--text);font-weight:500;}
+.i-cat{font-size:9px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;padding:2px 7px;background:var(--surface2);border-radius:4px;}
+.i-answers{display:flex;gap:4px;flex-wrap:wrap;}
+.i-answer-chip{font-size:9px;color:var(--accent);background:var(--accent-dim);padding:2px 6px;border-radius:8px;letter-spacing:0.3px;}
+.i-pattern-chip{font-size:9px;padding:2px 6px;border-radius:8px;letter-spacing:0.3px;}
+.i-pattern-chip.spoke{color:var(--accent);background:var(--accent-dim);}
+.i-pattern-chip.tree{color:var(--purple);background:var(--purple-dim);}
+.i-pattern-chip.dashboard{color:var(--blue);background:var(--blue-dim);}
+.i-meta{font-size:10px;color:var(--text-muted);display:flex;gap:12px;margin-bottom:8px;flex-wrap:wrap;}
+.i-meta span{color:var(--text-dim);}
+.i-desc{font-size:12px;color:var(--text-dim);margin-bottom:8px;line-height:1.55;}
+.i-fail{font-size:11px;color:var(--red);margin-top:6px;line-height:1.45;}
+.i-fail::before{content:'⚠ ';color:var(--red);}
+.i-check{display:flex;gap:8px;align-items:flex-start;padding-top:8px;border-top:1px solid var(--border);}
+.i-check input{margin:2px 0 0 0;accent-color:var(--accent);flex-shrink:0;}
+.i-check-body{flex:1;display:flex;flex-direction:column;gap:6px;}
+.i-check label{font-size:11px;color:var(--text-dim);cursor:pointer;}
+.i-check textarea{width:100%;background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:6px 8px;border-radius:4px;font-family:'DM Mono',monospace;font-size:11px;resize:vertical;min-height:32px;line-height:1.5;}
+.filter-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;padding-bottom:12px;}
+.filter-row+.filter-row{border-top:1px solid var(--border);padding-top:12px;margin-top:-4px;}
+.filter-row-last{border-bottom:1px solid var(--border);padding-bottom:16px;margin-bottom:16px;}
+.fc{font-size:10px;padding:5px 12px;border-radius:20px;border:1px solid var(--border);color:var(--text-muted);cursor:pointer;background:transparent;font-family:'DM Mono',monospace;transition:all 0.15s;}
+.fc:hover{color:var(--text-dim);border-color:var(--text-dim);}
+.fc.active{color:var(--accent);border-color:var(--accent);background:var(--accent-dim);}
+.filter-label{font-size:9px;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase;margin-right:8px;align-self:center;}
+.report{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:28px;max-width:720px;}
+.report h2{font-family:'Instrument Serif',serif;font-size:28px;margin-bottom:6px;}
+.report .report-tag{font-size:10px;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:24px;}
+.report-block{margin-bottom:22px;padding-bottom:20px;border-bottom:1px solid var(--border);}
+.report-block:last-child{border-bottom:none;}
+.report-block h3{font-size:11px;color:var(--accent);letter-spacing:1px;text-transform:uppercase;margin-bottom:6px;display:flex;justify-content:space-between;}
+.report-block h3 .st{font-size:9px;padding:2px 7px;border-radius:10px;letter-spacing:0.5px;}
+.report-block h3 .st.done{background:var(--green-dim);color:var(--green);}
+.report-block h3 .st.wip{background:var(--yellow-dim);color:var(--yellow);}
+.report-block h3 .st.todo{background:rgba(255,255,255,0.05);color:var(--text-muted);}
+.report-block p{color:var(--text-dim);font-size:13px;line-height:1.65;margin-bottom:8px;}
+.report-block .empty{color:var(--text-muted);font-style:italic;}
+.report-block ul{list-style:none;padding-left:0;margin-top:6px;}
+.report-block li{color:var(--text-dim);font-size:12px;line-height:1.7;padding-left:14px;position:relative;}
+.report-block li::before{content:'—';position:absolute;left:0;color:var(--text-muted);}
+.copy-btn{background:var(--accent);color:var(--bg);border:none;padding:8px 20px;border-radius:var(--radius);font-family:'DM Mono',monospace;font-size:11px;cursor:pointer;font-weight:500;margin-right:8px;transition:opacity 0.15s;}
+.copy-btn:hover{opacity:0.85;}
+.copy-btn.secondary{background:var(--surface2);color:var(--text);border:1px solid var(--border);}
+.json-box{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px;font-size:10px;color:var(--text-dim);white-space:pre-wrap;word-wrap:break-word;max-height:400px;overflow-y:auto;margin-top:16px;line-height:1.45;}
+.identity-summary{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:12px 14px;margin-bottom:14px;}
+.identity-summary .idsum-name{font-family:'Instrument Serif',serif;font-size:16px;color:var(--text);margin-bottom:2px;}
+.identity-summary .idsum-sub{font-size:10px;color:var(--text-muted);}
+.identity-summary .idsum-imported{font-size:9px;color:var(--accent);letter-spacing:0.5px;margin-top:6px;text-transform:uppercase;}
+.dashboard-num{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:6px;}
+.dashboard-num .fg{margin-bottom:0;}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <h1>Fin<em>ance</em></h1>
+  <span class="sub">Know your runway and unit economics</span>
+  <span class="spacer"></span>
+  <a href="/hub" class="stagejump">← /hub</a>
+  <a href="/start" class="stagejump">Start</a>
+  <a href="/roadmap" class="stagejump">Roadmap →</a>
+</div>
+<div class="disclaimer">General guidance. Not tax, accounting, or legal advice. Review with a CPA against your specific facts.</div>
+<div class="layout">
+  <div class="left" id="leftPanel"></div>
+  <div class="right"><div class="rtabs" id="rtabs"></div><div class="rc" id="rc"></div></div>
+</div>
+<script>
+const S={businessName:'',entity:'',bankBalance:'',monthlyBurn:'',monthlyRevenue:'',cac:'',ltv:'',importedFrom:null,qState:{M1:{status:'todo',ev:''},M2:{status:'todo',ev:''},M3:{status:'todo',ev:''},M4:{status:'todo',ev:''},M5:{status:'todo',ev:''},M6:{status:'todo',ev:''}},ran:{},tab:'formula',qFilter:'all',catFilter:'all',patternFilter:'all'};
+const QUESTIONS=[
+  {id:'M1',n:'Money in?',hint:'Can you take payment from your customers, in the way they want to pay?'},
+  {id:'M2',n:'Pricing?',hint:'Price set with intent — value, capture, comps — not by feel?'},
+  {id:'M3',n:'Books?',hint:'Revenues and expenses being recorded somewhere reconcilable, monthly?'},
+  {id:'M4',n:'Cash?',hint:'Do you know your runway to the day?'},
+  {id:'M5',n:'Unit economics?',hint:'CAC, LTV, payback period known and defensible?'},
+  {id:'M6',n:'Capital plan?',hint:'A plan for the next funding event — bootstrap milestone, debt, or raise?'},
+];
+const CATALOG=[
+  {id:'biz-bank',n:'Business Bank Account',pattern:'spoke',cat:'payments',a:['M1'],cost:'$',ttv:'1 wk',effort:'solo-day',
+   d:'Dedicated business checking (Mercury / Relay / local). Personal + business commingling is a fast path to piercing the veil.',
+   fail:'Using a personal account "for now." Later, unraveling costs 40 accountant hours.'},
+  {id:'payment-processor',n:'Payment Processor Setup',pattern:'spoke',cat:'payments',a:['M1'],cost:'$',ttv:'1 wk',effort:'solo-wk',
+   d:'Stripe (default for SaaS/e-comm), Square (retail/service), direct ACH (B2B invoicing). Test end-to-end (real charge, real refund).',
+   fail:'Building your own. Not testing refunds. Refunds go wrong.'},
+  {id:'invoicing-ar',n:'Invoicing + AR Flow (B2B)',pattern:'spoke',cat:'payments',a:['M1','M4'],cost:'$',ttv:'1 wk',effort:'solo-wk',
+   d:'Terms, first reminder day-5-past-due, second day-15, escalation day-30. Automated where possible.',
+   fail:'No follow-up cadence. AR ages, cash starves.'},
+  {id:'pricing-tree',n:'Pricing Strategy Decision',pattern:'tree',cat:'pricing',a:['M2'],cost:'$',ttv:'1 d',effort:'solo-day',
+   d:'Guided decision → picked approach: cost-plus / value-based / competitive / freemium / usage. Rationale documented.',
+   fail:'Cost-plus for value-based businesses. Undercharging 3–10x is the modal early-founder mistake.'},
+  {id:'wtp-import',n:'WTP Signal → List Price',pattern:'spoke',cat:'pricing',a:['M2'],cost:'$',ttv:'1 hr',effort:'solo-hour',
+   d:'Take WTP data from /validate. Set initial price at the HIGH end of "acceptable." Adjust after 20+ sales.',
+   fail:'Setting at the middle. You can discount from a higher list; raising is harder.'},
+  {id:'pricing-review',n:'Pricing Review Cadence',pattern:'dashboard',cat:'pricing',a:['M2'],cost:'$',ttv:'quarterly',effort:'solo-day',
+   d:'Quarterly: % of prospects push back on price, % of last 20 deals discounted, top reason for lost deals. Trigger for annual list-price increase.',
+   fail:'Never revisiting price. List should rise ~annually; grandfather existing.'},
+  {id:'accounting-sw',n:'Accounting Software Setup',pattern:'spoke',cat:'bookkeeping',a:['M3'],cost:'$',ttv:'1 wk',effort:'solo-wk',
+   d:'Xero or QuickBooks with a real chart of accounts. Bank feed, payment-processor feed, expense-tool feed connected. Reconciled to zero.',
+   fail:'Deferring. Reconstructing 12 months at year-end costs 3x.'},
+  {id:'bookkeeper',n:'Bookkeeper Engagement',pattern:'spoke',cat:'bookkeeping',a:['M3'],cost:'$$',ttv:'4 wk',effort:'solo-wk',
+   d:'~$300–800/mo doing monthly reconciliation, categorization, close. Not a CPA — a bookkeeper is enough for mechanics.',
+   fail:'Founder-as-bookkeeper for 18 months. Their hourly rate beats yours.'},
+  {id:'monthly-close',n:'Monthly Close Cadence',pattern:'dashboard',cat:'bookkeeping',a:['M3','M4'],cost:'$',ttv:'monthly',effort:'solo-day',
+   d:'By day 10 of each month: prior month closed. P&L, balance sheet, cash flow. Investor updates written FROM this data.',
+   fail:'Closing when needed. Diligence request against 18 months of open books tests the truth.'},
+  {id:'runway-dashboard',n:'Cash + Runway Dashboard',pattern:'dashboard',cat:'cash',a:['M4'],cost:'$',ttv:'1 d',effort:'solo-day',
+   d:'Bank balance, rolling 3-mo burn, runway months. Refreshed weekly. The number that must be right and known always.',
+   fail:'Only known at board meetings.'},
+  {id:'13wk-forecast',n:'13-Week Cash Forecast',pattern:'dashboard',cat:'cash',a:['M4'],cost:'$',ttv:'weekly',effort:'solo-wk',
+   d:'Week-by-week for 13 weeks: receipts (dated), outflows, ending balance. Updated weekly.',
+   fail:'Monthly view at monthly resolution hides cash gaps in weeks.'},
+  {id:'runway-triggers',n:'Runway Trigger Thresholds',pattern:'tree',cat:'cash',a:['M4','M6'],cost:'$',ttv:'1 hr',effort:'solo-hour',
+   d:'Pre-committed: 9 months → begin fundraising or plan review. 6 → decision point. 3 → survival mode. Painful cuts made faster later.',
+   fail:'Waiting until 4 months to start raising. Rounds take 6.'},
+  {id:'ue-dashboard',n:'Unit Economics Dashboard',pattern:'dashboard',cat:'unit-econ',a:['M5'],cost:'$$',ttv:'2 wk',effort:'solo-wk',
+   d:'CAC (blended + by channel), gross margin, contribution margin, LTV (with discount rate + churn), payback.',
+   fail:'CAC based only on paid ads. Blended (all G&A + marketing / new customers) is truer.'},
+  {id:'contribution-margin',n:'Contribution Margin Analysis',pattern:'dashboard',cat:'unit-econ',a:['M5'],cost:'$',ttv:'1 wk',effort:'solo-wk',
+   d:'Revenue minus variable cost per unit, per product line or segment. Reveals which "high-revenue" customers are unprofitable.',
+   fail:'Ignoring COGS drift. Recompute quarterly.'},
+  {id:'funding-tree',n:'Funding Path Decision',pattern:'tree',cat:'capital',a:['M6'],cost:'$',ttv:'1 d',effort:'solo-day',
+   d:'Guided: bootstrap / revenue-based / SBA / debt facility / SAFE / priced round. Rationale documented.',
+   fail:'Defaulting to whichever is loudest in your feed.'},
+  {id:'bootstrap-raise',n:'Bootstrap-vs-Raise Framework',pattern:'tree',cat:'capital',a:['M6'],cost:'$',ttv:'4 hr',effort:'solo-hour',
+   d:'Three-Q test: land grab? capital-intensive before revenue? willing to run for outside stakeholders? Two "yes" → raise. Else → bootstrap.',
+   fail:'Answering yes to (3) because you like the identity. That\'s not strategy.'},
+  {id:'investor-update',n:'Monthly Investor Update',pattern:'spoke',cat:'capital',a:['M6'],cost:'$',ttv:'monthly',effort:'solo-hour',
+   d:'By 5th of month: 3 highlights, 3 lowlights, key metrics, 1–2 asks. Same format every month.',
+   fail:'Skipping updates when things go poorly. Investors write off silence faster than bad numbers.'},
+  {id:'owner-comp',n:'Owner Compensation Decision',pattern:'tree',cat:'owner-comp',a:['M2','M4','M6'],cost:'$',ttv:'2 hr',effort:'solo-hour',
+   d:'S-Corp: reasonable salary + distributions. C-Corp: salary only. LLC: draws. Below-market for VC seed founders is normal; above for bootstrapped-profitable is normal.',
+   fail:'Zero pay for years, becoming resentful. Or aggressive draws that starve growth.'},
+  {id:'tax-dashboard',n:'Tax Estimates + Deadlines',pattern:'dashboard',cat:'taxes',a:['M3'],cost:'$',ttv:'quarterly',effort:'solo-day',
+   d:'Calendar: federal + state estimated income tax (Apr/Jun/Sep/Jan), sales tax filings, payroll tax, franchise (Delaware, etc.). Amounts estimated by bookkeeper/CPA.',
+   fail:'Missing a Delaware franchise tax deadline voids the entity.'},
+];
+const CAT_LABELS={payments:'Payments',pricing:'Pricing',bookkeeping:'Bookkeeping',cash:'Cash',['unit-econ']:'Unit econ',taxes:'Taxes',capital:'Capital',['owner-comp']:'Owner comp'};
+const PATTERN_LABELS={spoke:'Setup',tree:'Decision',dashboard:'Dashboard'};
+function esc(s){const d=document.createElement('div');d.textContent=s==null?'':String(s);return d.innerHTML;}
+function saveState(){try{localStorage.setItem('finance_v1',JSON.stringify(S));}catch(e){}}
+function loadState(){try{const v=localStorage.getItem('finance_v1');if(v){const p=JSON.parse(v);Object.assign(S,p);}}catch(e){}}
+function importFromPrior(){const urlP=new URLSearchParams(window.location.search).get('plan');if(!urlP)return false;try{const raw=decodeURIComponent(escape(atob(urlP)));const data=JSON.parse(raw);if(data.inputs){S.businessName=data.inputs.businessName||S.businessName;S.importedFrom=data.meta&&data.meta.framework;saveState();return true;}}catch(e){console.warn(e);}return false;}
+function qDoneCount(){return QUESTIONS.filter(q=>S.qState[q.id].status==='done').length;}
+function qWipCount(){return QUESTIONS.filter(q=>S.qState[q.id].status==='wip').length;}
+function runway(){const b=parseFloat(S.bankBalance);const burn=parseFloat(S.monthlyBurn);const rev=parseFloat(S.monthlyRevenue)||0;const net=burn-rev;if(!b||!burn||net<=0)return null;return Math.round(b/net*10)/10;}
+const openSecs=new Set(['identity','m1-3']);
+function renderLeft(){
+  const el=document.getElementById('leftPanel');const doneCt=qDoneCount();const wipCt=qWipCount();const rw=runway();
+  el.innerHTML=`
+  <div class="tier-label">The Books</div>
+  <div class="isec${openSecs.has('identity')?' open':''}" data-sec="identity">
+    <div class="isec-head"><span class="isec-title">Snapshot</span>${S.importedFrom?`<span class="isec-badge wip">from /${S.importedFrom.toLowerCase()}</span>`:''}<span class="isec-arrow">▸</span></div>
+    <div class="isec-body">
+      ${S.importedFrom?`<div class="identity-summary"><div class="idsum-name">${esc(S.businessName||'Your business')}</div><div class="idsum-imported">✓ Imported from /${S.importedFrom.toLowerCase()}</div></div>`:''}
+      <div class="fg"><label>Business Name</label><input type="text" id="inName" value="${esc(S.businessName)}"></div>
+      <div class="fg"><label>Legal Entity</label><input type="text" id="inEntity" value="${esc(S.entity)}" placeholder="e.g. Delaware C-Corp"></div>
+      <div class="tier-label" style="padding:8px 0 4px;border-top:1px solid var(--border);border-bottom:none;margin-top:8px">Cash</div>
+      <div class="dashboard-num">
+        <div class="fg"><label>Bank Balance ($)</label><input type="number" id="inBal" value="${esc(S.bankBalance)}"></div>
+        <div class="fg"><label>Monthly Burn ($)</label><input type="number" id="inBurn" value="${esc(S.monthlyBurn)}"></div>
+        <div class="fg"><label>Monthly Revenue ($)</label><input type="number" id="inRev" value="${esc(S.monthlyRevenue)}"></div>
+        <div class="fg"><label>Runway</label><input type="text" value="${rw?rw+' months':'—'}" readonly style="background:var(--bg);color:${rw&&rw<6?'var(--red)':rw&&rw<12?'var(--yellow)':'var(--green)'}"></div>
+      </div>
+      <div class="tier-label" style="padding:8px 0 4px;border-top:1px solid var(--border);border-bottom:none;margin-top:8px">Unit Econ</div>
+      <div class="dashboard-num">
+        <div class="fg"><label>CAC ($)</label><input type="number" id="inCac" value="${esc(S.cac)}"></div>
+        <div class="fg"><label>LTV ($)</label><input type="number" id="inLtv" value="${esc(S.ltv)}"></div>
+      </div>
+    </div>
+  </div>
+  <div class="tier-label">Progress — M1–M3 (${doneCt} done · ${wipCt} in progress)</div>
+  <div class="isec${openSecs.has('m1-3')?' open':''}" data-sec="m1-3">
+    <div class="isec-head"><span class="isec-title">Money in · Pricing · Books</span><span class="isec-arrow">▸</span></div>
+    <div class="isec-body">${['M1','M2','M3'].map(qid=>renderQInputBlock(qid)).join('')}</div>
+  </div>
+  <div class="tier-label">Progress — M4–M6</div>
+  <div class="isec${openSecs.has('m4-6')?' open':''}" data-sec="m4-6">
+    <div class="isec-head"><span class="isec-title">Cash · Unit econ · Capital</span><span class="isec-arrow">▸</span></div>
+    <div class="isec-body">${['M4','M5','M6'].map(qid=>renderQInputBlock(qid)).join('')}</div>
+  </div>
+  <div class="submit-bar">
+    <button class="bar-btn" id="saveBtn">Save</button>
+    <button class="bar-btn danger" id="clearBtn">Clear</button>
+    <button class="submit-btn" id="submitBtn"${doneCt>=3?'':' disabled'}>See Report →</button>
+  </div>`;
+  document.querySelectorAll('.isec-head').forEach(h=>h.onclick=()=>{const p=h.parentElement;const sec=p.dataset.sec;if(openSecs.has(sec))openSecs.delete(sec);else openSecs.add(sec);p.classList.toggle('open');});
+  const tie=(id,k)=>{const el=document.getElementById(id);if(el)el.oninput=()=>{S[k]=el.value;saveState();};};
+  tie('inName','businessName');tie('inEntity','entity');tie('inBal','bankBalance');tie('inBurn','monthlyBurn');tie('inRev','monthlyRevenue');tie('inCac','cac');tie('inLtv','ltv');
+  QUESTIONS.forEach(q=>{const ta=document.getElementById('qev-'+q.id);if(ta)ta.oninput=()=>{S.qState[q.id].ev=ta.value;saveState();updateQStatusBadges();};['todo','wip','done'].forEach(st=>{const btn=document.getElementById(`qs-${q.id}-${st}`);if(btn)btn.onclick=()=>{S.qState[q.id].status=st;saveState();renderLeftStatusOnly();renderRight();};});});
+  document.getElementById('saveBtn').onclick=()=>{saveState();document.getElementById('saveBtn').textContent='Saved';setTimeout(()=>document.getElementById('saveBtn').textContent='Save',1000);};
+  document.getElementById('clearBtn').onclick=()=>{if(confirm('Clear all inputs?')){localStorage.removeItem('finance_v1');location.reload();}};
+  document.getElementById('submitBtn').onclick=()=>{S.tab='report';renderRight();};
+}
+function renderQInputBlock(qid){const q=QUESTIONS.find(x=>x.id===qid);const s=S.qState[qid];return `<div class="q-input-block"><div class="q-key">${qid}</div><div class="q-title">${q.n}</div><div class="hint">${q.hint}</div><textarea id="qev-${qid}" placeholder="Numbers, notes.">${esc(s.ev)}</textarea><div class="q-status-row"><button id="qs-${qid}-todo" class="q-status-btn${s.status==='todo'?' active-todo':''}">To do</button><button id="qs-${qid}-wip" class="q-status-btn${s.status==='wip'?' active-wip':''}">In progress</button><button id="qs-${qid}-done" class="q-status-btn${s.status==='done'?' active-done':''}">Done ✓</button></div></div>`;}
+function renderLeftStatusOnly(){QUESTIONS.forEach(q=>{const s=S.qState[q.id];['todo','wip','done'].forEach(st=>{const btn=document.getElementById(`qs-${q.id}-${st}`);if(!btn)return;btn.classList.remove('active-todo','active-wip','active-done');if(s.status===st)btn.classList.add('active-'+st);});});updateQStatusBadges();const btn=document.getElementById('submitBtn');if(btn)btn.disabled=qDoneCount()<3;}
+function updateQStatusBadges(){const labels=document.querySelectorAll('.tier-label');if(labels[1])labels[1].textContent=`Progress — M1–M3 (${qDoneCount()} done · ${qWipCount()} in progress)`;}
+function renderRight(){
+  const tabs=[['formula','Formula'],['items','Items'],['report','Report'],['export','Export']];
+  document.getElementById('rtabs').innerHTML=tabs.map(([t,l])=>`<button class="rtab${S.tab===t?' active':''}" data-t="${t}">${l}</button>`).join('');
+  document.querySelectorAll('.rtab').forEach(el=>el.onclick=()=>{S.tab=el.dataset.t;renderRight();});
+  const rc=document.getElementById('rc');
+  if(S.tab==='formula'){
+    let h=`<div class="section-head">The Six Questions</div><p class="section-intro">Finance uses three shapes: <span style="color:var(--accent)">setup</span> tasks (one-time), <span style="color:var(--purple)">decisions</span> (guided trees), and <span style="color:var(--blue)">dashboards</span> (ongoing). The catalog marks each intervention with its pattern.</p>`;
+    QUESTIONS.forEach((q,i)=>{const st=S.qState[q.id].status;const label=st==='done'?'✓ Done':st==='wip'?'In progress':'To do';h+=`<div class="q-row"><div class="q-num">${i+1}</div><div class="q-txt">${q.n}<small>${q.hint}</small></div><div class="q-state ${st}">${label}</div></div>`;});
+    rc.innerHTML=h;
+  }else if(S.tab==='items'){
+    const qF=['all','M1','M2','M3','M4','M5','M6'];const catF=['all','payments','pricing','bookkeeping','cash','unit-econ','capital','owner-comp','taxes'];const patF=['all','spoke','tree','dashboard'];
+    let h=`<div class="section-head">Items</div><p class="section-intro">19 finance items. Color-coded borders: green = setup, purple = decision tree, blue = dashboard/ongoing.</p>
+    <div class="filter-row"><span class="filter-label">Question:</span>${qF.map(f=>`<button class="fc${S.qFilter===f?' active':''}" data-f="${f}">${f==='all'?'All':f}</button>`).join('')}</div>
+    <div class="filter-row"><span class="filter-label">Category:</span>${catF.map(f=>`<button class="fc cat${S.catFilter===f?' active':''}" data-c="${f}">${f==='all'?'All':CAT_LABELS[f]}</button>`).join('')}</div>
+    <div class="filter-row filter-row-last"><span class="filter-label">Pattern:</span>${patF.map(f=>`<button class="fc pat${S.patternFilter===f?' active':''}" data-p="${f}">${f==='all'?'All':PATTERN_LABELS[f]}</button>`).join('')}</div>`;
+    const shown=CATALOG.filter(i=>(S.qFilter==='all'||i.a.includes(S.qFilter))&&(S.catFilter==='all'||i.cat===S.catFilter)&&(S.patternFilter==='all'||i.pattern===S.patternFilter));
+    for(const i of shown){const st=S.ran[i.id]||{done:false,notes:''};h+=`<div class="i-card pattern-${i.pattern}"><div class="i-card-head"><div class="i-name">${esc(i.n)}</div><div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><div class="i-answers">${i.a.map(a=>`<span class="i-answer-chip">${a}</span>`).join('')}<span class="i-pattern-chip ${i.pattern}">${PATTERN_LABELS[i.pattern]}</span></div><div class="i-cat">${CAT_LABELS[i.cat]}</div></div></div><div class="i-meta">Cost: <span>${i.cost}</span> · TTV: <span>${i.ttv}</span> · Effort: <span>${i.effort}</span></div><div class="i-desc">${esc(i.d)}</div><div class="i-fail">${esc(i.fail)}</div><div class="i-check"><input type="checkbox" id="ck-${i.id}"${st.done?' checked':''}><div class="i-check-body"><label for="ck-${i.id}">Done / running</label><textarea data-id="${i.id}" placeholder="Notes / numbers">${esc(st.notes)}</textarea></div></div></div>`;}
+    rc.innerHTML=h;
+    document.querySelectorAll('.fc:not(.cat):not(.pat)').forEach(b=>b.onclick=()=>{S.qFilter=b.dataset.f;renderRight();});
+    document.querySelectorAll('.fc.cat').forEach(b=>b.onclick=()=>{S.catFilter=b.dataset.c;renderRight();});
+    document.querySelectorAll('.fc.pat').forEach(b=>b.onclick=()=>{S.patternFilter=b.dataset.p;renderRight();});
+    shown.forEach(i=>{const cb=document.getElementById('ck-'+i.id);if(cb)cb.onchange=()=>{S.ran[i.id]=S.ran[i.id]||{done:false,notes:''};S.ran[i.id].done=cb.checked;saveState();};});
+    document.querySelectorAll('.i-check textarea').forEach(t=>{t.oninput=()=>{const id=t.dataset.id;S.ran[id]=S.ran[id]||{done:false,notes:''};S.ran[id].notes=t.value;saveState();};});
+  }else if(S.tab==='report'){
+    const nm=S.businessName||'Untitled Finance';const ranList=Object.entries(S.ran).filter(([_,v])=>v.done).map(([id])=>CATALOG.find(c=>c.id===id)).filter(Boolean);const rw=runway();const ratio=(parseFloat(S.ltv)&&parseFloat(S.cac))?Math.round(parseFloat(S.ltv)/parseFloat(S.cac)*10)/10:null;
+    let h=`<div class="report"><div class="report-tag">Finance Status · ${new Date().toISOString().slice(0,10)}</div><h2>${esc(nm)}</h2>
+    <div class="report-block">
+      ${S.entity?`<p style="color:var(--text-muted);font-size:11px">Entity: ${esc(S.entity)}</p>`:''}
+      ${rw?`<p style="color:${rw<6?'var(--red)':rw<12?'var(--yellow)':'var(--green)'};font-size:14px;font-weight:500">Runway: ${rw} months</p>`:''}
+      ${ratio?`<p style="color:${ratio<3?'var(--red)':ratio<5?'var(--yellow)':'var(--green)'};font-size:14px;font-weight:500">LTV:CAC = ${ratio}:1</p>`:''}
+    </div>`;
+    QUESTIONS.forEach(q=>{const s=S.qState[q.id];h+=`<div class="report-block"><h3>${q.id} — ${q.n} <span class="st ${s.status}">${s.status==='done'?'✓ Done':s.status==='wip'?'In progress':'To do'}</span></h3><p class="${s.ev?'':'empty'}">${esc(s.ev)||'No data yet.'}</p></div>`;});
+    if(ranList.length){h+=`<div class="report-block"><h3>Items Done / Running</h3><ul>${ranList.map(x=>`<li>${esc(x.n)}${S.ran[x.id].notes?` — <span style="color:var(--text-muted)">${esc(S.ran[x.id].notes)}</span>`:''}</li>`).join('')}</ul></div>`;}
+    const nextStep=rw&&rw<6?'⚠ Runway under 6 months. Fundraise now, cut, or both.':qDoneCount()>=5?'Books solid, cash visible, unit econ known. Fundraising path (M6) is the current constraint.':'Get M3 (books) and M4 (cash dashboard) done first. Everything else depends on the numbers being real.';
+    h+=`<div class="report-block" style="background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:16px;margin-top:12px"><h3>Next</h3><p>${nextStep}</p></div></div>
+    <div style="margin-top:20px"><button class="copy-btn" id="toRoadmap">Open Roadmap →</button><button class="copy-btn secondary" id="copyReport">Copy Report</button></div>`;
+    rc.innerHTML=h;
+    document.getElementById('toRoadmap').onclick=openRoadmap;
+    document.getElementById('copyReport').onclick=()=>{navigator.clipboard.writeText(document.querySelector('.report').innerText).then(()=>{document.getElementById('copyReport').textContent='Copied!';setTimeout(()=>document.getElementById('copyReport').textContent='Copy Report',1500);});};
+  }else if(S.tab==='export'){
+    const jsonStr=JSON.stringify(buildExportJSON(),null,2);
+    let h=`<div class="section-head">Export</div><p class="section-intro">Finance state as JSON.</p><button class="copy-btn" id="toRoadmap2">Open Roadmap →</button><button class="copy-btn secondary" id="copyJson">Copy JSON</button><div class="json-box">${esc(jsonStr)}</div>`;
+    rc.innerHTML=h;
+    document.getElementById('toRoadmap2').onclick=openRoadmap;
+    document.getElementById('copyJson').onclick=()=>{navigator.clipboard.writeText(jsonStr).then(()=>{document.getElementById('copyJson').textContent='Copied!';setTimeout(()=>document.getElementById('copyJson').textContent='Copy JSON',1500);});};
+  }
+  saveState();
+}
+function buildExportJSON(){const progress={};QUESTIONS.forEach(q=>{progress[q.id]={status:S.qState[q.id].status,notes:S.qState[q.id].ev||null};});const ran=Object.entries(S.ran).filter(([_,v])=>v.done).map(([id,v])=>{const c=CATALOG.find(x=>x.id===id);return{id,name:c?.n,category:c?.cat,pattern:c?.pattern,notes:v.notes||null};});return{meta:{framework:'Finance',version:'v1',exported:new Date().toISOString(),importedFrom:S.importedFrom},inputs:{businessName:S.businessName||null,entity:S.entity||null,bankBalance:S.bankBalance||null,monthlyBurn:S.monthlyBurn||null,monthlyRevenue:S.monthlyRevenue||null,cac:S.cac||null,ltv:S.ltv||null,runway:runway()},progress,itemsRunning:ran,readiness:{questionsDone:qDoneCount(),runwayHealthy:runway()>=12}};}
+function openRoadmap(){const s=JSON.stringify(buildExportJSON());location.href='/roadmap?plan='+btoa(unescape(encodeURIComponent(s)));}
+loadState();importFromPrior();renderLeft();renderRight();
+</script>
+</body>
+</html>

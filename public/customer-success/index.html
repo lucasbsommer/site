@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Customer Success — Keep the Customers You Win</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0a0a0c;--surface:#111114;--surface2:#18181c;--border:#252529;--border-light:#333338;--text:#e8e8ec;--text-dim:#9a9aa5;--text-muted:#5a5a65;--accent:#c8f540;--accent-dim:rgba(200,245,64,0.12);--green:#4ade80;--green-dim:rgba(74,222,128,0.12);--yellow:#facc15;--yellow-dim:rgba(250,204,21,0.12);--red:#f87171;--red-dim:rgba(248,113,113,0.12);--blue:#60a5fa;--blue-dim:rgba(96,165,250,0.12);--radius:6px;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);color:var(--text);font-family:'DM Mono',monospace;font-size:12px;line-height:1.55;height:100vh;overflow:hidden;}
+.topbar{padding:18px 24px;border-bottom:1px solid var(--border);display:flex;align-items:baseline;gap:16px;flex-shrink:0;}
+.topbar h1{font-family:'Instrument Serif',serif;font-size:28px;font-weight:400;}
+.topbar h1 em{color:var(--accent);font-style:italic;}
+.topbar .sub{color:var(--text-muted);font-size:10px;letter-spacing:0.5px;}
+.topbar .spacer{flex:1;}
+.topbar .stagejump{font-size:10px;color:var(--text-muted);text-decoration:none;border:1px solid var(--border);padding:6px 12px;border-radius:6px;}
+.topbar .stagejump:hover{color:var(--accent);border-color:var(--accent);}
+.layout{display:grid;grid-template-columns:360px 1fr;height:calc(100vh - 63px);overflow:hidden;}
+.left{border-right:1px solid var(--border);overflow-y:auto;background:var(--surface);}
+.right{overflow-y:auto;display:flex;flex-direction:column;}
+.left::-webkit-scrollbar,.right::-webkit-scrollbar{width:4px;}
+.left::-webkit-scrollbar-thumb,.right::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px;}
+.isec{border-bottom:1px solid var(--border);}
+.isec-head{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;cursor:pointer;user-select:none;transition:background 0.15s;}
+.isec-head:hover{background:var(--surface2);}
+.isec-title{font-size:10px;text-transform:uppercase;letter-spacing:1.5px;color:var(--text-muted);font-weight:500;}
+.isec-arrow{color:var(--text-muted);font-size:10px;transition:transform 0.2s;}
+.isec.open .isec-arrow{transform:rotate(90deg);}
+.isec-body{padding:0 16px 16px;display:none;}
+.isec.open .isec-body{display:block;}
+.isec-badge{font-size:9px;padding:2px 7px;border-radius:10px;margin-left:8px;background:var(--green-dim);color:var(--green);}
+.isec-badge.wip{background:var(--yellow-dim);color:var(--yellow);}
+.tier-label{font-size:9px;color:var(--text-muted);padding:8px 16px 4px;text-transform:uppercase;letter-spacing:1.5px;border-bottom:1px solid var(--border);background:var(--bg);}
+.fg{margin-bottom:12px;}
+.fg label{display:block;font-size:10px;color:var(--text-muted);margin-bottom:4px;letter-spacing:0.5px;text-transform:uppercase;}
+.fg input,.fg textarea{width:100%;background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:8px 10px;border-radius:var(--radius);font-family:'DM Mono',monospace;font-size:12px;}
+.fg textarea{resize:vertical;min-height:60px;line-height:1.5;}
+.fg input:focus,.fg textarea:focus{outline:none;border-color:var(--accent);}
+.hint{font-size:10px;color:var(--text-muted);margin-bottom:6px;font-style:italic;line-height:1.5;}
+.q-input-block{padding:10px 12px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:10px;}
+.q-input-block .q-key{font-size:10px;color:var(--accent);font-weight:500;letter-spacing:0.5px;margin-bottom:2px;}
+.q-input-block .q-title{font-size:12px;color:var(--text);margin-bottom:6px;}
+.q-input-block textarea{width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text);padding:6px 8px;border-radius:4px;font-family:'DM Mono',monospace;font-size:11px;resize:vertical;min-height:44px;line-height:1.5;}
+.q-input-block textarea:focus{outline:none;border-color:var(--accent);}
+.q-status-row{display:flex;gap:6px;margin-top:6px;}
+.q-status-btn{font-size:9px;padding:3px 8px;border-radius:10px;border:1px solid var(--border);color:var(--text-muted);cursor:pointer;background:transparent;font-family:'DM Mono',monospace;letter-spacing:0.5px;text-transform:uppercase;}
+.q-status-btn:hover{color:var(--text-dim);}
+.q-status-btn.active-done{border-color:var(--green);color:var(--green);background:var(--green-dim);}
+.q-status-btn.active-wip{border-color:var(--yellow);color:var(--yellow);background:var(--yellow-dim);}
+.q-status-btn.active-todo{border-color:var(--text-dim);color:var(--text);background:transparent;}
+.submit-bar{display:flex;gap:8px;padding:12px 16px;border-top:1px solid var(--border);background:var(--surface);position:sticky;bottom:0;}
+.bar-btn{padding:8px 12px;background:var(--surface2);border:1px solid var(--border);color:var(--text-dim);border-radius:var(--radius);cursor:pointer;font-family:'DM Mono',monospace;font-size:11px;}
+.bar-btn:hover{border-color:var(--text-dim);color:var(--text);}
+.bar-btn.danger{color:var(--red);}
+.submit-btn{flex:1;padding:8px 12px;background:var(--accent);border:none;color:var(--bg);border-radius:var(--radius);cursor:pointer;font-family:'DM Mono',monospace;font-size:11px;font-weight:500;}
+.submit-btn:hover{opacity:0.9;}
+.submit-btn:disabled{opacity:0.3;cursor:not-allowed;}
+.rtabs{display:flex;gap:0;padding:12px 24px 0;border-bottom:1px solid var(--border);background:var(--bg);position:sticky;top:0;z-index:10;}
+.rtab{padding:8px 14px;background:transparent;border:none;color:var(--text-muted);cursor:pointer;font-family:'DM Mono',monospace;font-size:11px;border-bottom:2px solid transparent;transition:all 0.15s;}
+.rtab:hover{color:var(--text-dim);}
+.rtab.active{color:var(--accent);border-bottom-color:var(--accent);}
+.rc{padding:24px;}
+.section-head{font-family:'Instrument Serif',serif;font-size:24px;margin-bottom:4px;}
+.section-intro{color:var(--text-dim);font-size:12px;margin-bottom:20px;max-width:640px;line-height:1.65;}
+.q-row{display:grid;grid-template-columns:36px 1fr auto;gap:12px;padding:14px 0;border-bottom:1px solid var(--border);align-items:start;}
+.q-num{font-family:'Instrument Serif',serif;font-size:22px;color:var(--accent);font-style:italic;line-height:1;padding-top:2px;}
+.q-txt{color:var(--text);font-size:14px;line-height:1.4;}
+.q-txt small{display:block;color:var(--text-muted);font-size:11px;margin-top:4px;font-style:italic;line-height:1.5;}
+.q-state{font-size:9px;padding:3px 8px;border-radius:10px;letter-spacing:0.5px;text-transform:uppercase;white-space:nowrap;}
+.q-state.done{background:var(--green-dim);color:var(--green);}
+.q-state.wip{background:var(--yellow-dim);color:var(--yellow);}
+.q-state.todo{background:rgba(255,255,255,0.05);color:var(--text-muted);}
+.i-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px;margin-bottom:8px;}
+.i-card-head{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:6px;flex-wrap:wrap;}
+.i-name{font-size:13px;color:var(--text);font-weight:500;}
+.i-cat{font-size:9px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;padding:2px 7px;background:var(--surface2);border-radius:4px;}
+.i-answers{display:flex;gap:4px;flex-wrap:wrap;}
+.i-answer-chip{font-size:9px;color:var(--accent);background:var(--accent-dim);padding:2px 6px;border-radius:8px;letter-spacing:0.3px;}
+.i-meta{font-size:10px;color:var(--text-muted);display:flex;gap:12px;margin-bottom:8px;flex-wrap:wrap;}
+.i-meta span{color:var(--text-dim);}
+.i-desc{font-size:12px;color:var(--text-dim);margin-bottom:8px;line-height:1.55;}
+.i-fail{font-size:11px;color:var(--red);margin-top:6px;line-height:1.45;}
+.i-fail::before{content:'⚠ ';color:var(--red);}
+.i-check{display:flex;gap:8px;align-items:flex-start;padding-top:8px;border-top:1px solid var(--border);}
+.i-check input{margin:2px 0 0 0;accent-color:var(--accent);flex-shrink:0;}
+.i-check-body{flex:1;display:flex;flex-direction:column;gap:6px;}
+.i-check label{font-size:11px;color:var(--text-dim);cursor:pointer;}
+.i-check textarea{width:100%;background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:6px 8px;border-radius:4px;font-family:'DM Mono',monospace;font-size:11px;resize:vertical;min-height:32px;line-height:1.5;}
+.filter-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;padding-bottom:12px;}
+.filter-row+.filter-row{border-top:1px solid var(--border);padding-top:12px;margin-top:-4px;}
+.filter-row-last{border-bottom:1px solid var(--border);padding-bottom:16px;margin-bottom:16px;}
+.fc{font-size:10px;padding:5px 12px;border-radius:20px;border:1px solid var(--border);color:var(--text-muted);cursor:pointer;background:transparent;font-family:'DM Mono',monospace;transition:all 0.15s;}
+.fc:hover{color:var(--text-dim);border-color:var(--text-dim);}
+.fc.active{color:var(--accent);border-color:var(--accent);background:var(--accent-dim);}
+.filter-label{font-size:9px;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase;margin-right:8px;align-self:center;}
+.report{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:28px;max-width:720px;}
+.report h2{font-family:'Instrument Serif',serif;font-size:28px;margin-bottom:6px;}
+.report .report-tag{font-size:10px;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:24px;}
+.report-block{margin-bottom:22px;padding-bottom:20px;border-bottom:1px solid var(--border);}
+.report-block:last-child{border-bottom:none;}
+.report-block h3{font-size:11px;color:var(--accent);letter-spacing:1px;text-transform:uppercase;margin-bottom:6px;display:flex;justify-content:space-between;}
+.report-block h3 .st{font-size:9px;padding:2px 7px;border-radius:10px;letter-spacing:0.5px;}
+.report-block h3 .st.done{background:var(--green-dim);color:var(--green);}
+.report-block h3 .st.wip{background:var(--yellow-dim);color:var(--yellow);}
+.report-block h3 .st.todo{background:rgba(255,255,255,0.05);color:var(--text-muted);}
+.report-block p{color:var(--text-dim);font-size:13px;line-height:1.65;margin-bottom:8px;}
+.report-block .empty{color:var(--text-muted);font-style:italic;}
+.report-block ul{list-style:none;padding-left:0;margin-top:6px;}
+.report-block li{color:var(--text-dim);font-size:12px;line-height:1.7;padding-left:14px;position:relative;}
+.report-block li::before{content:'—';position:absolute;left:0;color:var(--text-muted);}
+.copy-btn{background:var(--accent);color:var(--bg);border:none;padding:8px 20px;border-radius:var(--radius);font-family:'DM Mono',monospace;font-size:11px;cursor:pointer;font-weight:500;margin-right:8px;transition:opacity 0.15s;}
+.copy-btn:hover{opacity:0.85;}
+.copy-btn.secondary{background:var(--surface2);color:var(--text);border:1px solid var(--border);}
+.json-box{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px;font-size:10px;color:var(--text-dim);white-space:pre-wrap;word-wrap:break-word;max-height:400px;overflow-y:auto;margin-top:16px;line-height:1.45;}
+.identity-summary{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:12px 14px;margin-bottom:14px;}
+.identity-summary .idsum-name{font-family:'Instrument Serif',serif;font-size:16px;color:var(--text);margin-bottom:2px;}
+.identity-summary .idsum-sub{font-size:10px;color:var(--text-muted);}
+.identity-summary .idsum-imported{font-size:9px;color:var(--accent);letter-spacing:0.5px;margin-top:6px;text-transform:uppercase;}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <h1>Cust<em>omer</em> Success</h1>
+  <span class="sub">Keep the customers you win</span>
+  <span class="spacer"></span>
+  <a href="/sales" class="stagejump">← /sales</a>
+  <a href="/start" class="stagejump">Start</a>
+  <a href="/roadmap" class="stagejump">Roadmap →</a>
+</div>
+<div class="layout">
+  <div class="left" id="leftPanel"></div>
+  <div class="right"><div class="rtabs" id="rtabs"></div><div class="rc" id="rc"></div></div>
+</div>
+<script>
+const S={businessName:'',problem:'',customer:'',activationEvent:'',customerCount:'',churnRate:'',importedFrom:null,qState:{C1:{status:'todo',ev:''},C2:{status:'todo',ev:''},C3:{status:'todo',ev:''},C4:{status:'todo',ev:''},C5:{status:'todo',ev:''},C6:{status:'todo',ev:''}},ran:{},tab:'formula',qFilter:'all',catFilter:'all'};
+const QUESTIONS=[
+  {id:'C1',n:'Time-to-value?',hint:'Does a new customer reach the promised outcome within their first defined window?'},
+  {id:'C2',n:'Activation?',hint:'What % of signups complete the specific event that captures value?'},
+  {id:'C3',n:'Retention?',hint:'What are your week-1, month-1, month-3 retention curves?'},
+  {id:'C4',n:'Health visibility?',hint:'Can you tell who\'s at risk before they churn?'},
+  {id:'C5',n:'Expansion?',hint:'Do customers buy more, more often, or refer others?'},
+  {id:'C6',n:'Voice of customer?',hint:'Do product, sales, and leadership hear the customer\'s actual voice monthly?'},
+];
+const CATALOG=[
+  {id:'activation-event',n:'Define the Activation Event',cat:'activate',a:['C2'],cost:'$',ttv:'2 hr',effort:'solo-hour',
+   d:'One user action — not signup, not login — that signals captured value (first invoice sent, first team onboarded, first delivery received).',
+   fail:'Picking a metric because it\'s easy to measure. Right activation correlates with 30-day retention.'},
+  {id:'onboard-email',n:'Onboarding Email Sequence',cat:'onboard',a:['C1','C2'],cost:'$',ttv:'1 wk',effort:'solo-wk',
+   d:'4–7 emails over 14 days, each with one specific ask and one specific piece of guidance. Behavior-triggered when possible.',
+   fail:'Feature overviews. Customer wants the outcome, not the tour.'},
+  {id:'in-product-onboard',n:'In-Product Onboarding Flow',cat:'onboard',a:['C1','C2'],cost:'$$',ttv:'2–4 wk',effort:'solo-wk',
+   d:'Checklist beats tour for B2B. Concierge wins for anything >$500/mo.',
+   fail:'Adding a product tour and calling it done. Tours don\'t survive first contact with skippers.'},
+  {id:'first-week-checkin',n:'First-Week Check-In Call',cat:'onboard',a:['C1','C2','C6'],cost:'$',ttv:'concurrent',effort:'solo-wk',
+   d:'20-min call with every new customer within 7 days. Ask: what were you trying to do, what worked, what didn\'t. Founder does this until customer #100.',
+   fail:'Turning it into a sales call. This is data collection, not upsell.'},
+  {id:'ttv-measurement',n:'Time-to-Value Measurement',cat:'activate',a:['C1'],cost:'$',ttv:'1 d',effort:'solo-day',
+   d:'Median days from signup → activation. Tracked weekly.',
+   fail:'Reporting average instead of median. Power users hide the actual experience.'},
+  {id:'retention-cohort',n:'Weekly Retention Cohort Review',cat:'retain',a:['C3'],cost:'$',ttv:'30 min weekly',effort:'solo-hour',
+   d:'Cohort chart: rows = signup week, columns = weeks since. Read the diagonals. Single most-important CS chart.',
+   fail:'Aggregate retention hides which cohort is failing.'},
+  {id:'health-score',n:'Health Score Model',cat:'retain',a:['C4'],cost:'$$',ttv:'2–4 wk',effort:'solo-wk',
+   d:'Composite: product usage + support velocity + relationship + payment health. Not truth; a working hypothesis, tuned quarterly.',
+   fail:'Building too early. Treating it as truth.'},
+  {id:'at-risk-playbook',n:'At-Risk Playbook',cat:'save',a:['C4'],cost:'$',ttv:'1 wk',effort:'solo-wk',
+   d:'Trigger + owner + opening line + offer shape. Human, specific, offers something concrete.',
+   fail:'Automated "we noticed you haven\'t logged in" emails.'},
+  {id:'save-call',n:'Save Call Protocol',cat:'save',a:['C3','C4'],cost:'$',ttv:'1 d',effort:'solo-day',
+   d:'Structured 30-min for cancellation signals: understand why, address what\'s addressable, offer a specific concession, respect a "no."',
+   fail:'Discounting first. Discount is the last card.'},
+  {id:'expansion-trigger',n:'Expansion Trigger Detection',cat:'expand',a:['C5'],cost:'$',ttv:'1 wk',effort:'solo-wk',
+   d:'Written list: usage over threshold, new use case, new department, headcount growth. Codify what "ready to buy more" looks like.',
+   fail:'Waiting for the customer to ask. Most won\'t; they\'ll leak.'},
+  {id:'qbr-template',n:'Quarterly Business Review Template',cat:'expand',a:['C5','C6'],cost:'$',ttv:'2 d',effort:'solo-wk',
+   d:'Customer\'s stated outcomes, evidence of progress, gaps, what\'s next. About their business, not your features.',
+   fail:'QBRs that become product update meetings.'},
+  {id:'renewal-motion',n:'Time-Boxed Renewal Motion',cat:'expand',a:['C3','C5'],cost:'$',ttv:'4 wk',effort:'solo-wk',
+   d:'Starts 90 days pre-renewal: usage audit → outcome check → proposal (often with expansion) → close by day 60 pre-renewal.',
+   fail:'Waiting until day 30 pre-renewal. That\'s crisis mode.'},
+  {id:'cross-sell-discovery',n:'Cross-Sell Discovery',cat:'expand',a:['C5','C6'],cost:'$',ttv:'concurrent',effort:'solo-wk',
+   d:'"What else are you spending time or money on that\'s adjacent to what we solve?" Feeds product AND expansion.',
+   fail:'Pitching your other product first. Ask, listen, connect later.'},
+  {id:'winback-sequence',n:'Win-Back Sequence',cat:'expand',a:['C5'],cost:'$',ttv:'concurrent',effort:'solo-wk',
+   d:'For churned customers: 30/90/180-day sequence. "We shipped X, do you want to see it?" — not "please come back."',
+   fail:'Generic re-engagement blasts. Personal from your own inbox wins.'},
+  {id:'theme-routing',n:'Feedback Theme Routing',cat:'voice',a:['C6'],cost:'$',ttv:'monthly',effort:'solo-day',
+   d:'Monthly summary: top 5 themes, tagged #product / #sales / #ops / #pricing, routed to owners with counts and quotes.',
+   fail:'No routing. Everything piles up in a Notion doc nobody reads.'},
+  {id:'customer-roundtable',n:'Customer Roundtable / Advisory Group',cat:'voice',a:['C6'],cost:'$$',ttv:'quarterly',effort:'solo-wk',
+   d:'5–8 customers meeting quarterly. Roadmap review, pain, competitive intel. Best product-dev shortcut.',
+   fail:'Turning it into marketing. They teach you.'},
+  {id:'testimonial-collect',n:'Testimonial Collection Process',cat:'advocate',a:['C5'],cost:'$',ttv:'concurrent',effort:'solo-hour',
+   d:'A moment (post-activation, post-outcome, post-renewal) with a systematic ask. Two questions, screenshotable answer.',
+   fail:'Copy-editing testimonials into unrecognizability.'},
+  {id:'case-study-prod',n:'Case Study Production',cat:'advocate',a:['C5','C6'],cost:'$$',ttv:'4 wk',effort:'solo-wk',
+   d:'2–4/year: real customer, real numbers, real friction on the path. Reviewed with them; published; used in sales.',
+   fail:'Case studies that read like ads. Real ones include friction.'},
+  {id:'nps-restraint',n:'NPS / CSAT — Used Sparingly',cat:'voice',a:['C4','C6'],cost:'$',ttv:'quarterly',effort:'solo-hour',
+   d:'Quarterly, tied to a follow-up motion: promoters → referral, passives → what\'s missing, detractors → save call.',
+   fail:'Sending surveys and reporting the number. Whole antipattern.'},
+  {id:'referral-mechanic-cs',n:'Referral Mechanic (from delight)',cat:'advocate',a:['C5'],cost:'$',ttv:'4 wk',effort:'solo-wk',
+   d:'Trigger it at delight (post-outcome, not post-purchase). Ask specifically ("who else in your org has this problem?").',
+   fail:'Incentive-heavy programs with no ask. The ask matters more than the reward.'},
+];
+const CAT_LABELS={onboard:'Onboard',activate:'Activate',retain:'Retain',save:'Save',expand:'Expand',advocate:'Advocate',voice:'Voice'};
+function esc(s){const d=document.createElement('div');d.textContent=s==null?'':String(s);return d.innerHTML;}
+function saveState(){try{localStorage.setItem('cs_v1',JSON.stringify(S));}catch(e){}}
+function loadState(){try{const v=localStorage.getItem('cs_v1');if(v){const p=JSON.parse(v);Object.assign(S,p);}}catch(e){}}
+function importFromPrior(){const urlP=new URLSearchParams(window.location.search).get('plan');if(!urlP)return false;try{const raw=decodeURIComponent(escape(atob(urlP)));const data=JSON.parse(raw);const fw=data.meta&&data.meta.framework;if(data.inputs){S.businessName=data.inputs.businessName||S.businessName;S.problem=data.inputs.problem||data.inputs.whatYouSell||S.problem;S.customer=data.inputs.customer||data.inputs.targetAudience||S.customer;S.importedFrom=fw;saveState();return true;}}catch(e){console.warn(e);}return false;}
+function qDoneCount(){return QUESTIONS.filter(q=>S.qState[q.id].status==='done').length;}
+function qWipCount(){return QUESTIONS.filter(q=>S.qState[q.id].status==='wip').length;}
+const openSecs=new Set(['identity','c1-3']);
+function renderLeft(){
+  const el=document.getElementById('leftPanel');const doneCt=qDoneCount();const wipCt=qWipCount();
+  el.innerHTML=`
+  <div class="tier-label">The Customer Base</div>
+  <div class="isec${openSecs.has('identity')?' open':''}" data-sec="identity">
+    <div class="isec-head"><span class="isec-title">Context</span>${S.importedFrom?`<span class="isec-badge wip">from /${S.importedFrom.toLowerCase()}</span>`:''}<span class="isec-arrow">▸</span></div>
+    <div class="isec-body">
+      ${S.importedFrom?`<div class="identity-summary"><div class="idsum-name">${esc(S.businessName||'Your business')}</div><div class="idsum-sub">${esc((S.problem||'').slice(0,80))||'—'}</div><div class="idsum-imported">✓ Imported from /${S.importedFrom.toLowerCase()}</div></div>`:''}
+      <div class="fg"><label>Business Name</label><input type="text" id="inName" value="${esc(S.businessName)}"></div>
+      <div class="fg"><label>What You Deliver</label><textarea id="inProblem">${esc(S.problem)}</textarea></div>
+      <div class="fg"><label>Customer</label><textarea id="inCustomer">${esc(S.customer)}</textarea></div>
+      <div class="fg"><label>Activation Event</label><input type="text" id="inActEvent" value="${esc(S.activationEvent)}" placeholder="e.g. First invoice sent"></div>
+      <div class="fg"><label>Customer Count</label><input type="text" id="inCount" value="${esc(S.customerCount)}" placeholder="e.g. 40 paying"></div>
+      <div class="fg"><label>Monthly Churn Rate</label><input type="text" id="inChurn" value="${esc(S.churnRate)}" placeholder="e.g. 4%"></div>
+    </div>
+  </div>
+  <div class="tier-label">Progress — C1–C3 (${doneCt} done · ${wipCt} in progress)</div>
+  <div class="isec${openSecs.has('c1-3')?' open':''}" data-sec="c1-3">
+    <div class="isec-head"><span class="isec-title">TTV · Activation · Retention</span><span class="isec-arrow">▸</span></div>
+    <div class="isec-body">${['C1','C2','C3'].map(qid=>renderQInputBlock(qid)).join('')}</div>
+  </div>
+  <div class="tier-label">Progress — C4–C6</div>
+  <div class="isec${openSecs.has('c4-6')?' open':''}" data-sec="c4-6">
+    <div class="isec-head"><span class="isec-title">Health · Expansion · Voice</span><span class="isec-arrow">▸</span></div>
+    <div class="isec-body">${['C4','C5','C6'].map(qid=>renderQInputBlock(qid)).join('')}</div>
+  </div>
+  <div class="submit-bar">
+    <button class="bar-btn" id="saveBtn">Save</button>
+    <button class="bar-btn danger" id="clearBtn">Clear</button>
+    <button class="submit-btn" id="submitBtn"${doneCt>=3?'':' disabled'}>See Report →</button>
+  </div>`;
+  document.querySelectorAll('.isec-head').forEach(h=>h.onclick=()=>{const p=h.parentElement;const sec=p.dataset.sec;if(openSecs.has(sec))openSecs.delete(sec);else openSecs.add(sec);p.classList.toggle('open');});
+  const tie=(id,k)=>{const el=document.getElementById(id);if(el)el.oninput=()=>{S[k]=el.value;saveState();};};
+  tie('inName','businessName');tie('inProblem','problem');tie('inCustomer','customer');tie('inActEvent','activationEvent');tie('inCount','customerCount');tie('inChurn','churnRate');
+  QUESTIONS.forEach(q=>{const ta=document.getElementById('qev-'+q.id);if(ta)ta.oninput=()=>{S.qState[q.id].ev=ta.value;saveState();updateQStatusBadges();};['todo','wip','done'].forEach(st=>{const btn=document.getElementById(`qs-${q.id}-${st}`);if(btn)btn.onclick=()=>{S.qState[q.id].status=st;saveState();renderLeftStatusOnly();renderRight();};});});
+  document.getElementById('saveBtn').onclick=()=>{saveState();document.getElementById('saveBtn').textContent='Saved';setTimeout(()=>document.getElementById('saveBtn').textContent='Save',1000);};
+  document.getElementById('clearBtn').onclick=()=>{if(confirm('Clear all inputs?')){localStorage.removeItem('cs_v1');location.reload();}};
+  document.getElementById('submitBtn').onclick=()=>{S.tab='report';renderRight();};
+}
+function renderQInputBlock(qid){const q=QUESTIONS.find(x=>x.id===qid);const s=S.qState[qid];return `<div class="q-input-block"><div class="q-key">${qid}</div><div class="q-title">${q.n}</div><div class="hint">${q.hint}</div><textarea id="qev-${qid}" placeholder="Numbers, notes, quotes.">${esc(s.ev)}</textarea><div class="q-status-row"><button id="qs-${qid}-todo" class="q-status-btn${s.status==='todo'?' active-todo':''}">To do</button><button id="qs-${qid}-wip" class="q-status-btn${s.status==='wip'?' active-wip':''}">In progress</button><button id="qs-${qid}-done" class="q-status-btn${s.status==='done'?' active-done':''}">Done ✓</button></div></div>`;}
+function renderLeftStatusOnly(){QUESTIONS.forEach(q=>{const s=S.qState[q.id];['todo','wip','done'].forEach(st=>{const btn=document.getElementById(`qs-${q.id}-${st}`);if(!btn)return;btn.classList.remove('active-todo','active-wip','active-done');if(s.status===st)btn.classList.add('active-'+st);});});updateQStatusBadges();const btn=document.getElementById('submitBtn');if(btn)btn.disabled=qDoneCount()<3;}
+function updateQStatusBadges(){const labels=document.querySelectorAll('.tier-label');if(labels[1])labels[1].textContent=`Progress — C1–C3 (${qDoneCount()} done · ${qWipCount()} in progress)`;}
+function renderRight(){
+  const tabs=[['formula','Formula'],['plays','Plays'],['report','Report'],['export','Export']];
+  document.getElementById('rtabs').innerHTML=tabs.map(([t,l])=>`<button class="rtab${S.tab===t?' active':''}" data-t="${t}">${l}</button>`).join('');
+  document.querySelectorAll('.rtab').forEach(el=>el.onclick=()=>{S.tab=el.dataset.t;renderRight();});
+  const rc=document.getElementById('rc');
+  if(S.tab==='formula'){
+    let h=`<div class="section-head">The Six Questions</div><p class="section-intro">In most businesses, retention is the highest-leverage revenue lever. Retained customers cost 5–10x less than new. Six questions, weighted toward retention over acquisition.</p>`;
+    QUESTIONS.forEach((q,i)=>{const st=S.qState[q.id].status;const label=st==='done'?'✓ Done':st==='wip'?'In progress':'To do';h+=`<div class="q-row"><div class="q-num">${i+1}</div><div class="q-txt">${q.n}<small>${q.hint}</small></div><div class="q-state ${st}">${label}</div></div>`;});
+    rc.innerHTML=h;
+  }else if(S.tab==='plays'){
+    const qF=['all','C1','C2','C3','C4','C5','C6'];const catF=['all','onboard','activate','retain','save','expand','advocate','voice'];
+    let h=`<div class="section-head">Plays</div><p class="section-intro">20 customer-success plays by lifecycle moment. Weight retention (C3, C4) heavily — save plays before expansion plays.</p>
+    <div class="filter-row"><span class="filter-label">Question:</span>${qF.map(f=>`<button class="fc${S.qFilter===f?' active':''}" data-f="${f}">${f==='all'?'All':f}</button>`).join('')}</div>
+    <div class="filter-row filter-row-last"><span class="filter-label">Category:</span>${catF.map(f=>`<button class="fc cat${S.catFilter===f?' active':''}" data-c="${f}">${f==='all'?'All':CAT_LABELS[f]}</button>`).join('')}</div>`;
+    const shown=CATALOG.filter(i=>(S.qFilter==='all'||i.a.includes(S.qFilter))&&(S.catFilter==='all'||i.cat===S.catFilter));
+    for(const i of shown){const st=S.ran[i.id]||{done:false,notes:''};h+=`<div class="i-card"><div class="i-card-head"><div class="i-name">${esc(i.n)}</div><div style="display:flex;gap:8px;align-items:center"><div class="i-answers">${i.a.map(a=>`<span class="i-answer-chip">${a}</span>`).join('')}</div><div class="i-cat">${CAT_LABELS[i.cat]}</div></div></div><div class="i-meta">Cost: <span>${i.cost}</span> · TTV: <span>${i.ttv}</span> · Effort: <span>${i.effort}</span></div><div class="i-desc">${esc(i.d)}</div><div class="i-fail">${esc(i.fail)}</div><div class="i-check"><input type="checkbox" id="ck-${i.id}"${st.done?' checked':''}><div class="i-check-body"><label for="ck-${i.id}">Done / running</label><textarea data-id="${i.id}" placeholder="Notes">${esc(st.notes)}</textarea></div></div></div>`;}
+    rc.innerHTML=h;
+    document.querySelectorAll('.fc:not(.cat)').forEach(b=>b.onclick=()=>{S.qFilter=b.dataset.f;renderRight();});
+    document.querySelectorAll('.fc.cat').forEach(b=>b.onclick=()=>{S.catFilter=b.dataset.c;renderRight();});
+    shown.forEach(i=>{const cb=document.getElementById('ck-'+i.id);if(cb)cb.onchange=()=>{S.ran[i.id]=S.ran[i.id]||{done:false,notes:''};S.ran[i.id].done=cb.checked;saveState();};});
+    document.querySelectorAll('.i-check textarea').forEach(t=>{t.oninput=()=>{const id=t.dataset.id;S.ran[id]=S.ran[id]||{done:false,notes:''};S.ran[id].notes=t.value;saveState();};});
+  }else if(S.tab==='report'){
+    const nm=S.businessName||'Untitled CS Motion';const ranList=Object.entries(S.ran).filter(([_,v])=>v.done).map(([id])=>CATALOG.find(c=>c.id===id)).filter(Boolean);
+    let h=`<div class="report"><div class="report-tag">Customer Success · ${new Date().toISOString().slice(0,10)}</div><h2>${esc(nm)}</h2>
+    <div class="report-block">${S.activationEvent?`<p style="color:var(--text-muted);font-size:11px">Activation event: ${esc(S.activationEvent)}</p>`:''}${S.customerCount?`<p style="color:var(--text-muted);font-size:11px">Customers: ${esc(S.customerCount)}</p>`:''}${S.churnRate?`<p style="color:var(--text-muted);font-size:11px">Monthly churn: ${esc(S.churnRate)}</p>`:''}</div>`;
+    QUESTIONS.forEach(q=>{const s=S.qState[q.id];h+=`<div class="report-block"><h3>${q.id} — ${q.n} <span class="st ${s.status}">${s.status==='done'?'✓ Done':s.status==='wip'?'In progress':'To do'}</span></h3><p class="${s.ev?'':'empty'}">${esc(s.ev)||'No data yet.'}</p></div>`;});
+    if(ranList.length){h+=`<div class="report-block"><h3>Plays Running / Done</h3><ul>${ranList.map(x=>`<li>${esc(x.n)}${S.ran[x.id].notes?` — <span style="color:var(--text-muted)">${esc(S.ran[x.id].notes)}</span>`:''}</li>`).join('')}</ul></div>`;}
+    const r=qDoneCount();
+    const next=r>=5?'Retention motion working. Layer expansion plays before scaling sales.':r>=3?'Foundations in place. Now attack the retention curve directly (C3–C4).':'Start with C1 activation and C3 retention cohorts. Save plays before expansion plays.';
+    h+=`<div class="report-block" style="background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:16px;margin-top:12px"><h3>Next</h3><p>${next}</p></div></div>
+    <div style="margin-top:20px"><button class="copy-btn" id="toRoadmap">Open Roadmap →</button><button class="copy-btn secondary" id="copyReport">Copy Report</button></div>`;
+    rc.innerHTML=h;
+    document.getElementById('toRoadmap').onclick=openRoadmap;
+    document.getElementById('copyReport').onclick=()=>{navigator.clipboard.writeText(document.querySelector('.report').innerText).then(()=>{document.getElementById('copyReport').textContent='Copied!';setTimeout(()=>document.getElementById('copyReport').textContent='Copy Report',1500);});};
+  }else if(S.tab==='export'){
+    const jsonStr=JSON.stringify(buildExportJSON(),null,2);
+    let h=`<div class="section-head">Export</div><p class="section-intro">CS state as JSON. Feeds /roadmap or any downstream dashboard.</p><button class="copy-btn" id="toRoadmap2">Open Roadmap →</button><button class="copy-btn secondary" id="copyJson">Copy JSON</button><div class="json-box">${esc(jsonStr)}</div>`;
+    rc.innerHTML=h;
+    document.getElementById('toRoadmap2').onclick=openRoadmap;
+    document.getElementById('copyJson').onclick=()=>{navigator.clipboard.writeText(jsonStr).then(()=>{document.getElementById('copyJson').textContent='Copied!';setTimeout(()=>document.getElementById('copyJson').textContent='Copy JSON',1500);});};
+  }
+  saveState();
+}
+function buildExportJSON(){const progress={};QUESTIONS.forEach(q=>{progress[q.id]={status:S.qState[q.id].status,notes:S.qState[q.id].ev||null};});const ran=Object.entries(S.ran).filter(([_,v])=>v.done).map(([id,v])=>{const c=CATALOG.find(x=>x.id===id);return{id,name:c?.n,category:c?.cat,notes:v.notes||null};});return{meta:{framework:'CustomerSuccess',version:'v1',exported:new Date().toISOString(),importedFrom:S.importedFrom},inputs:{businessName:S.businessName||null,whatYouDeliver:S.problem||null,customer:S.customer||null,activationEvent:S.activationEvent||null,customerCount:S.customerCount||null,churnRate:S.churnRate||null},progress,playsRunning:ran,readiness:{questionsDone:qDoneCount(),retentionMotionWorking:qDoneCount()>=5}};}
+function openRoadmap(){const s=JSON.stringify(buildExportJSON());location.href='/roadmap?plan='+btoa(unescape(encodeURIComponent(s)));}
+loadState();importFromPrior();renderLeft();renderRight();
+</script>
+</body>
+</html>

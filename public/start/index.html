@@ -44,6 +44,9 @@ body{background:var(--bg);color:var(--text);font-family:'DM Mono',monospace;font
 .card:hover .dest{color:var(--accent);}
 .card.grad .num{color:var(--text-muted);}
 .card.grad:hover{border-color:var(--text-dim);}
+.card.domain{min-height:140px;}
+.card.domain .stage{color:var(--accent);}
+.domain-grid{margin-bottom:64px;}
 
 .not-sure{text-align:center;margin-bottom:80px;color:var(--text-muted);font-size:12px;}
 .not-sure a{color:var(--accent);text-decoration:none;border-bottom:1px solid var(--accent-dim);padding-bottom:1px;}
@@ -137,6 +140,22 @@ body{background:var(--bg);color:var(--text);font-family:'DM Mono',monospace;font
 
   <div class="not-sure">
     Not sure this is your stage? Most founders are one stage earlier than they think. If you can't honestly check the exit criteria of the stage <em>before</em> this one, the work is back there. <a href="#" id="openQuiz2">Retake the quiz →</a>
+  </div>
+
+  <div class="section-label">Or jump to a domain</div>
+  <div class="grid domain-grid">
+    <a class="card domain" href="/ideate"><div class="stage">Stage 0</div><div class="verb">Ideate</div><div class="desc">Frame the idea before you build it. Generate, sharpen, or pressure-test.</div><div class="dest">→ /ideate</div></a>
+    <a class="card domain" href="/validate"><div class="stage">Stage 1–2</div><div class="verb">Validate</div><div class="desc">Prove someone will pay before you build. 25 experiments, 7 questions.</div><div class="dest">→ /validate</div></a>
+    <a class="card domain" href="/product"><div class="stage">Stage 3</div><div class="verb">Product</div><div class="desc">Ship the version you'd defend in public. Scope, stack, build, ship.</div><div class="dest">→ /product</div></a>
+    <a class="card domain" href="/hub"><div class="stage">Stage 4–5</div><div class="verb">Marketing (Hub)</div><div class="desc">Distribution to strangers. 70+ channels, prioritized by fit.</div><div class="dest">→ /hub</div></a>
+    <a class="card domain" href="/sales"><div class="stage">Stage 4–5</div><div class="verb">Sales</div><div class="desc">Turn interest into paid commitment. 24 activities across 5 motions.</div><div class="dest">→ /sales</div></a>
+    <a class="card domain" href="/customer-success"><div class="stage">Stage 4–5</div><div class="verb">Customer Success</div><div class="desc">Keep the customers you win. Retention beats acquisition on ROI.</div><div class="dest">→ /customer-success</div></a>
+    <a class="card domain" href="/finance"><div class="stage">Stage 4–6</div><div class="verb">Finance</div><div class="desc">Runway, unit economics, capital path. Setup + decisions + dashboards.</div><div class="dest">→ /finance</div></a>
+    <a class="card domain" href="/legal"><div class="stage">Stage 3–6</div><div class="verb">Legal</div><div class="desc">Set up right, hand off when it matters. When a lawyer is not optional.</div><div class="dest">→ /legal</div></a>
+    <a class="card domain" href="/ops"><div class="stage">Stage 4–6</div><div class="verb">Operations</div><div class="desc">Build something you don't have to run yourself. Filtered by business shape.</div><div class="dest">→ /ops</div></a>
+    <a class="card domain" href="/people"><div class="stage">Stage 5–6</div><div class="verb">People</div><div class="desc">Hire well, grow deliberately. Timing, roles, comp, performance.</div><div class="dest">→ /people</div></a>
+    <a class="card domain" href="/governance"><div class="stage">Stage 5–6</div><div class="verb">Governance</div><div class="desc">The paper trail your future self needs. Board, advisors, cap table.</div><div class="dest">→ /governance</div></a>
+    <a class="card domain" href="/roadmap"><div class="stage">Any stage</div><div class="verb">Roadmap</div><div class="desc">Customer-facing view of a plan. Paste JSON or route with ?plan=.</div><div class="dest">→ /roadmap</div></a>
   </div>
 
   <div class="footer">Built for the founder doing the work, not reading about it.</div>
