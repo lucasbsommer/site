@@ -27,6 +27,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Mono',monospace;font
 .topbar h1{font-family:'Instrument Serif',serif;font-size:28px;font-weight:400;}
 .topbar h1 em{color:var(--accent);font-style:italic;}
 .topbar .sub{color:var(--text-muted);font-size:10px;letter-spacing:0.5px;}
+.topbar .imported-badge{font-size:9px;padding:3px 8px;border-radius:10px;background:var(--accent-dim);color:var(--accent);letter-spacing:0.5px;text-transform:uppercase;margin-left:auto;}
 
 .layout{display:grid;grid-template-columns:360px 1fr;height:calc(100vh - 69px);overflow:hidden;}
 .left{border-right:1px solid var(--border);overflow-y:auto;background:var(--surface);}
@@ -238,6 +239,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Mono',monospace;font
 <div class="topbar">
   <h1>Hub & <em>Spoke</em></h1>
   <span class="sub">Universal Marketing Framework — v3</span>
+  <span class="imported-badge" id="importedBadge" style="display:none"></span>
 </div>
 <div class="layout">
 <div class="left" id="leftPanel"></div>
@@ -392,7 +394,8 @@ const S={
   existingAssets:[],
   tracking:{},
   taskState:{},
-  tab:'formula',ownerFilter:'all',kpiFilter:'all'
+  tab:'formula',ownerFilter:'all',kpiFilter:'all',
+  importedFrom:null
 };
 TRACKING_INFRA.forEach(t=>S.tracking[t.id]=false);
 
@@ -453,7 +456,33 @@ function tier2Done(){return S.budget>0&&S.teamCapacity>0;}
 
 function saveState(){try{localStorage.setItem('hubspoke_v3',JSON.stringify(S));}catch(e){}}
 function loadState(){try{const d=localStorage.getItem('hubspoke_v3');if(d){const p=JSON.parse(d);Object.assign(S,p);}}catch(e){}}
+function importFromPrior(){
+  const urlP=new URLSearchParams(window.location.search).get('plan');
+  if(!urlP)return;
+  try{
+    const raw=decodeURIComponent(escape(atob(urlP)));
+    const data=JSON.parse(raw);
+    const fw=data.meta&&data.meta.framework;
+    const known=['Ideate','Validate','Product','Sales','CustomerSuccess','Finance','Legal','Ops','People','Governance'];
+    if(!data.inputs||!known.includes(fw))return;
+    const merge=(k,v)=>{if(v&&!S[k])S[k]=v;};
+    merge('businessName',data.inputs.businessName);
+    merge('clientDomain',data.inputs.clientDomain);
+    merge('phone',data.inputs.phone);
+    merge('address',data.inputs.address);
+    merge('targetAudience',data.inputs.targetAudience||data.inputs.customer);
+    if(Array.isArray(data.inputs.offerings)&&data.inputs.offerings.length&&!S.offerings.length)S.offerings=[...data.inputs.offerings];
+    if(Array.isArray(data.inputs.serviceArea)&&data.inputs.serviceArea.length&&!S.serviceArea.length)S.serviceArea=[...data.inputs.serviceArea];
+    S.importedFrom=fw;
+    saveState();
+  }catch(e){console.warn('Could not import from prior tool:',e);}
+}
 loadState();
+importFromPrior();
+if(S.importedFrom){
+  const el=document.getElementById('importedBadge');
+  if(el){el.textContent='✓ Imported from /'+S.importedFrom.toLowerCase();el.style.display='inline-block';}
+}
 
 // ═══════════════════════════════════════════════════════════════
 // RENDER LEFT
