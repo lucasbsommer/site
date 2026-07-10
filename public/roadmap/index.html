@@ -219,6 +219,49 @@ body{background:var(--bg);color:var(--text);font-family:'Epilogue',sans-serif;fo
   .step{grid-template-columns:40px 1fr;}.step .step-badge{display:none;}
   .demo-row{flex-direction:column;}
 }
+
+/* GENERIC DOMAIN REPORT (non-Hub frameworks) */
+.gd-wrap{max-width:780px;margin:0 auto;padding:60px 24px 100px;font-family:'Epilogue',sans-serif;color:var(--text);}
+.gd-onit{font-family:'Unbounded',sans-serif;font-weight:800;font-size:13px;color:var(--text-muted);letter-spacing:-0.02em;margin-bottom:32px;}
+.gd-onit .gd-dot{display:inline-block;width:5px;height:5px;border-radius:50%;background:var(--accent);margin-left:2px;}
+.gd-hero{margin-bottom:52px;padding-bottom:36px;border-bottom:1px solid var(--border);}
+.gd-hero .gd-tag{font-family:'Syne Mono',monospace;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--accent);margin-bottom:12px;}
+.gd-hero .gd-name{font-family:'Unbounded',sans-serif;font-weight:800;font-size:44px;letter-spacing:-0.03em;line-height:1.1;margin-bottom:10px;}
+.gd-hero .gd-label{font-family:'Syne Mono',monospace;font-size:13px;color:var(--text-dim);letter-spacing:0.5px;margin-bottom:16px;}
+.gd-hero .gd-date{font-family:'Syne Mono',monospace;font-size:11px;color:var(--text-muted);letter-spacing:0.5px;}
+
+.gd-sec{margin-bottom:40px;}
+.gd-sec-label{font-family:'Syne Mono',monospace;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--text-muted);margin-bottom:14px;}
+
+.gd-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px 22px;}
+.gd-card p{font-size:15px;color:var(--text-dim);line-height:1.65;font-weight:300;}
+
+.gd-row{display:flex;align-items:baseline;padding:9px 0;border-bottom:1px solid rgba(255,255,255,0.03);gap:14px;font-size:14px;}
+.gd-row:last-child{border-bottom:none;}
+.gd-row-label{color:var(--text-muted);font-weight:300;font-size:12px;letter-spacing:0.5px;text-transform:uppercase;min-width:140px;}
+.gd-row-val{color:var(--text-dim);font-weight:400;font-family:'Syne Mono',monospace;font-size:13px;}
+
+.gd-q{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px 18px;margin-bottom:8px;}
+.gd-q-done{border-left:3px solid var(--green);}
+.gd-q-wip{border-left:3px solid var(--yellow);}
+.gd-q-todo{border-left:3px solid var(--text-muted);}
+.gd-q-head{display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
+.gd-q-key{font-family:'Syne Mono',monospace;font-size:11px;color:var(--accent);letter-spacing:0.5px;font-weight:500;}
+.gd-q-name{font-family:'Unbounded',sans-serif;font-weight:500;font-size:15px;flex:1;}
+.gd-q-st{font-family:'Syne Mono',monospace;font-size:10px;padding:3px 9px;border-radius:10px;letter-spacing:0.5px;}
+.gd-q-st-done{background:rgba(74,222,128,0.12);color:var(--green);}
+.gd-q-st-wip{background:rgba(250,204,21,0.12);color:var(--yellow);}
+.gd-q-st-todo{background:rgba(255,255,255,0.05);color:var(--text-muted);}
+.gd-q-notes{margin-top:8px;font-size:13px;color:var(--text-dim);line-height:1.6;font-weight:300;font-family:'Epilogue',sans-serif;}
+
+.gd-ready-card{display:flex;flex-wrap:wrap;gap:8px;padding:16px 18px;background:rgba(74,222,128,0.08);border:1px solid rgba(74,222,128,0.25);border-radius:12px;}
+.gd-ready-badge{font-family:'Syne Mono',monospace;font-size:12px;color:var(--green);padding:6px 12px;background:rgba(74,222,128,0.12);border-radius:20px;letter-spacing:0.3px;}
+
+.gd-cta-sec{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-top:48px;padding-top:32px;border-top:1px solid var(--border);}
+.gd-cta-primary{background:var(--accent);color:var(--bg);padding:14px 28px;border:none;border-radius:8px;font-family:'Unbounded',sans-serif;font-weight:800;font-size:13px;cursor:pointer;text-decoration:none;letter-spacing:0.02em;transition:opacity 0.15s;display:inline-block;}
+.gd-cta-primary:hover{opacity:0.85;}
+.gd-cta-secondary{color:var(--text-dim);font-family:'Syne Mono',monospace;font-size:12px;text-decoration:none;padding:8px 0;border-bottom:1px solid var(--border);}
+.gd-cta-secondary:hover{color:var(--accent);border-color:var(--accent);}
 </style>
 </head>
 <body>
@@ -368,7 +411,177 @@ demo3:{
 
 function esc(s){if(!s)return'';const d=document.createElement('div');d.textContent=s;return d.innerHTML;}
 
+const FRAMEWORK_META={
+  Ideate:{label:'Ideation Brief',tag:'Stage 0 · Seed',accent:'#c8f540',next:'/validate',nextName:'Validate'},
+  Validate:{label:'Validation Report',tag:'Stage 1–2 · Discover & Validate',accent:'#c8f540',next:'/product',nextName:'Product'},
+  Product:{label:'Product Status',tag:'Stage 3 · Build',accent:'#c8f540',next:'/hub',nextName:'Hub'},
+  Sales:{label:'Sales Motion Report',tag:'Stage 4–5 · Launch & Grow',accent:'#c8f540',next:'/customer-success',nextName:'Customer Success'},
+  CustomerSuccess:{label:'Customer Success Report',tag:'Stage 4–5 · Grow',accent:'#c8f540',next:'/finance',nextName:'Finance'},
+  Finance:{label:'Finance Status',tag:'Stage 4–6 · Grow & Scale',accent:'#60a5fa',next:'/ops',nextName:'Operations'},
+  Legal:{label:'Legal Status',tag:'Stage 3–6 · Cross-cutting',accent:'#f87171',next:'/finance',nextName:'Finance'},
+  Ops:{label:'Operations Status',tag:'Stage 4–6 · Grow & Scale',accent:'#60a5fa',next:'/people',nextName:'People'},
+  People:{label:'People Status',tag:'Stage 5–6 · Scale',accent:'#c8f540',next:'/governance',nextName:'Governance'},
+  Governance:{label:'Governance Status',tag:'Stage 5–6 · Scale',accent:'#c8f540',next:null,nextName:null},
+};
+
+const Q_KEY_LABELS={
+  Ideate:{F1:'Articulated',F2:'Specific customer',F3:'Unfair angle',F4:'Why now',F5:'Worst-acceptable v1'},
+  Validate:{Q1:'Problem real',Q2:'Painful enough',Q3:'Customer reachable',Q4:'Will they pay',Q5:'Enough to be a business',Q6:'Can you deliver',Q7:'Will they stay'},
+  Product:{P1:'Scope defined',P2:'Stack picked',P3:'Built',P4:'Used',P5:'Feedback loop',P6:'Ship cadence',P7:'Debt awareness'},
+  Sales:{S1:'ICP defined',S2:'Lead source',S3:'Discovery',S4:'Close rate',S5:'Cycle length',S6:'Expansion',S7:'Scalable'},
+  CustomerSuccess:{C1:'Time-to-value',C2:'Activation',C3:'Retention',C4:'Health visibility',C5:'Expansion',C6:'Voice of customer'},
+  Finance:{M1:'Money in',M2:'Pricing',M3:'Books',M4:'Cash',M5:'Unit economics',M6:'Capital plan'},
+  Legal:{L1:'Entity',L2:'IP owned',L3:'Customer contracts',L4:'Workers classified',L5:'Regulated compliant',L6:'Disputes handled'},
+  Ops:{O1:'Delivery defined',O2:'Consistent',O3:'Unit-level economic',O4:'Vendor managed',O5:'Incidents handled',O6:'Bottlenecks attacked'},
+  People:{H1:'Hire timing',H2:'Role defined',H3:'Comp defensible',H4:'Process consistent',H5:'Onboarding',H6:'Performance loop'},
+  Governance:{G1:'Reporting cadence',G2:'Board',G3:'Advisors useful',G4:'Decisions logged',G5:'Cap table hygiene'},
+};
+
+function renderGenericDomain(data){
+  const fw=data.meta.framework;
+  const meta=FRAMEWORK_META[fw];
+  const qLabels=Q_KEY_LABELS[fw]||{};
+  const i=data.inputs||{};
+  // Progress bag: /validate uses "evidence", /ideate uses "framing", others use "progress"
+  const progress=data.progress||data.evidence||{};
+  // Items complete: many possible names across tools
+  const items=data.itemsComplete||data.experimentsRun||data.playsRunning||data.activities||data.itemsRunning||data.interventionsRun||data.interventionsComplete||[];
+  const readiness=data.readiness||{};
+  const name=i.businessName||'Untitled';
+
+  const dt=new Date();
+  const dateStr=dt.toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'});
+
+  // Build input fields dynamically — skip null/empty
+  const inputRows=[];
+  const rowMap={
+    problem:'Problem',whatYouSell:'What you sell',whatYouDeliver:'What you deliver',
+    customer:'Customer',targetAudience:'Audience',
+    unfairAngle:'Unfair angle',whyNow:'Why now',worstV1:'Worst-acceptable v1',
+    targetPriceShape:'Target price / shape',founderShape:'Founder shape',stack:'Stack',
+    icp:'ICP',acv:'ACV',cycleLength:'Sales cycle',
+    activationEvent:'Activation event',customerCount:'Customers',churnRate:'Monthly churn',
+    entity:'Entity',bankBalance:'Bank balance',monthlyBurn:'Monthly burn',
+    monthlyRevenue:'Monthly revenue',cac:'CAC',ltv:'LTV',runway:'Runway (months)',
+    entityType:'Entity',state:'State(s)',
+    businessShape:'Business shape',teamSize:'Team',
+    bottleneck:'Bottleneck',funded:'Funded',boardSize:'Board',advisorCount:'Advisors',
+    hasIdea:'Idea state',antiVision:'Anti-vision',realCompetitors:'Real competitors',killCriteria:'Kill criteria',
+    motions:'Motions',
+  };
+  for(const [k,label] of Object.entries(rowMap)){
+    let v=i[k];
+    if(v==null||v==='')continue;
+    if(Array.isArray(v)){if(!v.length)continue;v=v.join(', ');}
+    inputRows.push([label,v]);
+  }
+
+  // Progress rows
+  const progRows=[];
+  for(const key of Object.keys(qLabels)){
+    const entry=progress[key];
+    if(!entry)continue;
+    const status=entry.status||'todo';
+    const notes=entry.evidence||entry.notes||'';
+    progRows.push({key,label:qLabels[key],status,notes});
+  }
+  const doneCount=progRows.filter(r=>r.status==='done').length;
+  const wipCount=progRows.filter(r=>r.status==='wip').length;
+
+  // Ideate special: framing.answered array
+  let ideateFraming=null;
+  if(fw==='Ideate'&&data.framing){
+    ideateFraming={done:data.framing.answered||[],total:data.framing.total||5,readyForValidate:data.framing.readyForValidate};
+  }
+
+  // Readiness flags (green banners)
+  const readyBadges=[];
+  for(const [k,v] of Object.entries(readiness)){
+    if(v===true){
+      const pretty=k.replace(/([A-Z])/g,' $1').replace(/^./,c=>c.toUpperCase());
+      readyBadges.push(pretty);
+    }
+  }
+
+  let h=`
+  <div class="gd-wrap">
+    <div class="gd-onit">Onit<span class="gd-dot"></span></div>
+
+    <div class="gd-hero">
+      <div class="gd-tag">${esc(meta.tag)}</div>
+      <h1 class="gd-name">${esc(name)}</h1>
+      <div class="gd-label">${esc(meta.label)}</div>
+      <div class="gd-date">Generated ${dateStr} · via /${fw.toLowerCase()}</div>
+    </div>`;
+
+  // Input summary
+  if(inputRows.length){
+    h+=`<div class="gd-sec"><div class="gd-sec-label">Context</div><div class="gd-card">`;
+    for(const [label,val] of inputRows){
+      h+=`<div class="gd-row"><div class="gd-row-label">${esc(label)}</div><div class="gd-row-val">${esc(String(val))}</div></div>`;
+    }
+    h+=`</div></div>`;
+  }
+
+  // Progress spine
+  if(progRows.length){
+    h+=`<div class="gd-sec"><div class="gd-sec-label">Progress · ${doneCount} done · ${wipCount} in progress · ${progRows.length-doneCount-wipCount} to do</div>`;
+    for(const r of progRows){
+      const stClass=r.status==='done'?'done':r.status==='wip'?'wip':'todo';
+      const stLabel=r.status==='done'?'✓ Signal':r.status==='wip'?'In progress':'To do';
+      h+=`<div class="gd-q gd-q-${stClass}">
+        <div class="gd-q-head"><span class="gd-q-key">${esc(r.key)}</span><span class="gd-q-name">${esc(r.label)}</span><span class="gd-q-st gd-q-st-${stClass}">${stLabel}</span></div>
+        ${r.notes?`<div class="gd-q-notes">${esc(r.notes)}</div>`:''}
+      </div>`;
+    }
+    h+=`</div>`;
+  }
+
+  // Ideate framing (if applicable)
+  if(ideateFraming){
+    h+=`<div class="gd-sec"><div class="gd-sec-label">Framing Progress</div><div class="gd-card"><p>${ideateFraming.done.length}/${ideateFraming.total} framing questions answered. ${ideateFraming.readyForValidate?'<strong style="color:#4ade80">Ready for /validate.</strong>':'Sharpen the remaining questions before running validation experiments.'}</p></div></div>`;
+  }
+
+  // Items complete
+  if(items.length){
+    const label=fw==='Validate'?'Experiments Run':fw==='CustomerSuccess'?'Plays Running / Done':fw==='Sales'?'Activities Running / Done':fw==='Ideate'?'Interventions Run':'Items Complete';
+    h+=`<div class="gd-sec"><div class="gd-sec-label">${label} (${items.length})</div><div class="gd-card">`;
+    for(const it of items){
+      const nm=it.name||it.id;
+      const notes=it.notes||'';
+      h+=`<div class="gd-row"><div class="gd-row-val" style="flex:1">${esc(nm)}${notes?` <span style="color:var(--text-muted)">— ${esc(notes)}</span>`:''}</div></div>`;
+    }
+    h+=`</div></div>`;
+  }
+
+  // Readiness banners
+  if(readyBadges.length){
+    h+=`<div class="gd-sec"><div class="gd-ready-card">`;
+    for(const b of readyBadges){h+=`<div class="gd-ready-badge">✓ ${esc(b)}</div>`;}
+    h+=`</div></div>`;
+  }
+
+  // Next step
+  h+=`<div class="gd-sec gd-cta-sec">`;
+  if(meta.next){
+    h+=`<a href="${meta.next}" class="gd-cta-primary">Continue to /${meta.next.slice(1)} →</a>`;
+  }else{
+    h+=`<a href="/start" class="gd-cta-primary">Back to Start →</a>`;
+  }
+  h+=`<a href="/start" class="gd-cta-secondary">See all tools</a>`;
+  h+=`</div>`;
+
+  h+=`</div>`;
+
+  document.getElementById('roadmap').innerHTML=h;
+}
+
 function render(data){
+  // Framework-aware dispatch: everything except Hub uses the generic renderer
+  const fw=data.meta&&data.meta.framework;
+  if(fw&&FRAMEWORK_META[fw]){
+    return renderGenericDomain(data);
+  }
   const i=data.inputs;
   const c=data.computed;
   const d=data.deploymentOrder||[];

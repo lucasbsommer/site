@@ -919,11 +919,13 @@ function renderRight(){
     const jsonStr=JSON.stringify(buildExportJSON(pm),null,2);
     let h=`<div class="section-head">Export</div>
     <p class="section-intro">Full computed state as JSON. Copy and use as input for any downstream system, agent, or document generator.</p>
-    <button class="copy-btn" id="openRoadmap">Open Roadmap →</button>
+    <button class="copy-btn" id="continueSalesExport">Continue to /sales →</button>
+    <button class="copy-btn" id="openRoadmap" style="margin-left:8px;">Open Roadmap →</button>
     <button class="copy-btn" id="copyJson" style="margin-left:8px;">Copy JSON</button>
     <button class="copy-btn" id="resetState" style="background:var(--red);margin-left:8px;">Reset All</button>
     <div class="json-box" id="jsonOutput">${esc(jsonStr)}</div>`;
     rc.innerHTML=h;
+    document.getElementById('continueSalesExport').onclick=()=>{const s=JSON.stringify(buildExportJSON(pm));location.href='/sales?plan='+btoa(unescape(encodeURIComponent(s)));};
     document.getElementById('openRoadmap').onclick=openRoadmapWithPlan;
     document.getElementById('copyJson').onclick=()=>{navigator.clipboard.writeText(jsonStr).then(()=>{document.getElementById('copyJson').textContent='Copied!';setTimeout(()=>{document.getElementById('copyJson').textContent='Copy JSON';},1500);});};
     document.getElementById('resetState').onclick=()=>{if(confirm('Reset all inputs?')){localStorage.removeItem('hubspoke_v3');location.reload();}};
@@ -1049,8 +1051,9 @@ ${top5}`;
     const emailSubject=`Intake: ${bName} — ${modelsStr}`;
 
     h+=`<div style="margin-top:24px"><div class="section-head" style="font-size:16px">Finalize</div>
-    <p class="section-intro">View the customer-facing roadmap or copy the intake email for your service provider.</p>
-    <button class="copy-btn" id="viewRoadmap">View Roadmap →</button>
+    <p class="section-intro">Continue to the next domain in the lifecycle, view the customer-facing roadmap, or copy the intake email for your service provider.</p>
+    <button class="copy-btn" id="continueSales">Continue to /sales →</button>
+    <button class="copy-btn" id="viewRoadmap" style="margin-left:8px;">View Roadmap →</button>
     <button class="copy-btn" id="copySubject" style="margin-left:8px;">Copy Subject</button>
     <button class="copy-btn" id="copyEmail" style="margin-left:8px;">Copy Email Body</button>
     <div class="email-draft">
@@ -1061,6 +1064,7 @@ ${top5}`;
 
     rc.innerHTML=h;
     document.getElementById('backToplan').onclick=()=>{S.tab='formula';renderRight();};
+    document.getElementById('continueSales').onclick=()=>{const s=JSON.stringify(buildExportJSON(primaryModel()));location.href='/sales?plan='+btoa(unescape(encodeURIComponent(s)));};
     document.getElementById('viewRoadmap').onclick=openRoadmapWithPlan;
     document.getElementById('copySubject').onclick=()=>{navigator.clipboard.writeText(emailSubject).then(()=>{document.getElementById('copySubject').textContent='Copied!';setTimeout(()=>{document.getElementById('copySubject').textContent='Copy Subject';},1500);});};
     document.getElementById('copyEmail').onclick=()=>{navigator.clipboard.writeText(emailBody).then(()=>{document.getElementById('copyEmail').textContent='Copied!';setTimeout(()=>{document.getElementById('copyEmail').textContent='Copy Email Body';},1500);});};

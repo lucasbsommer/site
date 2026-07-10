@@ -295,14 +295,16 @@ function renderRight(){
     if(lawyerRequiredMissing.length){h+=`<div class="report-block" style="background:var(--red-dim);border:1px solid var(--red);border-radius:6px;padding:16px"><h3 style="color:var(--red)">⚠ Lawyer-required items still open (${lawyerRequiredMissing.length})</h3><ul>${lawyerRequiredMissing.map(x=>`<li>${esc(x.n)}</li>`).join('')}</ul></div>`;}
     const nextStep=qDoneCount()>=5?'Foundation solid. Revisit annually.':'Focus L1–L3 first. Entity + IP + Contracts are the layer everything else sits on.';
     h+=`<div class="report-block" style="background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:16px;margin-top:12px"><h3>Next</h3><p>${nextStep}</p></div></div>
-    <div style="margin-top:20px"><button class="copy-btn" id="toRoadmap">Open Roadmap →</button><button class="copy-btn secondary" id="copyReport">Copy Report</button></div>`;
+    <div style="margin-top:20px"><button class="copy-btn" id="toNext">Continue to /finance →</button><button class="copy-btn secondary" id="toRoadmap">Open Roadmap →</button><button class="copy-btn secondary" id="copyReport">Copy Report</button></div>`;
     rc.innerHTML=h;
+    document.getElementById('toNext').onclick=openNext;
     document.getElementById('toRoadmap').onclick=openRoadmap;
     document.getElementById('copyReport').onclick=()=>{navigator.clipboard.writeText(document.querySelector('.report').innerText).then(()=>{document.getElementById('copyReport').textContent='Copied!';setTimeout(()=>document.getElementById('copyReport').textContent='Copy Report',1500);});};
   }else if(S.tab==='export'){
     const jsonStr=JSON.stringify(buildExportJSON(),null,2);
-    let h=`<div class="section-head">Export</div><p class="section-intro">Legal state as JSON.</p><button class="copy-btn" id="toRoadmap2">Open Roadmap →</button><button class="copy-btn secondary" id="copyJson">Copy JSON</button><div class="json-box">${esc(jsonStr)}</div>`;
+    let h=`<div class="section-head">Export</div><p class="section-intro">Legal state as JSON. Feeds /finance next (entity + tax overlap), or /roadmap for a customer-facing view.</p><button class="copy-btn" id="toNext2">Continue to /finance →</button><button class="copy-btn secondary" id="toRoadmap2">Open Roadmap →</button><button class="copy-btn secondary" id="copyJson">Copy JSON</button><div class="json-box">${esc(jsonStr)}</div>`;
     rc.innerHTML=h;
+    document.getElementById('toNext2').onclick=openNext;
     document.getElementById('toRoadmap2').onclick=openRoadmap;
     document.getElementById('copyJson').onclick=()=>{navigator.clipboard.writeText(jsonStr).then(()=>{document.getElementById('copyJson').textContent='Copied!';setTimeout(()=>document.getElementById('copyJson').textContent='Copy JSON',1500);});};
   }
@@ -310,6 +312,7 @@ function renderRight(){
 }
 function buildExportJSON(){const progress={};QUESTIONS.forEach(q=>{progress[q.id]={status:S.qState[q.id].status,notes:S.qState[q.id].ev||null};});const ran=Object.entries(S.ran).filter(([_,v])=>v.done).map(([id,v])=>{const c=CATALOG.find(x=>x.id===id);return{id,name:c?.n,category:c?.cat,lawyerRequired:c?.lawyer,notes:v.notes||null};});return{meta:{framework:'Legal',version:'v1',exported:new Date().toISOString(),importedFrom:S.importedFrom},inputs:{businessName:S.businessName||null,entityType:S.entityType||null,state:S.state||null},progress,itemsComplete:ran,readiness:{questionsDone:qDoneCount(),foundationSolid:qDoneCount()>=5}};}
 function openRoadmap(){const s=JSON.stringify(buildExportJSON());location.href='/roadmap?plan='+btoa(unescape(encodeURIComponent(s)));}
+function openNext(){const s=JSON.stringify(buildExportJSON());location.href='/finance?plan='+btoa(unescape(encodeURIComponent(s)));}
 loadState();importFromPrior();renderLeft();renderRight();
 </script>
 </body>

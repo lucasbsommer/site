@@ -489,21 +489,21 @@ function renderRight(){
     const nextStep=readiness>=6?'Ready for /hub — you\'ve earned the right to build distribution and grow.':readiness>=4?'Q1–Q4 have signal. Sharpen Q5–Q7 before scaling.':'Not ready yet. Focus on the next unanswered question and pick one experiment.';
     h+=`<div class="report-block" style="background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:16px;margin-top:12px"><h3>Next</h3><p>${nextStep}</p></div>`;
     h+=`</div>
-    <div style="margin-top:20px"><button class="copy-btn" id="toHub">Take to /hub →</button><button class="copy-btn secondary" id="copyReport">Copy Report</button></div>`;
+    <div style="margin-top:20px"><button class="copy-btn" id="toHub">Continue to /product →</button><button class="copy-btn secondary" id="copyReport">Copy Report</button></div>`;
     rc.innerHTML=h;
-    document.getElementById('toHub').onclick=openHubWithPlan;
+    document.getElementById('toHub').onclick=openProductWithPlan;
     document.getElementById('copyReport').onclick=()=>{const t=document.querySelector('.report').innerText;navigator.clipboard.writeText(t).then(()=>{document.getElementById('copyReport').textContent='Copied!';setTimeout(()=>document.getElementById('copyReport').textContent='Copy Report',1500);});};
 
   }else if(S.tab==='export'){
     const jsonStr=JSON.stringify(buildExportJSON(),null,2);
     let h=`<div class="section-head">Export</div>
     <p class="section-intro">Validation state as JSON. Feeds /hub (as an input for marketing planning) or /roadmap (as a customer-facing rendering). Same schema shape as /ideate output — chain them all the way through.</p>
-    <button class="copy-btn" id="toHub2">Take to /hub →</button>
+    <button class="copy-btn" id="toHub2">Continue to /product →</button>
     <button class="copy-btn secondary" id="toRoadmap">Open Roadmap →</button>
     <button class="copy-btn secondary" id="copyJson">Copy JSON</button>
     <div class="json-box">${esc(jsonStr)}</div>`;
     rc.innerHTML=h;
-    document.getElementById('toHub2').onclick=openHubWithPlan;
+    document.getElementById('toHub2').onclick=openProductWithPlan;
     document.getElementById('toRoadmap').onclick=openRoadmapWithPlan;
     document.getElementById('copyJson').onclick=()=>{navigator.clipboard.writeText(jsonStr).then(()=>{document.getElementById('copyJson').textContent='Copied!';setTimeout(()=>document.getElementById('copyJson').textContent='Copy JSON',1500);});};
   }
@@ -533,10 +533,10 @@ function buildExportJSON(){
   };
 }
 
-function openHubWithPlan(){
+function openProductWithPlan(){
   const s=JSON.stringify(buildExportJSON());
   const p=btoa(unescape(encodeURIComponent(s)));
-  location.href='/hub?plan='+p;
+  location.href='/product?plan='+p;
 }
 function openRoadmapWithPlan(){
   const s=JSON.stringify(buildExportJSON());
