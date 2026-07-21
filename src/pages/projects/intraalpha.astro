@@ -116,6 +116,28 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 
     </div>
 
+    <!-- ── Videos (IntraAlpha YouTube) ───────────────────────────────── -->
+    <section class="yt-section">
+      <div class="yt-head">
+        <h2>Watch</h2>
+        <a class="yt-sub" href="https://www.youtube.com/@IntraAlpha" target="_blank" rel="noopener">YouTube · @IntraAlpha →</a>
+      </div>
+      <div class="yt-grid">
+        <div class="yt-card">
+          <iframe loading="lazy" src="https://www.youtube.com/embed/tNr34JVDQhE" title="Do you want to be an option seller or buyer?" frameborder="0" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+        </div>
+        <div class="yt-card">
+          <iframe loading="lazy" src="https://www.youtube.com/embed/BYRyMoQs4-o" title="Stop Losing Money Buying Options" frameborder="0" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+        </div>
+        <div class="yt-card">
+          <iframe loading="lazy" src="https://www.youtube.com/embed/FJMYWvdsW5M" title="How to Find High-Premium Options" frameborder="0" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+        </div>
+        <div class="yt-card">
+          <iframe loading="lazy" src="https://www.youtube.com/embed/7qdUoPnJuBE" title="When to Sell Options for Maximum Profit" frameborder="0" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+        </div>
+      </div>
+    </section>
+
     <div class="email-capture">
       <h3>Follow IntraAlpha</h3>
       <p class="capture-sub">Get updates on the algo, the Discord community, and where IntraAlpha is headed next.</p>
@@ -129,9 +151,9 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
     <div class="related-projects">
       <h2>Related Projects</h2>
       <div class="related-grid">
-        <a href="/projects/onit" class="related-card">
-          <div class="related-icon" style="background:var(--status-building-bg); color:var(--status-building-text);">On</div>
-          <div><div class="related-name">Onit</div><div class="related-desc">AI-powered marketing — another platform play</div></div>
+        <a href="/projects/carcin" class="related-card">
+          <div class="related-icon" style="background:var(--status-building-bg); color:var(--status-building-text);">Ca</div>
+          <div><div class="related-name">Carcin.ai</div><div class="related-desc">AI-powered marketing — another platform play</div></div>
         </a>
         <a href="/projects/monkey-business" class="related-card">
           <div class="related-icon" style="background:var(--surface-2); font-size:1.2rem;">&#x1F412;</div>
@@ -184,4 +206,26 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
       grid-template-columns: 1fr;
     }
   }
+
+  /* ── YouTube videos section ───────────────────────────────────────── */
+  .yt-section { margin-top: 3rem; padding-top: 2rem; border-top: 1px solid var(--border); }
+  .yt-head {
+    display: flex; align-items: baseline; justify-content: space-between;
+    gap: 1rem; margin-bottom: 1rem; flex-wrap: wrap;
+  }
+  .yt-head h2 { font-size: 1.125rem; margin: 0; }
+  .yt-sub {
+    font-family: var(--font-mono); font-size: 0.75rem; font-weight: 600;
+    color: var(--accent-text);
+  }
+  .yt-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 0.75rem;
+  }
+  .yt-card {
+    position: relative; aspect-ratio: 16 / 9;
+    background: var(--surface-1); border: 1px solid var(--border);
+    border-radius: var(--radius); overflow: hidden;
+  }
+  .yt-card iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
 </style>

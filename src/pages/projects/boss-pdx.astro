@@ -2,7 +2,7 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 ---
 
-<BaseLayout title="Boss PDX — Lucas Sommer" description="Licensed Portland Oregon general contractor with 17+ years of experience. Residential and commercial construction, ADU specialist, custom homes, excavation, and concrete work.">
+<BaseLayout title="Boss PDX — Lucas Sommer" description="Licensed Portland general contractor with 17+ years of experience. Residential and commercial construction, ADU specialist, custom homes, excavation, and concrete work.">
 
   <article class="project-detail container">
 
@@ -17,7 +17,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
     </div>
 
     <p class="project-lede">
-      Licensed Portland Oregon general contractor and construction expert. 17+ years building and remodeling homes and commercial properties across the Portland metro area. On time. On budget.
+      Licensed Portland general contractor and construction expert. 17+ years building and remodeling homes and commercial properties across the Portland metro area. On time. On budget.
     </p>
 
     <div class="project-tags-lg">
@@ -140,9 +140,22 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
       </div>
     </div>
 
+    <!-- ── Videos (Boss PDX YouTube) ─────────────────────────────────── -->
+    <section class="yt-section">
+      <div class="yt-head">
+        <h2>Watch</h2>
+        <a class="yt-sub" href="https://www.youtube.com/@bosspdx1189" target="_blank" rel="noopener">YouTube · @bosspdx1189 →</a>
+      </div>
+      <div class="yt-grid">
+        <div class="yt-card">
+          <iframe loading="lazy" src="https://www.youtube.com/embed/NmAe2hbipn4" title="Residential Concrete Services in Portland" frameborder="0" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+        </div>
+      </div>
+    </section>
+
     <div class="email-capture">
       <h3>Get a Free Estimate</h3>
-      <p class="capture-sub">Planning a project in the Portland metro area? Get a free estimate or follow along as we build the most data-driven construction company in Oregon.</p>
+      <p class="capture-sub">Planning a project in the Portland metro area? Get a free estimate or follow along as we build the most data-driven construction company in the Portland metro.</p>
       <form class="email-form">
         <input type="email" placeholder="you@example.com" required />
         <button type="submit">Get updates</button>
@@ -159,7 +172,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
         </a>
         <a href="/projects/grove-vineyard" class="related-card">
           <div class="related-icon" style="background:var(--status-active-bg); color:var(--status-active-text);">GV</div>
-          <div><div class="related-name">Grove Vineyard</div><div class="related-desc">Another Oregon asset — vineyard in the Willamette Valley</div></div>
+          <div><div class="related-name">Grove Vineyard</div><div class="related-desc">Another asset — vineyard in the Willamette Valley</div></div>
         </a>
       </div>
     </div>
@@ -214,4 +227,26 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
       grid-template-columns: 1fr;
     }
   }
+
+  /* ── YouTube videos section ───────────────────────────────────────── */
+  .yt-section { margin-top: 3rem; padding-top: 2rem; border-top: 1px solid var(--border); }
+  .yt-head {
+    display: flex; align-items: baseline; justify-content: space-between;
+    gap: 1rem; margin-bottom: 1rem; flex-wrap: wrap;
+  }
+  .yt-head h2 { font-size: 1.125rem; margin: 0; }
+  .yt-sub {
+    font-family: var(--font-mono); font-size: 0.75rem; font-weight: 600;
+    color: var(--accent-text);
+  }
+  .yt-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 0.75rem;
+  }
+  .yt-card {
+    position: relative; aspect-ratio: 16 / 9;
+    background: var(--surface-1); border: 1px solid var(--border);
+    border-radius: var(--radius); overflow: hidden;
+  }
+  .yt-card iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
 </style>

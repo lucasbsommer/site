@@ -24,6 +24,7 @@
   --accent-text: #60a5fa;
   --nav-bg: rgba(10,10,11,0.8);
   --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-display: 'Bricolage Grotesque', 'Inter', sans-serif;
   --font-mono: 'JetBrains Mono', 'Fira Code', ui-monospace, monospace;
   --max-width: 1000px;
   --radius: 12px;
@@ -85,6 +86,9 @@ body {
   display: flex;
   flex-direction: column;
   transition: background-color 0.2s ease, color 0.2s ease;
+  /* long unbroken tokens (raw URLs in idea text, etc.) must wrap, never
+     blow out the page width on mobile */
+  overflow-wrap: break-word;
 }
 
 a {
@@ -108,6 +112,14 @@ h1, h2, h3, h4 {
   line-height: 1.2;
   font-weight: 700;
   color: var(--text-primary);
+}
+
+/* Distinctive display face on the big type (frontend-design: pair a
+   characterful display with a refined body, never default to Inter). */
+h1, h2, .hero-title, .section-header h2,
+.project-name, .ship-name, .know-name, .domain-name, .timeline-title, .truth-body h3 {
+  font-family: var(--font-display);
+  letter-spacing: -0.02em;
 }
 
 h1 {
@@ -144,8 +156,136 @@ p + p {
 /* ---- Responsive ---- */
 
 @media (max-width: 640px) {
-  html { font-size: 14px; }
+  html { font-size: 15px; } /* was 14px — lift the whole mobile type scale */
   .container { padding: 0 1.25rem; }
   h1 { font-size: 1.75rem; letter-spacing: -0.5px; }
   h2 { font-size: 1.25rem; }
+
+  /* ---- Mobile UX floor (audit fixes): readable type, no iOS zoom,
+     44px tap targets. !important needed only to clear Astro's per-component
+     scoping; these are inert sizing props that don't touch curator logic. ---- */
+
+  /* form controls ≥16px so iOS Safari doesn't auto-zoom on focus */
+  input, textarea, select { font-size: 16px !important; }
+
+  /* 44px minimum tap targets (WCAG 2.5.5 / Apple HIG) */
+  .nav-brand-link, .theme-toggle, .nav-toggle,
+  .email-form button, .email-form input[type="email"],
+  .model-pick select, .chip, .cc-btn, .ghost-btn, #send {
+    min-height: 44px !important;
+  }
+
+  /* real tap area for inline social / text links */
+  .hero-social a, .footer-links a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 40px;
+  }
+
+  /* floor micro-labels so nothing renders below ~11px */
+  .tag, .know-kicker, .ship-domain, .cred-label, .timeline-year,
+  .press-item, .press-chip, .resource-type, .update-date, .domain-status,
+  .project-status, .np-group, .micro {
+    font-size: 0.75rem !important;
+  }
+}
+
+/* =====================================================================
+   Polish layer — depth, motion & micro-interactions
+   ===================================================================== */
+
+/* Ambient light: a faint accent aura fixed behind everything. Depth
+   without heavy shadows (per DESIGN.md). */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(55rem 38rem at 78% -8%, rgba(59,130,246,0.11), transparent 60%),
+    radial-gradient(45rem 34rem at 6% 2%, rgba(59,130,246,0.05), transparent 55%);
+}
+[data-theme="light"] body::before {
+  background:
+    radial-gradient(55rem 38rem at 78% -8%, rgba(37,99,235,0.07), transparent 60%),
+    radial-gradient(45rem 34rem at 6% 2%, rgba(37,99,235,0.035), transparent 55%);
+}
+
+/* On-brand keyboard focus */
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb {
+  background: var(--surface-3);
+  border-radius: 10px;
+  border: 2px solid var(--bg);
+}
+::-webkit-scrollbar-thumb:hover { background: var(--text-tertiary); }
+
+/* Animated underline for inline prose links */
+.story-bridge a, .bio-lede a, .bio-section a, .detail-section a,
+.truth-body a, .timeline-desc a, .ideas-intro a, .domains-cta a, .resources a {
+  background-image: linear-gradient(currentColor, currentColor);
+  background-size: 0% 1.5px;
+  background-repeat: no-repeat;
+  background-position: 0 100%;
+  transition: background-size 0.3s cubic-bezier(0.16, 1, 0.3, 1), color 0.15s ease;
+}
+.story-bridge a:hover, .bio-lede a:hover, .bio-section a:hover, .detail-section a:hover,
+.truth-body a:hover, .timeline-desc a:hover, .ideas-intro a:hover, .domains-cta a:hover, .resources a:hover {
+  background-size: 100% 1.5px;
+}
+
+/* Soft accent glow on interactive cards (box-shadow only — leaves each
+   card's own border/bg hover and the curator's inline FLIP untouched). */
+.project-card:hover, .ship-card:hover, .know-card:hover, .resource-card:hover,
+.related-card:hover, .domain-card:hover, .service-card:hover,
+.testimonial-card:hover, .past-card:hover, .tool-card:hover, .info-card:hover {
+  box-shadow: 0 16px 38px -18px rgba(59, 130, 246, 0.42), 0 4px 14px -8px rgba(0, 0, 0, 0.35);
+}
+[data-theme="light"] .project-card:hover, [data-theme="light"] .ship-card:hover,
+[data-theme="light"] .know-card:hover, [data-theme="light"] .resource-card:hover,
+[data-theme="light"] .related-card:hover, [data-theme="light"] .domain-card:hover,
+[data-theme="light"] .service-card:hover, [data-theme="light"] .testimonial-card:hover {
+  box-shadow: 0 18px 34px -20px rgba(37, 99, 235, 0.3), 0 4px 12px -8px rgba(0, 0, 0, 0.1);
+}
+
+/* Primary CTA buttons get a soft accent glow on hover */
+.email-form button:hover {
+  box-shadow: 0 10px 26px -8px rgba(59, 130, 246, 0.6);
+}
+
+/* Nav elevates once the page is scrolled */
+.site-header.scrolled {
+  box-shadow: 0 1px 0 var(--border), 0 10px 30px -14px rgba(0, 0, 0, 0.55);
+}
+[data-theme="light"] .site-header.scrolled {
+  box-shadow: 0 1px 0 var(--border), 0 10px 26px -16px rgba(0, 0, 0, 0.12);
+}
+
+/* Scroll reveal — guarded by html.reveal-on (JS-added only when motion is
+   allowed), and applied only to below-the-fold sections, so there is no
+   flash and content is fully visible without JS. */
+.reveal-on .reveal-item {
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.reveal-on .reveal-item.reveal-in {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .reveal-on .reveal-item { opacity: 1 !important; transform: none !important; transition: none; }
+  body::before { display: none; }
 }

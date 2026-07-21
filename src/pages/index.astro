@@ -130,11 +130,11 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     </div>
     <div class="projects-grid">
 
-      <a class="project-card" href="/projects/onit">
-        <div class="project-icon" style="background:var(--status-building-bg); color:var(--status-building-text);">On</div>
+      <a class="project-card" href="/projects/carcin">
+        <div class="project-icon" style="background:var(--status-building-bg); color:var(--status-building-text);">Ca</div>
         <div class="project-body">
           <div class="project-top">
-            <div class="project-name">Onit</div>
+            <div class="project-name">Carcin.ai</div>
             <span class="project-status status-building">Building</span>
           </div>
           <p class="project-desc">Fifteen years of agency work, productized. AI agents run strategy, execution, and reporting against a 103-channel framework — no account manager required.</p>
@@ -169,11 +169,27 @@ import BaseLayout from '../layouts/BaseLayout.astro';
             <div class="project-name">Grove Vineyard</div>
             <span class="project-status status-active">Active</span>
           </div>
-          <p class="project-desc">Estate vineyard in Oregon's Chehalem Valley at 750ft elevation. Pinot Noir and Chardonnay crafted by Jacques Tardy, 8th generation Burgundian winemaker. Organic farming, Salmon Safe certified.</p>
+          <p class="project-desc">Estate vineyard in the Chehalem Valley at 750ft elevation. Pinot Noir and Chardonnay crafted by Jacques Tardy, 8th generation Burgundian winemaker. Organic farming, Salmon Safe certified.</p>
           <div class="project-tags">
             <span class="tag">Wine</span>
             <span class="tag">Agriculture</span>
-            <span class="tag">Oregon</span>
+            <span class="tag">Willamette Valley</span>
+          </div>
+        </div>
+      </a>
+
+      <a class="project-card" href="/projects/halem-heights">
+        <div class="project-icon" style="background:rgba(168,85,247,0.12); color:#c084fc;">HH</div>
+        <div class="project-body">
+          <div class="project-top">
+            <div class="project-name">Halem Heights</div>
+            <span class="project-status status-active">Active</span>
+          </div>
+          <p class="project-desc">The estate wine brand and Airbnb side of the same Chehalem Valley land. Pinot Noir and Chardonnay by Jacques Tardy, distributed via Vinoshipper. Grove farms it; Halem Heights sells it.</p>
+          <div class="project-tags">
+            <span class="tag">Wine Brand</span>
+            <span class="tag">Hospitality</span>
+            <span class="tag">Willamette Valley</span>
           </div>
         </div>
       </a>
@@ -335,6 +351,21 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   .hero {
     padding-top: 5rem;
     padding-bottom: 2rem;
+    position: relative;
+  }
+
+  /* Faint technical dot-grid behind the hero, masked to fade out */
+  .hero::before {
+    content: "";
+    position: absolute;
+    inset: -2rem 0 0 0;
+    z-index: -1;
+    background-image: radial-gradient(circle at center, var(--border-hover) 1px, transparent 1.4px);
+    background-size: 26px 26px;
+    -webkit-mask-image: radial-gradient(42rem 26rem at 82% 18%, #000 0%, transparent 72%);
+    mask-image: radial-gradient(42rem 26rem at 82% 18%, #000 0%, transparent 72%);
+    opacity: 0.7;
+    pointer-events: none;
   }
 
   .hero-badge {
@@ -368,8 +399,29 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     font-weight: 800;
     letter-spacing: -1.5px;
     line-height: 1.0;
-    max-width: 700px;
+    max-width: 720px;
     margin-bottom: 1.25rem;
+    background: linear-gradient(168deg, var(--text-primary) 38%, color-mix(in srgb, var(--accent-text) 55%, var(--text-secondary)) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  /* Staggered entrance for the hero (specific children only — never the
+     curator toolbar, which must stay hover-controlled) */
+  @media (prefers-reduced-motion: no-preference) {
+    .hero-badge, .hero-title, .hero-intro, .hero-social, .hero-stats {
+      animation: heroIn 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
+    }
+    .hero-badge  { animation-delay: 0.02s; }
+    .hero-title  { animation-delay: 0.09s; }
+    .hero-intro  { animation-delay: 0.18s; }
+    .hero-social { animation-delay: 0.27s; }
+    .hero-stats  { animation-delay: 0.36s; }
+    @keyframes heroIn {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: none; }
+    }
   }
 
   .hero-intro {
@@ -410,11 +462,14 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
   .stat-number {
     display: block;
-    font-size: 1.5rem;
+    font-size: 1.6rem;
     font-weight: 800;
     letter-spacing: -0.5px;
-    color: var(--text-primary);
     font-family: var(--font-mono);
+    background: linear-gradient(180deg, var(--text-primary), color-mix(in srgb, var(--accent-text) 65%, var(--text-secondary)));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
   }
 
   .stat-label {

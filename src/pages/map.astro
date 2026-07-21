@@ -2,7 +2,7 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 ---
 
-<BaseLayout title="Map — Lucas Sommer" description="An interactive map of Lucas Sommer's clients, projects, and life journey across the US and beyond.">
+<BaseLayout title="Map — Lucas Sommer" description="An interactive map of Lucas Sommer's clients, projects, and career milestones across the US and beyond.">
 
   <section class="map-page container">
     <div class="map-hero">
@@ -22,13 +22,13 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     <div class="map-legend">
       <div class="legend-item"><span class="legend-dot" style="background:#3b82f6;"></span> My Projects</div>
       <div class="legend-item"><span class="legend-dot" style="background:#a78bfa;"></span> Clients</div>
-      <div class="legend-item"><span class="legend-dot" style="background:#4ade80;"></span> Life Journey</div>
+      <div class="legend-item"><span class="legend-dot" style="background:#4ade80;"></span> Milestones</div>
     </div>
 
     <div class="map-stats">
       <div class="map-stat">
         <span class="map-stat-number">5</span>
-        <span class="map-stat-label">States Lived In</span>
+        <span class="map-stat-label">States Worked</span>
       </div>
       <div class="map-stat">
         <span class="map-stat-number">10+</span>
@@ -77,26 +77,25 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         { lat: 45.5152, lng: -122.6784, type: 'project', name: 'Boss PDX', desc: 'Licensed Portland general contractor. 17+ years, custom homes, ADUs, commercial.', link: '/projects/boss-pdx', color: '#3b82f6' },
         { lat: 45.3154, lng: -122.9580, type: 'project', name: 'Grove Vineyard', desc: 'Estate vineyard. Chehalem Valley, 750ft. Pinot Noir & Chardonnay by Jacques Tardy.', link: '/projects/grove-vineyard', color: '#3b82f6' },
         { lat: 45.5231, lng: -122.6765, type: 'project', name: 'IntraAlpha', desc: 'Options-only trading platform. Screeners, IV analysis, daily reports on 400+ stocks.', link: '/projects/intraalpha', color: '#3b82f6' },
-        { lat: 45.5100, lng: -122.6800, type: 'project', name: 'Onit', desc: 'AI-powered marketing platform. Productizing 15 years of agency experience.', link: '/projects/onit', color: '#3b82f6' },
+        { lat: 45.5100, lng: -122.6800, type: 'project', name: 'Carcin.ai', desc: 'AI-powered marketing platform. Productizing 15 years of agency experience.', link: '/projects/carcin', color: '#3b82f6' },
 
         // === CLIENTS ===
         { lat: 37.3861, lng: -122.0839, type: 'client', name: 'Netflix', desc: 'Campaign collaboration for the streaming giant.', color: '#a78bfa' },
         { lat: 39.0558, lng: -95.6890, type: 'client', name: 'Payless ShoeSource', desc: '400% ROAS. 1,200% e-commerce growth. PPC, SEO, email.', color: '#a78bfa' },
         { lat: 43.6084, lng: -110.7965, type: 'client', name: 'Teton Gravity Research', desc: '7.2x ROAS. 500% sales increase. Google Ads, Shopify, Klaviyo.', color: '#a78bfa' },
-        { lat: 45.3573, lng: -122.6068, type: 'client', name: 'Benchmade Knives', desc: 'Ongoing digital marketing for the iconic Oregon knife maker.', color: '#a78bfa' },
-        { lat: 45.3311, lng: -121.7113, type: 'client', name: 'Timberline Lodge', desc: 'Digital marketing for the iconic Oregon mountain lodge on Mt. Hood.', color: '#a78bfa' },
+        { lat: 45.3573, lng: -122.6068, type: 'client', name: 'Benchmade Knives', desc: 'Ongoing digital marketing for the iconic knife maker.', color: '#a78bfa' },
+        { lat: 45.3311, lng: -121.7113, type: 'client', name: 'Timberline Lodge', desc: 'Digital marketing for the iconic mountain lodge on Mt. Hood.', color: '#a78bfa' },
         { lat: 33.4484, lng: -112.0740, type: 'client', name: 'True Blue Car Wash', desc: '$1M+ new sales. 500% subscription growth. 65 locations, 170K subscribers.', color: '#a78bfa' },
         { lat: 25.7617, lng: -80.1918, type: 'client', name: 'Dr. Miami', desc: 'Digital marketing for the celebrity plastic surgeon.', color: '#a78bfa' },
         { lat: 45.8185, lng: -122.7585, type: 'client', name: 'Circle K / Couche-Tard', desc: 'Marketing partner through Clean Freak → True Blue → Couche-Tard acquisition.', color: '#a78bfa' },
         { lat: 45.5152, lng: -122.5500, type: 'client', name: '16 Law Firms', desc: '"Phones ringing daily with inquiries for over a decade."', color: '#a78bfa' },
 
-        // === LIFE JOURNEY ===
-        { lat: 45.3007, lng: -122.9733, type: 'life', name: 'Newberg, Oregon', desc: 'Where it all started. Grew up here. Valedictorian. Heart of wine country.', color: '#4ade80' },
+        // === MILESTONES ===
         { lat: 25.7215, lng: -80.2684, type: 'life', name: 'University of Miami', desc: 'BS Finance + Music, MBA Entrepreneurship. Full scholarship. 4 music companies from dorm room.', color: '#4ade80' },
         { lat: 25.7617, lng: -80.2200, type: 'life', name: 'Miami', desc: 'Audimated (NBC, Forbes, WeMedia $25K). Socialated (acquired). Del Toro Shoes.', color: '#4ade80' },
-        { lat: 33.7490, lng: -84.3880, type: 'life', name: 'Atlanta', desc: 'Moved for Caitlin\'s job. Oregon Wise Guys. Running Lucas Sommer Inc. Recruited into Del Toro from here.', color: '#4ade80' },
+        { lat: 33.7490, lng: -84.3880, type: 'life', name: 'Atlanta', desc: 'Built the client base that became Ad-Apt. Recruited into Del Toro Shoes from here.', color: '#4ade80' },
         { lat: 43.7696, lng: 11.2558, type: 'life', name: 'Italy', desc: 'Del Toro Shoes — luxury handmade Italian footwear. Partner role.', color: '#4ade80' },
-        { lat: 45.5152, lng: -122.6784, type: 'life', name: 'Portland, Oregon', desc: 'Home base. Wife Caitlin, sons Cameron and Ben, dog Ace. Building everything from here.', color: '#4ade80' },
+        { lat: 45.5152, lng: -122.6784, type: 'life', name: 'Portland', desc: 'Home base. Building the portfolio from here.', color: '#4ade80' },
         { lat: 38.9072, lng: -77.0369, type: 'life', name: 'Georgetown University', desc: 'Guest lecturer at McDonough School of Business.', color: '#4ade80' },
         { lat: 45.4931, lng: -122.6430, type: 'life', name: 'LeadsRx (Portland)', desc: 'Director of Marketing. 5,000+ global brands. Acquired by Unbounce.', color: '#4ade80' }
       ];

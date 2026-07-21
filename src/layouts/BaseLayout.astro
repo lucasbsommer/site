@@ -3,9 +3,10 @@ interface Props {
   title: string;
   description?: string;
   ogImage?: string;
+  fullscreen?: boolean;
 }
 
-const { title, description = "Lucas Sommer — serial entrepreneur, builder, investor. Follow along as I build companies across marketing, construction, wine, fintech, and AI.", ogImage = "/og.png" } = Astro.props;
+const { title, description = "Lucas Sommer — serial entrepreneur, builder, investor. Follow along as I build companies across marketing, construction, wine, fintech, and AI.", ogImage = "/og.png", fullscreen = false } = Astro.props;
 const currentPath = Astro.url.pathname;
 const ogImageUrl = ogImage.startsWith('http') ? ogImage : `https://lucassommer.com${ogImage}`;
 ---
@@ -34,10 +35,10 @@ const ogImageUrl = ogImage.startsWith('http') ? ogImage : `https://lucassommer.c
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={ogImageUrl} />
     <title>{title}</title>
-    <link rel="stylesheet" href="/curator.css?v=2" />
+    <link rel="stylesheet" href="/curator.css?v=7" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
     <!-- Prevent flash of wrong theme -->
     <script is:inline>
       (function() {
@@ -73,25 +74,42 @@ const ogImageUrl = ogImage.startsWith('http') ? ogImage : `https://lucassommer.c
         if (r) { s.setProperty('--radius', r[0]); s.setProperty('--radius-sm', r[1]); s.setProperty('--radius-xs', r[2]); }
       })();
     </script>
-    <style>
+    <style is:global>
       @import '../styles/global.css';
     </style>
   </head>
-  <body>
-    <header class="site-header">
+  <body class={fullscreen ? 'app-shell' : ''}>
+    {!fullscreen && <header class="site-header">
       <nav class="container">
         <a href="/" class="site-name">lucas sommer</a>
         <div class="nav-right">
           <div class="nav-links">
             <a href="/projects" class={currentPath.startsWith('/projects') ? 'nav-active' : ''}>Projects</a>
+            <a href="/timeline" class={currentPath.startsWith('/timeline') ? 'nav-active' : ''}>Timeline</a>
+            <a href="/music" class={currentPath.startsWith('/music') ? 'nav-active' : ''}>Music</a>
+            <a href="/stories" class={currentPath.startsWith('/stories') ? 'nav-active' : ''}>Stories</a>
             <a href="/ideas" class={currentPath.startsWith('/ideas') ? 'nav-active' : ''}>Ideas</a>
             <a href="/map" class={currentPath.startsWith('/map') ? 'nav-active' : ''}>Map</a>
-            <a href="/resources" class={currentPath.startsWith('/resources') ? 'nav-active' : ''}>Resources</a>
             <a href="/about" class={currentPath.startsWith('/about') ? 'nav-active' : ''}>About</a>
+            <a href="/chat" class={`nav-chat ${currentPath.startsWith('/chat') ? 'nav-active' : ''}`}>Chat</a>
           </div>
-          <a href="/brand" class="nav-brand-link" aria-label="Brand settings" title="Brand settings">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="16" height="16"><path d="M12.22 2h-.44a2 2 0 00-2 2v.18a2 2 0 01-1 1.73l-.43.25a2 2 0 01-2 0l-.15-.08a2 2 0 00-2.73.73l-.22.38a2 2 0 00.73 2.73l.15.1a2 2 0 011 1.72v.51a2 2 0 01-1 1.74l-.15.09a2 2 0 00-.73 2.73l.22.38a2 2 0 002.73.73l.15-.08a2 2 0 012 0l.43.25a2 2 0 011 1.73V20a2 2 0 002 2h.44a2 2 0 002-2v-.18a2 2 0 011-1.73l.43-.25a2 2 0 012 0l.15.08a2 2 0 002.73-.73l.22-.39a2 2 0 00-.73-2.73l-.15-.08a2 2 0 01-1-1.74v-.5a2 2 0 011-1.74l.15-.09a2 2 0 00.73-2.73l-.22-.38a2 2 0 00-2.73-.73l-.15.08a2 2 0 01-2 0l-.43-.25a2 2 0 01-1-1.73V4a2 2 0 00-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
-          </a>
+          <div class="nav-pages" hidden>
+            <button type="button" class="nav-pages-btn" aria-haspopup="true" aria-expanded="false">Pages</button>
+            <div class="nav-pages-menu" hidden></div>
+          </div>
+          <div class="nav-settings">
+            <button type="button" class="nav-brand-link" aria-label="Settings" aria-haspopup="true" aria-expanded="false" title="Settings">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="16" height="16"><path d="M12.22 2h-.44a2 2 0 00-2 2v.18a2 2 0 01-1 1.73l-.43.25a2 2 0 01-2 0l-.15-.08a2 2 0 00-2.73.73l-.22.38a2 2 0 00.73 2.73l.15.1a2 2 0 011 1.72v.51a2 2 0 01-1 1.74l-.15.09a2 2 0 00-.73 2.73l.22.38a2 2 0 002.73.73l.15-.08a2 2 0 012 0l.43.25a2 2 0 011 1.73V20a2 2 0 002 2h.44a2 2 0 002-2v-.18a2 2 0 011-1.73l.43-.25a2 2 0 012 0l.15.08a2 2 0 002.73-.73l.22-.39a2 2 0 00-.73-2.73l-.15-.08a2 2 0 01-1-1.74v-.5a2 2 0 011-1.74l.15-.09a2 2 0 00.73-2.73l-.22-.38a2 2 0 00-2.73-.73l-.15.08a2 2 0 01-2 0l-.43-.25a2 2 0 01-1-1.73V4a2 2 0 00-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
+            </button>
+            <div class="nav-menu" hidden>
+              <button type="button" class="nav-menu-item" data-action="edit-site">Edit site</button>
+              <a class="nav-menu-item" href="/brand">Brand settings</a>
+              <form class="nav-pw" hidden>
+                <input type="password" placeholder="Password" autocomplete="current-password" aria-label="Edit password" />
+              </form>
+              <div class="nav-pw-msg" hidden></div>
+            </div>
+          </div>
           <button class="theme-toggle" aria-label="Toggle theme" title="Toggle theme">
             <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
             <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
@@ -101,13 +119,13 @@ const ogImageUrl = ogImage.startsWith('http') ? ogImage : `https://lucassommer.c
           </button>
         </div>
       </nav>
-    </header>
+    </header>}
 
     <main>
       <slot />
     </main>
 
-    <footer class="site-footer">
+    {!fullscreen && <footer class="site-footer">
       <div class="container">
         <div class="footer-inner">
           <p>&copy; {new Date().getFullYear()} Lucas Sommer</p>
@@ -118,7 +136,7 @@ const ogImageUrl = ogImage.startsWith('http') ? ogImage : `https://lucassommer.c
           </div>
         </div>
       </div>
-    </footer>
+    </footer>}
 
     <script>
       // Theme toggle
@@ -138,6 +156,92 @@ const ogImageUrl = ogImage.startsWith('http') ? ogImage : `https://lucassommer.c
       document.querySelector('.nav-toggle')?.addEventListener('click', () => {
         document.querySelector('.nav-links')?.classList.toggle('open');
       });
+
+      // Settings menu → "Edit site" (password → curator/edit mode)
+      const settings = document.querySelector('.nav-settings');
+      if (settings) {
+        const gear = settings.querySelector('.nav-brand-link');
+        const menu = settings.querySelector('.nav-menu');
+        const editBtn = settings.querySelector('[data-action="edit-site"]');
+        const pwForm = settings.querySelector('.nav-pw');
+        const pwInput = pwForm.querySelector('input');
+        const msg = settings.querySelector('.nav-pw-msg');
+        const closeMenu = () => {
+          menu.hidden = true; pwForm.hidden = true; msg.hidden = true;
+          gear.setAttribute('aria-expanded', 'false');
+        };
+        gear.addEventListener('click', (e) => {
+          e.preventDefault(); e.stopPropagation();
+          if (menu.hidden) { menu.hidden = false; gear.setAttribute('aria-expanded', 'true'); }
+          else { closeMenu(); }
+        });
+        document.addEventListener('click', (e) => { if (!settings.contains(e.target)) closeMenu(); });
+        editBtn.addEventListener('click', () => {
+          if (localStorage.getItem('curatorToken')) { location.reload(); return; }
+          pwForm.hidden = false; msg.hidden = true; pwInput.value = ''; pwInput.focus();
+        });
+        pwForm.addEventListener('submit', async (e) => {
+          e.preventDefault();
+          const password = pwInput.value;
+          if (!password) return;
+          msg.hidden = false; msg.className = 'nav-pw-msg'; msg.textContent = 'Checking…';
+          try {
+            const res = await fetch('/api/curator/login', {
+              method: 'POST', headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ password }),
+            });
+            const d = await res.json().catch(() => ({}));
+            if (res.ok && d.token) {
+              localStorage.setItem('curatorToken', d.token);
+              document.cookie = 'cur=' + d.token + '; path=/; max-age=31536000; samesite=lax';
+              msg.textContent = 'Unlocked — entering edit mode…';
+              setTimeout(() => location.reload(), 450);
+            } else {
+              msg.classList.add('error');
+              msg.textContent = res.status === 429 ? 'Too many tries — wait a bit.' : 'Wrong password.';
+              pwInput.select();
+            }
+          } catch {
+            msg.classList.add('error'); msg.textContent = 'Network error.';
+          }
+        });
+      }
+
+      // Public nav reflects the saved config (private / removed pages drop out,
+      // added ones appear). SSR nav is the fallback if this fails.
+      fetch('/api/nav').then((r) => r.json()).then((d) => {
+        const navLinks = document.querySelector('.nav-links');
+        if (!navLinks || !Array.isArray(d.items)) return;
+        navLinks.innerHTML = d.items.map((i) => {
+          const active = (i.path === location.pathname || i.path + '/' === location.pathname) ? ' nav-active' : '';
+          const chat = i.path === '/chat' ? ' nav-chat' : '';
+          const cls = (active + chat).trim();
+          return '<a href="' + i.path + '"' + (cls ? ' class="' + cls + '"' : '') + '>' + i.label + '</a>';
+        }).join('');
+      }).catch(() => {});
+
+      // Nav elevation once scrolled
+      const header = document.querySelector('.site-header');
+      const setScrolled = () => header?.classList.toggle('scrolled', window.scrollY > 8);
+      setScrolled();
+      window.addEventListener('scroll', setScrolled, { passive: true });
+
+      // Scroll reveal — only below-the-fold sections, only if motion is allowed.
+      // No flash (off-screen elements get the hidden state), safe without JS.
+      if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        const below = [...document.querySelectorAll('main section')]
+          .filter((el) => el.getBoundingClientRect().top > window.innerHeight * 0.85);
+        if (below.length) {
+          document.documentElement.classList.add('reveal-on');
+          below.forEach((el) => el.classList.add('reveal-item'));
+          const io = new IntersectionObserver((entries) => {
+            entries.forEach((e) => {
+              if (e.isIntersecting) { e.target.classList.add('reveal-in'); io.unobserve(e.target); }
+            });
+          }, { rootMargin: '0px 0px -8% 0px', threshold: 0.08 });
+          below.forEach((el) => io.observe(el));
+        }
+      }
 
       // Email capture — delegates every .email-form on the page to /api/subscribe
       document.querySelectorAll('form.email-form').forEach((form) => {
@@ -168,11 +272,26 @@ const ogImageUrl = ogImage.startsWith('http') ? ogImage : `https://lucassommer.c
         });
       });
     </script>
-    <script src="/curator.js?v=2" defer></script>
+    <script src="/curator.js?v=7" defer></script>
   </body>
 </html>
 
 <style>
+  /* ---- App-shell (fullscreen pages: chat, etc.) ---- */
+  body.app-shell {
+    min-height: 100dvh;
+    height: 100dvh;
+    overflow: hidden;
+    background: var(--bg);
+  }
+  body.app-shell main {
+    flex: 1; min-height: 0; display: flex; flex-direction: column;
+  }
+  /* Hide owner-only UI in app-shell pages (curator dock, etc.) */
+  body.app-shell .cc-dock,
+  body.app-shell .nav-pages,
+  body.app-shell .cc-bar { display: none !important; }
+
   /* ---- Header ---- */
   .site-header {
     position: sticky;
@@ -224,6 +343,15 @@ const ogImageUrl = ogImage.startsWith('http') ? ogImage : `https://lucassommer.c
   .nav-links a:hover { color: var(--text-primary); }
   .nav-links a.nav-active { color: var(--text-primary); }
 
+  .nav-links a.nav-chat {
+    color: var(--accent-text);
+    border: 1px solid var(--accent-soft);
+    border-radius: 9999px;
+    padding: 0.25rem 0.75rem;
+    transition: background-color 0.15s ease, border-color 0.15s ease;
+  }
+  .nav-links a.nav-chat:hover { background: var(--accent-soft); border-color: var(--accent); }
+
   /* ---- Brand/Settings Link ---- */
   .nav-brand-link {
     display: flex;
@@ -231,6 +359,8 @@ const ogImageUrl = ogImage.startsWith('http') ? ogImage : `https://lucassommer.c
     justify-content: center;
     padding: 0.35rem;
     color: var(--text-tertiary);
+    background: none;
+    cursor: pointer;
     border: 1px solid transparent;
     border-radius: var(--radius-sm);
     transition: color 0.15s ease, border-color 0.15s ease;
@@ -240,6 +370,118 @@ const ogImageUrl = ogImage.startsWith('http') ? ogImage : `https://lucassommer.c
     color: var(--text-secondary);
     border-color: var(--border);
   }
+
+  /* ---- Pages review menu (edit mode only) ---- */
+  .nav-pages { position: relative; display: flex; }
+  .nav-pages[hidden] { display: none; }
+  .nav-pages-btn {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--accent-text);
+    background: var(--accent-soft);
+    border: 1px solid var(--accent-soft);
+    border-radius: 9999px;
+    padding: 0.25rem 0.7rem;
+    cursor: pointer;
+  }
+  .nav-pages-btn:hover { border-color: var(--accent); }
+  .nav-pages-menu {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    min-width: 300px;
+    max-height: 70vh;
+    overflow-y: auto;
+    background: var(--surface-1);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    box-shadow: 0 12px 32px -12px rgba(0, 0, 0, 0.55);
+    padding: 0.35rem;
+    z-index: 200;
+    display: flex;
+    flex-direction: column;
+  }
+  .nav-pages-menu[hidden] { display: none; }
+  .nav-pages-menu a {
+    font-size: 0.8125rem;
+    color: var(--text-secondary);
+    padding: 0.4rem 0.6rem;
+    border-radius: var(--radius-xs);
+  }
+  .nav-pages-menu a:hover { background: var(--surface-2); color: var(--text-primary); }
+  .nav-pages-menu a.np-active { color: var(--accent-text); font-weight: 600; }
+  .np-group {
+    font-family: var(--font-mono);
+    font-size: 0.625rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text-tertiary);
+    padding: 0.6rem 0.6rem 0.2rem;
+  }
+  .np-group:first-child { padding-top: 0.3rem; }
+
+  /* ---- Settings dropdown ---- */
+  .nav-settings { position: relative; display: flex; }
+
+  .nav-menu {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    min-width: 190px;
+    background: var(--surface-1);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    box-shadow: 0 12px 32px -12px rgba(0, 0, 0, 0.55);
+    padding: 0.35rem;
+    z-index: 200;
+    display: flex;
+    flex-direction: column;
+    gap: 0.1rem;
+  }
+  .nav-menu[hidden] { display: none; }
+
+  .nav-menu-item {
+    display: block;
+    width: 100%;
+    text-align: left;
+    font-family: inherit;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+    background: none;
+    border: none;
+    border-radius: var(--radius-xs);
+    padding: 0.5rem 0.6rem;
+    cursor: pointer;
+    transition: background-color 0.12s ease, color 0.12s ease;
+  }
+  .nav-menu-item:hover { background: var(--surface-2); color: var(--text-primary); }
+
+  .nav-pw { display: flex; gap: 0.3rem; padding: 0.35rem 0.6rem 0.15rem; }
+  .nav-pw[hidden] { display: none; }
+  .nav-pw input {
+    flex: 1;
+    min-width: 0;
+    font-family: inherit;
+    font-size: 0.8125rem;
+    color: var(--text-primary);
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-xs);
+    padding: 0.4rem 0.55rem;
+    outline: none;
+  }
+  .nav-pw input:focus { border-color: var(--accent); }
+
+  .nav-pw-msg {
+    font-size: 0.6875rem;
+    color: var(--text-tertiary);
+    padding: 0.1rem 0.6rem 0.4rem;
+  }
+  .nav-pw-msg[hidden] { display: none; }
+  .nav-pw-msg.error { color: #f87171; }
 
   /* ---- Theme Toggle ---- */
   .theme-toggle {

@@ -311,8 +311,13 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
     padding: 1.75rem;
     margin-top: 3rem;
     margin-bottom: 4rem;
+    overflow-x: auto;
     transition: border-color 0.15s ease, background-color 0.15s ease;
   }
+
+  /* let the wide worksheet table scroll inside its card on narrow screens
+     instead of blowing out the page width */
+  .worksheet table { min-width: 520px; }
 
   .ws-header {
     display: flex;
