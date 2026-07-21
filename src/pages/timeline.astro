@@ -1,0 +1,409 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+/* ── Event categories (color-coded) ──────────────────────────────────── */
+const CATEGORIES = {
+  family:       { label: 'Family / Origins',  color: '#a855f7', soft: 'rgba(168,85,247,0.10)' },
+  travel:       { label: 'Travel',            color: '#38bdf8', soft: 'rgba(56,189,248,0.10)' },
+  education:    { label: 'Education',         color: '#22c55e', soft: 'rgba(34,197,94,0.10)'  },
+  work:         { label: 'Work (employment)', color: '#fb923c', soft: 'rgba(251,146,60,0.10)' },
+  venture:      { label: 'Ventures / Built',  color: '#f43f5e', soft: 'rgba(244,63,94,0.12)'  },
+  relationship: { label: 'Relationships',     color: '#fbbf24', soft: 'rgba(251,191,36,0.10)' },
+  achievement:  { label: 'Achievements',      color: '#f59e0b', soft: 'rgba(245,158,11,0.10)' },
+  volunteer:    { label: 'Volunteer',         color: '#14b8a6', soft: 'rgba(20,184,166,0.10)' },
+  press:        { label: 'Press',             color: '#06b6d4', soft: 'rgba(6,182,212,0.10)'  },
+  sports:       { label: 'Sports',            color: '#8b5cf6', soft: 'rgba(139,92,246,0.10)' },
+  music:        { label: 'Music',             color: '#f472b6', soft: 'rgba(244,114,182,0.10)' },
+  sensitive:    { label: 'Alluded to',        color: '#6b7280', soft: 'rgba(107,114,128,0.10)' },
+};
+
+/* ── The timeline ────────────────────────────────────────────────────── *
+ * cat   — category key (see above)
+ * spec  — speculated date (we don't have it firm)
+ * note  — short text — keep terse. For "sensitive" items use 2-3 words only.
+ * loc   — where it happened
+ * ─────────────────────────────────────────────────────────────────────── */
+const EVENTS = [
+  // ── Childhood ────────────────────────────────
+  { year: 1985, cat: 'family',       loc: 'Beaverton, OR',   note: 'Born' },
+  { year: 1990, spec: true, cat: 'family', loc: 'Newberg, OR', note: 'Family moves into the logs' },
+  { year: 1992, spec: true, cat: 'travel', loc: 'Alaska',     note: 'Family trip' },
+  { year: 1993, cat: 'travel',       loc: 'Costa Rica',      note: 'Family trip' },
+  { year: 1994, cat: 'travel',       loc: 'New Zealand',     note: 'Family trip' },
+  { year: 1995, spec: true, cat: 'sensitive', loc: 'Oregon woods', note: 'Bjorn finds me' },
+  { year: 1995, spec: true, cat: 'sensitive', loc: 'Newberg, OR',  note: 'Broken finger' },
+  { year: 1995, spec: true, cat: 'education', loc: 'Newberg, OR',  note: 'Skipped grade — math' },
+  { year: 1996, cat: 'education',    loc: 'Opal Creek, OR',  note: 'OMSI sleep-away camp' },
+  { year: 1996, cat: 'education',    loc: 'Newberg, OR',     note: 'Chehalem Valley Middle School' },
+  { year: 1997, cat: 'travel',       loc: 'India / Nepal',   note: 'Family trip' },
+  { year: 1998, cat: 'sports',       loc: 'Newberg, OR',     note: 'Oregon Youth Soccer Association' },
+
+  // ── Late middle / high school ────────────────
+  { year: 1999, spec: true, cat: 'education', loc: 'Newberg, OR', note: 'Bussed to high school for math' },
+  { year: 1999, cat: 'volunteer',    loc: 'Yamhill, OR',     note: 'Instructed handicapped students' },
+  { year: 1999, cat: 'volunteer',    loc: 'Newberg, OR',     note: 'SOLV (Stopping Oregon Litter & Vandalism)' },
+  { year: 1999, cat: 'work',         loc: 'Sherwood, OR',    note: 'Intern — Sherwood HS computer lab' },
+  { year: 2000, cat: 'work',         loc: 'Newberg, OR',     note: 'Subway' },
+  { year: 2001, cat: 'sports',       loc: 'Newberg, OR',     note: 'Soccer athletic award' },
+  { year: 2001, cat: 'music',        loc: 'Newberg, OR',     note: 'Starts Second String — high school band' },
+  { year: 2001, cat: 'volunteer',    loc: 'Newberg, OR',     note: 'Volunteer basketball coach' },
+  { year: 2001, cat: 'work',         loc: 'Tualatin, OR',    note: 'Club Sport' },
+  { year: 2001, cat: 'sensitive',    loc: 'Newberg, OR',     note: 'Traffic violation' },
+  { year: 2002, cat: 'work',         loc: 'Dundee, OR',      note: 'Firestone Farms' },
+  { year: 2002, cat: 'sensitive',    loc: 'Newberg, OR',     note: 'License restricted' },
+  { year: 2002, cat: 'achievement',  loc: 'Newberg, OR',     note: 'SAT — 93rd verbal / 95th math' },
+  { year: 2002, cat: 'achievement',  loc: 'Newberg, OR',     note: 'Straight A\'s' },
+  { year: 2003, cat: 'education',    loc: 'Newberg, OR',     note: 'College classes at George Fox as HS senior' },
+  { year: 2003, spec: true, cat: 'achievement', loc: 'Newberg, OR', note: 'Valedictorian — Newberg HS' },
+
+  // ── University of Miami ──────────────────────
+  { year: 2003, cat: 'education',    loc: 'Coral Gables, FL', note: 'Starts University of Miami (Finance + Music)' },
+  { year: 2004, cat: 'work',         loc: 'Canby, OR',        note: 'Intern — Canby school district (summer)' },
+  { year: 2005, spec: true, cat: 'music', loc: 'Coral Gables, FL', note: 'Starts Break Records — recording studio at UM' },
+  { year: 2005, spec: true, cat: 'music', loc: 'Coral Gables, FL', note: 'Producing, writing, rapping, singing in earnest' },
+  { year: 2006, cat: 'travel',       loc: 'At sea',           note: 'Norwegian Sun cruise' },
+  { year: 2007, cat: 'education',    loc: 'Coral Gables, FL', note: 'Graduates UM undergrad' },
+  { year: 2007, cat: 'relationship', loc: 'Coconut Grove, FL', note: 'Meets Caitlin' },
+  { year: 2007, cat: 'family',       loc: 'Miami, FL',        note: 'Moves to The Madison with Phil' },
+  { year: 2007, cat: 'music',        loc: 'Miami, FL',        note: 'Meets Pretty Tony — best and last shot at the artist play' },
+  { year: 2007, cat: 'travel',       loc: 'Virgin Islands',   note: 'Sailing trip' },
+
+  // ── Miami era — first ventures ───────────────
+  { year: 2008, cat: 'work',         loc: 'Miami, FL', note: 'Quits Home Equity; doubles down on the studio + tutoring' },
+  { year: 2008, cat: 'family',       loc: 'Miami, FL', note: 'Moves to 25th St' },
+  { year: 2008, cat: 'work',         loc: 'Miami, FL', note: 'The Launch Pad' },
+  { year: 2008, spec: true, cat: 'music', loc: 'Miami, FL', note: 'Tries artist management — manages a few artists briefly' },
+  { year: 2008, spec: true, cat: 'sensitive', loc: 'Miami, FL', note: 'Nigerian entrepreneurs consult' },
+  { year: 2009, cat: 'venture',      loc: 'Miami, FL', note: 'Starts Audimated — social network for musicians (the pivot from artist → platform)' },
+  { year: 2009, cat: 'achievement',  loc: 'Washington, DC', note: 'Budgetball National Champion' },
+  { year: 2010, cat: 'achievement',  loc: 'Coral Gables, FL', note: 'Wins WeMedia Pitch It! — $25k cash prize (Audimated)' },
+  { year: 2010, cat: 'work',         loc: 'Coral Gables, FL', note: 'Leaves Launch Pad to do Audimated full-time' },
+  { year: 2010, cat: 'venture',      loc: 'Miami, FL', note: 'Starts Socialated with Andrew, David, Colin' },
+  { year: 2011, cat: 'venture',      loc: 'Miami, FL', note: 'Socialated office on Ponce' },
+  { year: 2011, spec: true, cat: 'press', loc: 'Miami, FL', note: 'Audimated featured in Forbes' },
+  { year: 2011, spec: true, cat: 'press', loc: 'Miami, FL', note: 'Audimated featured on NBC News' },
+  { year: 2012, cat: 'relationship', loc: 'Coconut Grove, FL', note: 'Ends 25th St lease, moves in with Caitlin' },
+  { year: 2012, cat: 'venture',      loc: 'Miami, FL', note: 'Socialated rents 8th St office' },
+  { year: 2013, spec: true, cat: 'education', loc: 'Miami, FL', note: 'Begins MBA — Entrepreneurship' },
+  { year: 2013, cat: 'venture',      loc: 'Miami, FL', note: 'Rishi + Lucas begin Socialated acquisition talks' },
+  { year: 2014, cat: 'venture',      loc: 'Miami, FL', note: 'Rishi buys Socialated' },
+  { year: 2014, cat: 'relationship', loc: 'Miami, FL', note: 'Lucas + Caitlin married' },
+
+  // ── Wine + Del Toro + back-and-forth ─────────
+  { year: 2015, cat: 'venture',      loc: 'Newberg, OR', note: 'Moves to Oregon to start Halem Heights' },
+  { year: 2015, cat: 'sensitive',    loc: 'Newberg, OR', note: 'James C investment' },
+  { year: 2015, cat: 'sensitive',    loc: 'Newberg, OR', note: '99 Vines' },
+  { year: 2015, cat: 'family',       loc: 'Atlanta, GA',  note: 'Buys house in Roswell' },
+  { year: 2015, cat: 'work',         loc: 'Miami, FL',    note: 'Begins Del Toro consulting; back to Miami for summer' },
+  { year: 2016, spec: true, cat: 'travel', loc: 'Florence, IT', note: 'Fabio — Pitti / fashion show' },
+  { year: 2017, cat: 'work',         loc: 'Atlanta, GA',  note: 'Finishes Del Toro deal, moves back to Miami' },
+  { year: 2018, cat: 'venture',      loc: 'Miami, FL',    note: 'TTB approval + first Halem Heights bottles' },
+  { year: 2018, cat: 'work',         loc: 'Miami, FL',    note: 'Partner role with Del Toro Shoes' },
+
+  // ── Back to Oregon, LeadsRx, post-LeadsRx ────
+  { year: 2019, cat: 'family',       loc: 'Lake Oswego, OR', note: 'Leaves Del Toro, moves back to Oregon' },
+  { year: 2019, cat: 'work',         loc: 'Lake Oswego, OR', note: 'Joins LeadsRx as Director of Marketing' },
+  { year: 2020, spec: true, cat: 'achievement', loc: 'Washington, DC (virtual)', note: 'Guest lectures at Georgetown McDonough' },
+  { year: 2020, spec: true, cat: 'press', loc: 'Online', note: 'Hosts Attribution Marketing Podcast' },
+  { year: 2020, cat: 'family',       loc: 'Lake Oswego, OR', note: 'Buys house in Lake Oswego' },
+  { year: 2020, cat: 'venture',      loc: 'Portland, OR',    note: 'Starts Boss PDX' },
+  { year: 2021, cat: 'work',         loc: 'Lake Oswego, OR', note: 'Leaves LeadsRx' },
+  { year: 2021, cat: 'venture',      loc: 'Portland, OR',    note: 'Starts Ad-Apt' },
+  { year: 2022, cat: 'work',         loc: 'Portland, OR',    note: 'LeadsRx acquired by Unbounce (Crest Rock Partners)' },
+
+  // ── Recent — IntraAlpha, Grove, family, Carcin ───────────
+  { year: 2022, spec: true, cat: 'venture', loc: 'Portland, OR', note: 'Starts IntraAlpha' },
+  { year: 2023, spec: true, cat: 'sensitive', loc: 'Portland, OR', note: 'Sean buyout' },
+  { year: 2023, spec: true, cat: 'sensitive', loc: 'Chicago / remote', note: 'Tom Sosnoff context' },
+  { year: 2024, spec: true, cat: 'venture',   loc: 'Chehalem Valley, OR', note: 'Grove Vineyard formalized as separate brand' },
+  { year: 2025, cat: 'relationship', loc: 'Lake Oswego, OR', note: 'Caitlin + mom send this Life Timeline (birthday gift)' },
+  { year: 2026, cat: 'venture',      loc: 'Portland, OR',    note: 'Rebrands Onit → Carcin.ai' },
+];
+
+// Sort: by year ascending, speculated items rendered with a marker
+const sorted = [...EVENTS].sort((a, b) => a.year - b.year);
+
+// Group by year
+const byYear = new Map<number, typeof EVENTS>();
+for (const ev of sorted) {
+  if (!byYear.has(ev.year)) byYear.set(ev.year, []);
+  byYear.get(ev.year)!.push(ev);
+}
+const years = [...byYear.keys()].sort((a, b) => a - b);
+---
+
+<BaseLayout title="Timeline — Lucas Sommer" description="The whole life, year by year. Color-coded. Editable.">
+
+  <section class="timeline-page container">
+
+    <header class="tl-hero">
+      <h1>Timeline</h1>
+      <p class="tl-sub">Every year that mattered, color-coded. Started as a birthday gift from Caitlin + my mom (March 2025). Expanded since.</p>
+
+      <div class="tl-legend">
+        {Object.entries(CATEGORIES).map(([key, c]) => (
+          <span class="tl-legend-pill" style={`--c:${c.color}; --soft:${c.soft};`}>
+            <span class="tl-legend-dot"></span>{c.label}
+          </span>
+        ))}
+        <span class="tl-legend-pill tl-spec-pill">
+          <span class="tl-spec-mark">~</span>
+          Date speculated
+        </span>
+      </div>
+    </header>
+
+    <div class="tl-track">
+      {years.map(yr => (
+        <div class="tl-year-block">
+          <div class="tl-year-label">{yr}</div>
+          <div class="tl-events">
+            {byYear.get(yr)!.map(ev => {
+              const c = CATEGORIES[ev.cat as keyof typeof CATEGORIES];
+              return (
+                <div class={`tl-event ${ev.cat === 'sensitive' ? 'is-sensitive' : ''} ${ev.spec ? 'is-spec' : ''}`}
+                     style={`--c:${c.color}; --soft:${c.soft};`}>
+                  <div class="tl-event-dot" title={c.label}></div>
+                  <div class="tl-event-body">
+                    <div class="tl-event-note">
+                      {ev.spec && <span class="tl-spec">~</span>}
+                      {ev.note}
+                    </div>
+                    {ev.loc && <div class="tl-event-loc">{ev.loc}</div>}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      ))}
+    </div>
+
+    <footer class="tl-footnotes">
+      <h3>How to read this</h3>
+      <ul>
+        <li><strong>Color</strong> tells you the category — ventures in red/pink, education in green, travel in blue, etc. Legend above.</li>
+        <li><strong>~</strong> next to a date means I'm speculating on the year. Tighten it up by editing <code>src/pages/timeline.astro</code> — find the row and remove <code>spec: true</code>.</li>
+        <li><strong>Sensitive / alluded items</strong> show as gray dotted cards with a 2-3 word phrase. Expand them privately if you want — they're scoped to evoke, not explain.</li>
+        <li><strong>Source</strong>: <code>site/data/life-timeline.csv</code> — the original Google Sheet from Caitlin + Mom. Re-export any time.</li>
+      </ul>
+      <p class="tl-add">To add an event, edit <code>src/pages/timeline.astro</code> and append to the <code>EVENTS</code> array. Watcher rebuilds in ~3s.</p>
+    </footer>
+
+  </section>
+
+</BaseLayout>
+
+<style is:global>
+  /* ── Hero ────────────────────────────────────────────────────────── */
+  .timeline-page { padding-top: 4rem; padding-bottom: 6rem; }
+  .tl-hero { margin-bottom: 3rem; }
+  .tl-hero h1 {
+    font-size: 2.5rem;
+    font-weight: 800;
+    letter-spacing: -1.5px;
+    margin-bottom: 0.75rem;
+  }
+  .tl-sub {
+    font-size: 1.125rem;
+    color: var(--text-secondary);
+    max-width: 700px;
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+  }
+
+  /* ── Legend ──────────────────────────────────────────────────────── */
+  .tl-legend {
+    display: flex; flex-wrap: wrap; gap: 0.45rem;
+    margin-top: 1.5rem;
+  }
+  .tl-legend-pill {
+    display: inline-flex; align-items: center; gap: 0.4rem;
+    padding: 0.32rem 0.7rem;
+    font-size: 0.7rem;
+    font-family: var(--font-mono);
+    font-weight: 600;
+    color: var(--text-secondary);
+    background: var(--soft);
+    border: 1px solid var(--c);
+    border-radius: 999px;
+    letter-spacing: 0.02em;
+  }
+  .tl-legend-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--c);
+    box-shadow: 0 0 8px var(--c);
+  }
+  .tl-spec-pill {
+    --c: var(--text-tertiary);
+    --soft: transparent;
+    border-style: dashed;
+  }
+  .tl-spec-mark {
+    font-family: var(--font-mono);
+    font-weight: 800;
+    color: var(--text-tertiary);
+  }
+
+  /* ── The vertical track ──────────────────────────────────────────── */
+  .tl-track {
+    position: relative;
+    padding-left: 5.5rem;
+  }
+  .tl-track::before {
+    content: '';
+    position: absolute;
+    left: 4.25rem; top: 0; bottom: 0;
+    width: 1px;
+    background: linear-gradient(180deg,
+      transparent 0%,
+      var(--border) 4%,
+      var(--border) 96%,
+      transparent 100%);
+  }
+
+  .tl-year-block {
+    position: relative;
+    padding-top: 1.5rem;
+    padding-bottom: 0.75rem;
+  }
+  .tl-year-label {
+    position: absolute;
+    left: -5.5rem;
+    top: 1.5rem;
+    width: 4rem;
+    font-family: var(--font-mono);
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    text-align: right;
+    letter-spacing: -0.02em;
+  }
+
+  .tl-events {
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+  }
+
+  /* ── Event card ──────────────────────────────────────────────────── */
+  .tl-event {
+    position: relative;
+    display: flex; align-items: flex-start; gap: 0.85rem;
+    padding: 0.7rem 0.95rem;
+    background: var(--soft);
+    border: 1px solid var(--c);
+    border-left-width: 3px;
+    border-radius: 8px;
+    transition: transform 0.15s ease, background-color 0.15s ease;
+  }
+  .tl-event:hover {
+    transform: translateX(2px);
+    background: color-mix(in srgb, var(--soft) 70%, var(--surface-2) 30%);
+  }
+  .tl-event-dot {
+    width: 9px; height: 9px; border-radius: 50%;
+    background: var(--c);
+    box-shadow: 0 0 6px var(--c);
+    flex-shrink: 0;
+    margin-top: 0.5rem;
+  }
+  .tl-event-body { flex: 1; min-width: 0; }
+  .tl-event-note {
+    font-size: 0.94rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    line-height: 1.35;
+  }
+  .tl-event-loc {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    color: var(--text-tertiary);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin-top: 0.18rem;
+  }
+
+  /* speculated date marker */
+  .tl-spec {
+    display: inline-block;
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    font-weight: 800;
+    color: var(--text-tertiary);
+    margin-right: 0.35rem;
+    opacity: 0.7;
+  }
+
+  /* sensitive / alluded items */
+  .tl-event.is-sensitive {
+    border-style: dashed;
+    background: transparent;
+  }
+  .tl-event.is-sensitive .tl-event-note {
+    color: var(--text-secondary);
+    font-style: italic;
+    font-weight: 500;
+  }
+
+  /* speculated items get a subtle skew on the dot */
+  .tl-event.is-spec .tl-event-dot { opacity: 0.65; }
+
+  /* ── Footnotes ───────────────────────────────────────────────────── */
+  .tl-footnotes {
+    margin-top: 4rem;
+    padding: 2rem;
+    background: var(--surface-1);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+  }
+  .tl-footnotes h3 {
+    font-size: 0.875rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text-secondary);
+    margin-bottom: 1rem;
+  }
+  .tl-footnotes ul {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 1.25rem 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .tl-footnotes li {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    line-height: 1.55;
+  }
+  .tl-footnotes code {
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
+    background: var(--surface-2);
+    padding: 0.1rem 0.4rem;
+    border-radius: 4px;
+    color: var(--text-primary);
+  }
+  .tl-add {
+    font-size: 0.85rem;
+    color: var(--text-tertiary);
+    font-style: italic;
+  }
+
+  /* ── Mobile ──────────────────────────────────────────────────────── */
+  @media (max-width: 700px) {
+    .timeline-page { padding-top: 2.5rem; }
+    .tl-hero h1 { font-size: 1.875rem; }
+    .tl-sub { font-size: 1rem; }
+    .tl-track { padding-left: 4rem; }
+    .tl-track::before { left: 3rem; }
+    .tl-year-label {
+      left: -4rem;
+      width: 2.75rem;
+      font-size: 0.82rem;
+    }
+    .tl-legend-pill { font-size: 0.66rem; padding: 0.28rem 0.6rem; }
+  }
+</style>

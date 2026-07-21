@@ -1,0 +1,392 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+/* ── The music story, chapter by chapter ─────────────────────────────── *
+ * Source of truth — edit here, the page re-renders automatically.
+ * ──────────────────────────────────────────────────────────────────────── */
+const CHAPTERS = [
+  {
+    n: 1,
+    title: 'Second String',
+    period: '2001 – 2003',
+    where: 'Newberg, OR',
+    role: 'High school band',
+    body: `My first band. Started in high school in Newberg with a few friends. We weren't great — but it was the first time being part of something where the only way it worked was if everyone showed up and played their part. The name fit: we were always second string, but we were a string.`,
+  },
+  {
+    n: 2,
+    title: 'Break Records',
+    period: '~2005 – 2007',
+    where: 'Coral Gables, FL',
+    role: 'Recording studio · College',
+    body: `In college at the University of Miami I started Break Records — a small recording studio. The pitch was simple: get the artists around campus into a real room with real equipment and put their music on tape. It was the first time I touched the business side of music — sessions, scheduling, splits, mastering, putting a roster together. The studio was where I learned that a band needs a label, a label needs a studio, and a studio needs hustle. None of it ran without all three.`,
+  },
+  {
+    n: 3,
+    title: 'Producer / Artist',
+    period: '~2005 – 2009',
+    where: 'Miami, FL',
+    role: 'Production · Writing · Rapping · Singing',
+    body: `Through Break and after, I was the kid in the room making the beats. Producing, writing, rapping, singing — whichever role the song needed. I spent years inside the craft: laying down tracks, arranging, mixing, writing hooks for other people, writing songs for myself. The double major at Miami was Finance and Music — and the Music side wasn't decorative. I was in it every day.`,
+  },
+  {
+    n: 4,
+    title: 'Pretty Tony',
+    period: '2007 – 2008',
+    where: 'Miami, FL',
+    role: 'Collaborator',
+    body: `Pretty Tony was my best and last shot at it. We linked up in Miami and I thought — this is the partnership that actually moves the needle. It almost did. But the timing was off, the resources were off, and the run was too short. Too little too late.`,
+    note: 'The point I stopped trying to be the artist.',
+  },
+  {
+    n: 5,
+    title: 'Management',
+    period: '~2008 – 2009',
+    where: 'Miami, FL',
+    role: 'A&R / Artist Management',
+    body: `If the artist play wasn't going to work, maybe the play was running artists. I tried to manage a few — getting them studio time, hustling for placement, learning what an A&R actually does versus what they pretend to do. Same lesson as Break Records, just one level up: every artist needs a manager, every manager needs a roster, and most rosters don't pay the rent.`,
+  },
+  {
+    n: 6,
+    title: 'Audimated',
+    period: '2009 – 2014',
+    where: 'Miami, FL',
+    role: 'Founder · Social network for musicians',
+    body: `The full pivot. If I couldn't make it as the artist, and I couldn't make it as the manager — maybe the play was building the room everyone else was hustling in. Audimated was a social network for musicians. 10,000+ artists on the platform. Won the WeMedia Pitch It! contest for $25k. Featured in Forbes, NBC News, Entrepreneur.com. That was the moment the music story turned into the entrepreneur story — and the entrepreneur story is the rest of this site.`,
+    closer: true,
+  },
+];
+---
+
+<BaseLayout title="Music — Lucas Sommer" description="The music chapter — Second String, Break Records, Pretty Tony, Audimated. The story from band kid to network builder.">
+
+  <section class="music container">
+
+    <header class="m-hero">
+      <div class="m-hero-eyebrow">Chapter</div>
+      <h1>Music</h1>
+      <p class="m-sub">
+        Before the agencies, before the construction company, before the orchestrator — there was music. This is how it went, from a high school band in Newberg to a 10,000-artist platform in Miami. The thread that runs through all of it is the same thread that runs through everything I've built since.
+      </p>
+    </header>
+
+    <div class="m-meta">
+      <div class="m-meta-row">
+        <div class="m-meta-key">Span</div>
+        <div class="m-meta-val">2001 – 2014 · ~13 years</div>
+      </div>
+      <div class="m-meta-row">
+        <div class="m-meta-key">Cities</div>
+        <div class="m-meta-val">Newberg, OR &middot; Coral Gables, FL &middot; Miami, FL</div>
+      </div>
+      <div class="m-meta-row">
+        <div class="m-meta-key">Roles</div>
+        <div class="m-meta-val">Band member &middot; Studio operator &middot; Producer &middot; Writer &middot; Rapper &middot; Singer &middot; A&amp;R &middot; Network founder</div>
+      </div>
+      <div class="m-meta-row">
+        <div class="m-meta-key">Outcome</div>
+        <div class="m-meta-val">Audimated — Forbes &middot; NBC News &middot; WeMedia Pitch It! winner ($25k)</div>
+      </div>
+    </div>
+
+    <ol class="m-chapters">
+      {CHAPTERS.map(ch => (
+        <li class={`m-chapter ${ch.closer ? 'is-closer' : ''}`}>
+          <div class="m-chapter-num">{String(ch.n).padStart(2, '0')}</div>
+          <div class="m-chapter-body">
+            <div class="m-chapter-head">
+              <h2>{ch.title}</h2>
+              <div class="m-chapter-tags">
+                <span class="m-tag m-tag-period">{ch.period}</span>
+                <span class="m-tag m-tag-loc">{ch.where}</span>
+                <span class="m-tag m-tag-role">{ch.role}</span>
+              </div>
+            </div>
+            <p class="m-chapter-text">{ch.body}</p>
+            {ch.note && <div class="m-chapter-note">{ch.note}</div>}
+          </div>
+        </li>
+      ))}
+    </ol>
+
+    <div class="m-coda">
+      <h3>Why this matters now</h3>
+      <p>
+        Music taught me three things I still use every day: how to build a thing from nothing with a small group of people, how to figure out the business side without losing the craft side, and how to keep moving when the room you wanted to be in turns out to be the wrong room. Audimated wasn't the end of the music story — it was the bridge. The next thing I built was an agency. The thing after that was a construction company. The thing I'm building right now is an AI orchestrator that runs my whole operation. Same instinct, different stage.
+      </p>
+      <p>
+        If you knew me as the kid making beats in Newberg, or the guy at the board in Coral Gables, or the founder in the Audimated pitch deck — yeah, that was me. Different chapters of the same book.
+      </p>
+    </div>
+
+    <div class="m-related">
+      <h3>Related</h3>
+      <div class="m-related-grid">
+        <a class="m-related-card" href="/timeline">
+          <div class="m-related-name">Timeline</div>
+          <div class="m-related-desc">Every year of my life, color-coded. The music years sit between 2001 and 2014.</div>
+        </a>
+        <a class="m-related-card" href="/about">
+          <div class="m-related-name">About</div>
+          <div class="m-related-desc">The full bio — music is one chapter of seven.</div>
+        </a>
+        <a class="m-related-card" href="/projects">
+          <div class="m-related-name">Projects</div>
+          <div class="m-related-desc">What I'm building now — the rooms I ended up in after the music room.</div>
+        </a>
+      </div>
+    </div>
+
+  </section>
+
+</BaseLayout>
+
+<style is:global>
+  .music { padding-top: 4rem; padding-bottom: 6rem; max-width: 880px; }
+
+  /* ── Hero ────────────────────────────────────────────────────────── */
+  .m-hero { margin-bottom: 2.5rem; }
+  .m-hero-eyebrow {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: #f472b6;
+    margin-bottom: 0.5rem;
+  }
+  .m-hero h1 {
+    font-size: 3rem;
+    font-weight: 800;
+    letter-spacing: -2px;
+    margin-bottom: 1rem;
+    background: linear-gradient(180deg, var(--text-primary) 0%, color-mix(in srgb, var(--text-primary) 70%, transparent) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .m-sub {
+    font-size: 1.125rem;
+    color: var(--text-secondary);
+    line-height: 1.7;
+    max-width: 680px;
+  }
+
+  /* ── Meta box ────────────────────────────────────────────────────── */
+  .m-meta {
+    margin: 2.5rem 0 3rem 0;
+    padding: 1.5rem;
+    background: var(--surface-1);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    display: grid;
+    gap: 0.55rem;
+  }
+  .m-meta-row {
+    display: grid;
+    grid-template-columns: 110px 1fr;
+    gap: 1rem;
+    align-items: baseline;
+  }
+  .m-meta-key {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-tertiary);
+  }
+  .m-meta-val {
+    font-size: 0.92rem;
+    color: var(--text-primary);
+    line-height: 1.5;
+  }
+
+  /* ── Chapters ────────────────────────────────────────────────────── */
+  .m-chapters {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    counter-reset: chapter;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .m-chapter {
+    position: relative;
+    display: grid;
+    grid-template-columns: 56px 1fr;
+    gap: 1.25rem;
+    padding: 1.75rem;
+    background: var(--surface-1);
+    border: 1px solid var(--border);
+    border-left: 3px solid #f472b6;
+    border-radius: var(--radius);
+    transition: border-color 0.15s ease, background-color 0.15s ease, transform 0.15s ease;
+  }
+  .m-chapter:hover {
+    border-color: var(--border-hover);
+    border-left-color: #f472b6;
+    background: color-mix(in srgb, var(--surface-1) 80%, var(--surface-2) 20%);
+    transform: translateX(2px);
+  }
+  .m-chapter.is-closer {
+    border-left-color: #fbbf24;
+    background: linear-gradient(135deg, var(--surface-1) 0%, color-mix(in srgb, var(--surface-1) 90%, rgba(251,191,36,0.08) 10%) 100%);
+  }
+
+  .m-chapter-num {
+    font-family: var(--font-mono);
+    font-size: 1.75rem;
+    font-weight: 800;
+    color: #f472b6;
+    line-height: 1;
+    letter-spacing: -1px;
+  }
+  .m-chapter.is-closer .m-chapter-num { color: #fbbf24; }
+
+  .m-chapter-body { min-width: 0; }
+
+  .m-chapter-head { margin-bottom: 0.85rem; }
+  .m-chapter-head h2 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    margin: 0 0 0.6rem 0;
+    color: var(--text-primary);
+  }
+
+  .m-chapter-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+  .m-tag {
+    display: inline-block;
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    font-weight: 600;
+    padding: 0.22rem 0.55rem;
+    border-radius: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+  .m-tag-period {
+    background: rgba(244,114,182,0.10);
+    color: #f472b6;
+    border: 1px solid rgba(244,114,182,0.25);
+  }
+  .m-tag-loc {
+    background: var(--surface-2);
+    color: var(--text-secondary);
+    border: 1px solid var(--border);
+  }
+  .m-tag-role {
+    background: rgba(251,191,36,0.08);
+    color: #fbbf24;
+    border: 1px solid rgba(251,191,36,0.2);
+  }
+
+  .m-chapter-text {
+    font-size: 0.98rem;
+    color: var(--text-secondary);
+    line-height: 1.72;
+    margin: 0;
+  }
+
+  .m-chapter-note {
+    margin-top: 1rem;
+    padding: 0.7rem 1rem;
+    background: rgba(244,114,182,0.06);
+    border-left: 2px solid #f472b6;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    font-style: italic;
+    line-height: 1.55;
+  }
+
+  /* ── Coda ────────────────────────────────────────────────────────── */
+  .m-coda {
+    margin-top: 3.5rem;
+    padding: 2.25rem;
+    background: linear-gradient(135deg, var(--surface-1) 0%, color-mix(in srgb, var(--surface-1) 88%, rgba(244,114,182,0.06) 12%) 100%);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+  }
+  .m-coda h3 {
+    font-size: 0.875rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #f472b6;
+    margin-bottom: 1rem;
+  }
+  .m-coda p {
+    font-size: 1.02rem;
+    color: var(--text-primary);
+    line-height: 1.75;
+    margin-bottom: 1rem;
+  }
+  .m-coda p:last-child { margin-bottom: 0; }
+
+  /* ── Related ─────────────────────────────────────────────────────── */
+  .m-related { margin-top: 3.5rem; }
+  .m-related h3 {
+    font-size: 0.875rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-secondary);
+    margin-bottom: 1rem;
+  }
+  .m-related-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 0.75rem;
+  }
+  .m-related-card {
+    display: block;
+    padding: 1.15rem;
+    background: var(--surface-1);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    text-decoration: none;
+    color: inherit;
+    transition: border-color 0.15s ease, background 0.15s ease;
+  }
+  .m-related-card:hover {
+    border-color: var(--border-hover);
+    background: var(--surface-2);
+    color: inherit;
+  }
+  .m-related-name {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 0.3rem;
+  }
+  .m-related-desc {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    line-height: 1.5;
+  }
+
+  /* ── Mobile ──────────────────────────────────────────────────────── */
+  @media (max-width: 700px) {
+    .music { padding-top: 2.5rem; }
+    .m-hero h1 { font-size: 2rem; letter-spacing: -1px; }
+    .m-sub { font-size: 1rem; }
+    .m-meta-row { grid-template-columns: 90px 1fr; gap: 0.6rem; }
+    .m-meta-key { font-size: 0.65rem; }
+    .m-chapter {
+      grid-template-columns: 40px 1fr;
+      gap: 0.85rem;
+      padding: 1.3rem;
+    }
+    .m-chapter-num { font-size: 1.3rem; }
+    .m-chapter-head h2 { font-size: 1.2rem; }
+    .m-coda { padding: 1.5rem; }
+  }
+</style>

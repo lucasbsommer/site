@@ -1,0 +1,970 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="Dashboard — Lucas Sommer" description="A live view of what's being built on lucassommer.com. Public read-only. Sign in with email to add or comment.">
+  <section class="dash container">
+    <header class="dash-head">
+      <div class="dash-titles">
+        <h1>Dashboard</h1>
+        <p class="dash-sub">A live view of what's in flight. List / cards / kanban. Sign in to add or comment.</p>
+      </div>
+      <div class="dash-actions">
+        <label class="proj">
+          <span>Project</span>
+          <select id="project" aria-label="Project"></select>
+        </label>
+        <div class="view-toggle" role="tablist">
+          <button data-view="list" class="vt active" role="tab">List</button>
+          <button data-view="cards" class="vt" role="tab">Cards</button>
+          <button data-view="kanban" class="vt" role="tab">Kanban</button>
+          <button data-view="bullseye" class="vt" role="tab">Bullseye</button>
+          <button data-view="heatmap" class="vt" role="tab">Heat</button>
+        </div>
+        <label class="group-pick" id="group-pick" hidden>
+          <span>Group</span>
+          <select id="groupby" aria-label="Group by">
+            <option value="status">Status</option>
+            <option value="priority">Priority</option>
+            <option value="section">Section</option>
+            <option value="project">Project</option>
+          </select>
+        </label>
+        <button id="add-btn" class="add-btn" hidden>+ Add task</button>
+      </div>
+    </header>
+
+    <div class="dash-filters" id="filters"></div>
+
+    <div id="auth-pill" class="auth-pill" hidden></div>
+
+    <div id="status" class="dash-status">Loading…</div>
+
+    <div id="view-list"     class="view view-list"     hidden></div>
+    <div id="view-cards"    class="view view-cards"    hidden></div>
+    <div id="view-kanban"   class="view view-kanban"   hidden></div>
+    <div id="view-bullseye" class="view view-bullseye" hidden></div>
+    <div id="view-heatmap"  class="view view-heatmap"  hidden></div>
+  </section>
+
+  <!-- Detail drawer -->
+  <aside id="drawer" class="drawer" hidden aria-modal="true" role="dialog">
+    <div class="drawer-overlay" data-close></div>
+    <div class="drawer-panel">
+      <button class="drawer-close" data-close aria-label="Close">&times;</button>
+      <div id="drawer-body">Loading…</div>
+    </div>
+  </aside>
+
+  <!-- Add-task modal -->
+  <div id="add-modal" class="modal" hidden role="dialog" aria-modal="true">
+    <div class="modal-overlay" data-close-add></div>
+    <div class="modal-panel">
+      <button class="drawer-close" data-close-add aria-label="Close">&times;</button>
+      <h3>Add task</h3>
+      <form id="add-form">
+        <label>Title<input name="title" required maxlength="200" /></label>
+        <label>Section<input name="section" placeholder="Content / Features / Bugs / Infrastructure" maxlength="60" /></label>
+        <label>Description<textarea name="description" rows="3" maxlength="4000" placeholder="Optional context, markdown OK"></textarea></label>
+        <div class="add-priority" data-owner-only>
+          <span>Priority</span>
+          <select name="priority">
+            <option value="">—</option><option>critical</option><option>high</option><option>normal</option><option>low</option>
+          </select>
+        </div>
+        <div class="modal-actions">
+          <button type="submit" class="add-btn">Add task</button>
+          <span id="add-status"></span>
+        </div>
+      </form>
+    </div>
+  </div>
+</BaseLayout>
+
+<script is:inline>
+  (function () {
+    const ESC = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+    const MD = (s) => {
+      let h = ESC(s);
+      h = h.replace(/\*\*([^*\n]+)\*\*/g, '<strong>$1</strong>');
+      h = h.replace(/`([^`\n]+)`/g, '<code>$1</code>');
+      h = h.replace(/\n/g, '<br>');
+      return h;
+    };
+    const STATUS_ORDER = ['open', 'blocked', 'done', 'deferred', 'cancelled'];
+    const PRIO_ORDER = { critical: 0, high: 1, normal: 2, low: 3, untriaged: 4 };
+    const PRIO_LIST = ['critical', 'high', 'normal', 'low', 'untriaged'];
+    const STATUS_LIST = ['open', 'blocked', 'done', 'deferred', 'cancelled'];
+    // null priority becomes "untriaged" — so triage progress is visible
+    const prioOf = (t) => t.priority || 'untriaged';
+
+    const $ = (sel) => document.querySelector(sel);
+    const projSel = $('#project');
+    const filtersEl = $('#filters');
+    const statusEl = $('#status');
+    const authPill = $('#auth-pill');
+    const addBtn = $('#add-btn');
+    const drawer = $('#drawer');
+    const drawerBody = $('#drawer-body');
+    const addModal = $('#add-modal');
+    const addForm = $('#add-form');
+    const addStatus = $('#add-status');
+
+    let tasks = [];
+    let project = localStorage.getItem('dashProject') || 'site';
+    let view = localStorage.getItem('dashView') || 'list';
+    let groupby = localStorage.getItem('dashGroupBy') || 'status';
+    let filters = { section: null, status: null, priority: null };
+    let viewer = { actor: null, can_write: false, is_owner: false };
+
+    const VIEWS = ['list', 'cards', 'kanban', 'bullseye', 'heatmap'];
+
+    function setView(v) {
+      view = v; localStorage.setItem('dashView', v);
+      document.querySelectorAll('.vt').forEach((b) => b.classList.toggle('active', b.dataset.view === v));
+      VIEWS.forEach((k) => $('#view-' + k).hidden = (k !== v));
+      // Group selector applies to List + Kanban (Notion-style group rows / kanban columns)
+      $('#group-pick').hidden = !(v === 'kanban' || v === 'list');
+      render();
+    }
+    document.querySelectorAll('.vt').forEach((b) => b.addEventListener('click', () => setView(b.dataset.view)));
+    $('#groupby').addEventListener('change', () => {
+      groupby = $('#groupby').value;
+      localStorage.setItem('dashGroupBy', groupby);
+      render();
+    });
+    $('#groupby').value = groupby;
+
+    // ---- Filters ----
+    function buildFilters() {
+      const sects = [...new Set(tasks.map((t) => t.section).filter(Boolean))].sort();
+      const stats = [...new Set(tasks.map((t) => t.status))].sort((a, b) => STATUS_LIST.indexOf(a) - STATUS_LIST.indexOf(b));
+      // Priority is always the canonical 5 (so triaging changes are visible)
+      const prios = PRIO_LIST.filter((p) => tasks.some((t) => prioOf(t) === p));
+      const html = [];
+      // Collapse oversized groups into a <select>. Threshold = 10 values.
+      const grp = (label, key, values) => {
+        if (values.length > 10) {
+          html.push('<div class="filter-grp"><span class="fg-label">' + ESC(label) + '</span>' +
+            '<select class="fp-select" data-k="' + key + '">' +
+            '<option value="">all (' + values.length + ')</option>' +
+            values.map((v) => '<option value="' + ESC(v) + '"' + (filters[key] === v ? ' selected' : '') + '>' + ESC(v) + '</option>').join('') +
+            '</select></div>');
+          return;
+        }
+        html.push('<div class="filter-grp"><span class="fg-label">' + ESC(label) + '</span>');
+        html.push('<button class="fp ' + (filters[key] === null ? 'on' : '') + '" data-k="' + key + '" data-v="">all</button>');
+        values.forEach((v) => {
+          const active = filters[key] === v;
+          html.push('<button class="fp ' + (active ? 'on' : '') + '" data-k="' + key + '" data-v="' + ESC(v) + '">' + ESC(v) + '</button>');
+        });
+        html.push('</div>');
+      };
+      // Section filter is suppressed when viewing All projects — sections are
+      // mostly per-project and the bar would otherwise overflow the viewport.
+      if (sects.length && project !== 'ALL') grp('Section', 'section', sects);
+      grp('Status', 'status', stats);
+      if (prios.length) grp('Priority', 'priority', prios);
+      filtersEl.innerHTML = html.join('');
+      filtersEl.querySelectorAll('.fp').forEach((b) => b.addEventListener('click', () => {
+        const k = b.dataset.k, v = b.dataset.v || null;
+        filters[k] = v; buildFilters(); render();
+      }));
+      filtersEl.querySelectorAll('.fp-select').forEach((s) => s.addEventListener('change', () => {
+        filters[s.dataset.k] = s.value || null; render();
+      }));
+    }
+
+    function visible() {
+      return tasks.filter((t) =>
+        (!filters.section || t.section === filters.section) &&
+        (!filters.status || t.status === filters.status) &&
+        (!filters.priority || prioOf(t) === filters.priority)
+      );
+    }
+
+    // ---- Cards ----
+    function statusPill(s) { return '<span class="pill st-' + s + '">' + ESC(s) + '</span>'; }
+    function prioPill(p) { return p ? '<span class="pill pr-' + p + '">' + ESC(p) + '</span>' : ''; }
+    function commentBadge(n) { return n ? '<span class="cmt-badge" title="' + n + ' comment' + (n > 1 ? 's' : '') + '">' + n + '</span>' : ''; }
+
+    function renderList() {
+      // Notion-style: optional group-by header rows + inline-editable pills
+      // (owner only). Click row → drawer. Click status/priority pill (owner) →
+      // cycle and PATCH. The pills swallow the row click via stopPropagation.
+      const items = visible().sort((a, b) => (PRIO_ORDER[prioOf(a)]) - (PRIO_ORDER[prioOf(b)]) || (a.position || 0) - (b.position || 0));
+      const showProjectCol = project === 'ALL';
+      const groupKey = (t) => groupby === 'status' ? t.status
+                            : groupby === 'priority' ? prioOf(t)
+                            : groupby === 'section'  ? (t.section || '(no section)')
+                            : (t.project_id || '');
+      // Group items
+      const groups = {}; const order = [];
+      items.forEach((t) => {
+        const k = groupKey(t);
+        if (!(k in groups)) { groups[k] = []; order.push(k); }
+        groups[k].push(t);
+      });
+      // For status/priority, use canonical order
+      if (groupby === 'status') order.sort((a, b) => STATUS_LIST.indexOf(a) - STATUS_LIST.indexOf(b));
+      else if (groupby === 'priority') order.sort((a, b) => PRIO_ORDER[a] - PRIO_ORDER[b]);
+      else order.sort();
+
+      const colCount = 5 + (showProjectCol ? 1 : 0);
+      const rowHtml = (t) => {
+        const tags = (t.tags || []).slice(0, 4).map((tg) => '<span class="tag">' + ESC(tg) + '</span>').join('');
+        const ed = viewer.is_owner ? ' lr-editable' : '';
+        return '<tr class="list-row" data-id="' + t.id + '">' +
+          (showProjectCol ? '<td class="lr-project">' + ESC(t.project_id || '') + '</td>' : '') +
+          '<td class="lr-title">' + ESC(t.title) + commentBadge(t.comment_count) + '</td>' +
+          '<td class="lr-section">' + ESC(t.section || '') + '</td>' +
+          '<td class="lr-status' + ed + '">' + statusPill(t.status) + '</td>' +
+          '<td class="lr-prio' + ed + '">' + prioPill(prioOf(t)) + '</td>' +
+          '<td class="lr-tags">' + tags + '</td>' +
+          '</tr>';
+      };
+      let body = '';
+      if (groupby) {
+        order.forEach((k) => {
+          body += '<tr class="lr-group"><td colspan="' + colCount + '">' +
+                  '<span class="lr-group-name">' + ESC(String(k)) + '</span>' +
+                  '<span class="lr-group-count">' + groups[k].length + '</span>' +
+                  '</td></tr>';
+          body += groups[k].map(rowHtml).join('');
+        });
+      } else {
+        body = items.map(rowHtml).join('');
+      }
+      const head =
+        '<thead><tr>' +
+        (showProjectCol ? '<th>Project</th>' : '') +
+        '<th>Task</th><th>Section</th><th>Status</th><th>Priority</th><th>Tags</th>' +
+        '</tr></thead>';
+      $('#view-list').innerHTML = '<table class="list-table">' + head + '<tbody>' + body + '</tbody></table>';
+      $('#view-list').querySelectorAll('.list-row').forEach((r) =>
+        r.addEventListener('click', (e) => {
+          if (e.target.closest('.pill') && viewer.is_owner) return; // pill click handles itself
+          openDrawer(r.dataset.id);
+        }));
+      // Inline owner edits: cycle status / priority on pill click
+      if (viewer.is_owner) {
+        $('#view-list').querySelectorAll('.lr-status .pill, .lr-prio .pill').forEach((pill) => {
+          pill.addEventListener('click', async (e) => {
+            e.stopPropagation();
+            const row = pill.closest('.list-row');
+            const id = row.dataset.id;
+            const t = tasks.find((x) => x.id === id);
+            if (!t) return;
+            const isStatus = pill.parentElement.classList.contains('lr-status');
+            const cycle = isStatus ? ['open', 'blocked', 'done'] : ['untriaged', 'critical', 'high', 'normal', 'low'];
+            const cur = isStatus ? t.status : prioOf(t);
+            const next = cycle[(cycle.indexOf(cur) + 1) % cycle.length];
+            const payload = isStatus ? { status: next } : { priority: next === 'untriaged' ? null : next };
+            pill.style.opacity = '0.5';
+            const r = await fetch('/api/dashboard/tasks/' + id + '/update', {
+              method: 'POST', headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(payload),
+            });
+            if (r.ok) await load(); else pill.style.opacity = '';
+          });
+        });
+      }
+    }
+
+    function cardHtml(t) {
+      const tags = (t.tags || []).slice(0, 4).map((tg) => '<span class="tag">' + ESC(tg) + '</span>').join('');
+      const desc = t.description ? '<p class="card-desc">' + MD((t.description || '').slice(0, 240)) + '</p>' : '';
+      return '<article class="task-card" data-id="' + t.id + '">' +
+        '<div class="card-top">' + prioPill(t.priority) + statusPill(t.status) + commentBadge(t.comment_count) + '</div>' +
+        '<h3 class="card-title">' + ESC(t.title) + '</h3>' + desc +
+        (t.section ? '<div class="card-section">' + ESC(t.section) + '</div>' : '') +
+        '<div class="card-tags">' + tags + '</div>' +
+        '</article>';
+    }
+
+    function renderCards() {
+      const items = visible().sort((a, b) => (PRIO_ORDER[a.priority] || 4) - (PRIO_ORDER[b.priority] || 4));
+      $('#view-cards').innerHTML = '<div class="cards-grid">' + items.map(cardHtml).join('') + '</div>';
+      $('#view-cards').querySelectorAll('.task-card').forEach((c) =>
+        c.addEventListener('click', () => openDrawer(c.dataset.id)));
+    }
+
+    function renderKanban() {
+      // Generic group-by — Status / Priority / Section / Project.
+      // Drives the "Priority view" / "Project view" for free.
+      const colsBy = {
+        status:   ['open', 'blocked', 'done'],
+        priority: PRIO_LIST,
+        section:  [...new Set(tasks.map((t) => t.section).filter(Boolean))].sort(),
+        project:  [...new Set(tasks.map((t) => t.project_id).filter(Boolean))].sort(),
+      };
+      const keyOf = (t) => groupby === 'status' ? t.status
+                          : groupby === 'priority' ? prioOf(t)
+                          : groupby === 'section'  ? (t.section || '(no section)')
+                          : (t.project_id || '');
+      const knownCols = colsBy[groupby];
+      const groups = {}; knownCols.forEach((c) => groups[c] = []);
+      visible().forEach((t) => {
+        const k = keyOf(t);
+        if (!(k in groups)) groups[k] = [];
+        groups[k].push(t);
+      });
+      const cols = Object.keys(groups);
+      const html = cols.map((c) => {
+        const items = groups[c].sort((a, b) => (PRIO_ORDER[a.priority] || 4) - (PRIO_ORDER[b.priority] || 4));
+        const slug = String(c).replace(/[^a-z0-9]+/gi, '-').toLowerCase();
+        return '<div class="kb-col kb-' + slug + '"><div class="kb-head">' +
+          '<span class="kb-name">' + ESC(c) + '</span>' +
+          '<span class="kb-count">' + items.length + '</span>' +
+          '</div><div class="kb-body">' + items.map(cardHtml).join('') + '</div></div>';
+      }).join('');
+      $('#view-kanban').innerHTML = '<div class="kb-board kb-grouped-' + groupby + '">' + html + '</div>';
+      $('#view-kanban').querySelectorAll('.task-card').forEach((c) =>
+        c.addEventListener('click', () => openDrawer(c.dataset.id)));
+    }
+
+    // ---- Bullseye ----
+    // Sectors = top-N projects (by open-task count). Rings = priority bands
+    // (innermost = critical). Click a wedge → open the drawer on the first
+    // task in that cell.
+    const BE_PALETTE = [
+      ['#3C3489','#7F77DD','#AFA9EC','#CECBF6'], // purple
+      ['#633806','#BA7517','#EF9F27','#FAC775'], // amber
+      ['#27500A','#639922','#97C459','#C0DD97'], // green
+      ['#0C447C','#378ADD','#85B7EB','#B5D4F4'], // blue
+      ['#6E1414','#C42A2A','#E47171','#F2B5B5'], // red
+      ['#0D4F4A','#1E9389','#5BBEB5','#A8DDD8'], // teal
+    ];
+    const PRIO_RINGS = ['critical', 'high', 'normal', 'low', 'untriaged']; // innermost → outermost
+    // Bullseye geometry — 5 rings now (was 4). Inner cap stays, outer extends.
+    const BE_RADII = [22, 65, 110, 155, 200, 245];
+    // Untriaged ring uses neutral grays so it visually reads as "needs sorting".
+    const BE_UNTRIAGED_GRAYS = ['#7a7a72', '#9a9a91', '#b9b9b0', '#d3d3c9'];
+    function polar(angleDeg, r, cx = 340, cy = 270) {
+      const rad = (angleDeg - 90) * Math.PI / 180;
+      return [cx + r * Math.cos(rad), cy + r * Math.sin(rad)];
+    }
+    function arcPath(r1, r2, a1, a2) {
+      const large = (a2 - a1) <= 180 ? 0 : 1;
+      const [x1, y1] = polar(a1, r2);
+      const [x2, y2] = polar(a2, r2);
+      const [x3, y3] = polar(a2, r1);
+      const [x4, y4] = polar(a1, r1);
+      return 'M ' + x1 + ' ' + y1 +
+             ' A ' + r2 + ' ' + r2 + ' 0 ' + large + ' 1 ' + x2 + ' ' + y2 +
+             ' L ' + x3 + ' ' + y3 +
+             ' A ' + r1 + ' ' + r1 + ' 0 ' + large + ' 0 ' + x4 + ' ' + y4 +
+             ' Z';
+    }
+    function renderBullseye() {
+      // Group all tasks by project; pick top N (max 6) projects by OPEN count.
+      const byProj = {};
+      tasks.forEach((t) => {
+        if (t.status === 'done' || t.status === 'cancelled' || t.status === 'deferred') return;
+        const p = t.project_id || 'other';
+        (byProj[p] = byProj[p] || []).push(t);
+      });
+      const allProjs = Object.entries(byProj).sort((a, b) => b[1].length - a[1].length);
+      const N = Math.min(6, Math.max(1, allProjs.length));
+      const sectors = allProjs.slice(0, N);
+      const RADII = BE_RADII; // 5 ring boundaries; cell N spans RADII[N]..RADII[N+1]
+      const sweep = 360 / N;
+      const cells = [];
+      const labels = [];
+      sectors.forEach(([pid, list], si) => {
+        const a1 = si * sweep;
+        const a2 = (si + 1) * sweep;
+        const colors = BE_PALETTE[si % BE_PALETTE.length];
+        PRIO_RINGS.forEach((prio, ri) => {
+          const r1 = RADII[ri], r2 = RADII[ri + 1];
+          const cellTasks = list.filter((t) => prioOf(t) === prio);
+          // Use gray for the untriaged ring; project palettes for the rest.
+          const ringPalette = prio === 'untriaged' ? BE_UNTRIAGED_GRAYS : colors;
+          const paletteIdx = prio === 'untriaged' ? si % BE_UNTRIAGED_GRAYS.length : ri;
+          const count = cellTasks.length;
+          const fill = count ? ringPalette[paletteIdx] : 'var(--surface-1)';
+          const stroke = count ? ringPalette[paletteIdx] : 'var(--border)';
+          const opacity = count ? (prio === 'untriaged' ? 0.65 : 1) : 0.5;
+          cells.push('<path class="be-sector" data-pid="' + ESC(pid) + '" data-prio="' + prio +
+            '" d="' + arcPath(r1, r2, a1, a2) + '" fill="' + fill + '" stroke="' + stroke +
+            '" stroke-width="1" opacity="' + opacity + '"><title>' + ESC(pid) + ' · ' + prio + ' — ' + count + '</title></path>');
+          if (count) {
+            const midA = (a1 + a2) / 2;
+            const midR = (r1 + r2) / 2;
+            const [tx, ty] = polar(midA, midR);
+            // Pick black/white text based on ring depth (inner darker → white text)
+            const textColor = ri < 2 ? '#fff' : 'var(--text-primary)';
+            cells.push('<text class="be-count" x="' + tx + '" y="' + (ty + 4) + '" text-anchor="middle" fill="' + textColor + '">' + count + '</text>');
+          }
+        });
+        // Project label outside the outer ring
+        const midA = (a1 + a2) / 2;
+        const [lx, ly] = polar(midA, RADII[RADII.length - 1] + 24);
+        const anchor = (midA > 0 && midA < 180) ? 'start' : (midA > 180 ? 'end' : 'middle');
+        labels.push('<text class="be-label" x="' + lx + '" y="' + ly + '" text-anchor="' + anchor + '">' + ESC(pid) + ' (' + list.length + ')</text>');
+      });
+      const totalOpen = sectors.reduce((s, [, l]) => s + l.length, 0);
+      const svg =
+        '<svg viewBox="0 0 680 540" role="img" aria-label="Priority bullseye">' +
+        '<g class="be-sectors">' + cells.join('') + '</g>' +
+        '<g class="be-labels">' + labels.join('') + '</g>' +
+        '<text x="340" y="275" text-anchor="middle" class="be-center">' + totalOpen + '</text>' +
+        '<text x="340" y="295" text-anchor="middle" class="be-center-sub">open</text>' +
+        '</svg>';
+      const legend =
+        '<div class="be-legend">' +
+          '<div class="be-ring-key">' + PRIO_RINGS.map((p, i) => '<span class="be-r-row"><span class="be-r-dot" style="background:hsl(0,0%,' + (88 - i * 18) + '%)"></span>' + p + '</span>').join('') + '</div>' +
+          '<div class="be-help">Click a wedge — opens the first task in that cell.</div>' +
+        '</div>';
+      $('#view-bullseye').innerHTML =
+        '<div class="be-wrap"><div class="be-svg-wrap">' + svg + '</div>' + legend + '</div>';
+      $('#view-bullseye').querySelectorAll('.be-sector').forEach((s) => s.addEventListener('click', () => {
+        const pid = s.dataset.pid, prio = s.dataset.prio;
+        const t = tasks.find((x) => x.project_id === pid && prioOf(x) === prio && x.status !== 'done');
+        if (t) openDrawer(t.id);
+      }));
+    }
+
+    // ---- Heatmap (Project × Priority) ----
+    function renderHeatmap() {
+      const projs = [...new Set(tasks.map((t) => t.project_id).filter(Boolean))].sort();
+      const prios = PRIO_LIST;
+      // Build grid of OPEN counts only (closed work shouldn't distort focus)
+      const matrix = {};
+      let max = 0;
+      projs.forEach((p) => {
+        matrix[p] = {};
+        prios.forEach((pr) => matrix[p][pr] = 0);
+      });
+      tasks.forEach((t) => {
+        if (t.status === 'done' || t.status === 'cancelled' || t.status === 'deferred') return;
+        const p = t.project_id; const pr = prioOf(t);
+        if (!matrix[p]) return;
+        matrix[p][pr] = (matrix[p][pr] || 0) + 1;
+        if (matrix[p][pr] > max) max = matrix[p][pr];
+      });
+      const cellColor = (n) => {
+        if (!n) return 'var(--surface-1)';
+        const t = max ? n / max : 0;
+        // Tinted accent: alpha scales with intensity
+        return 'rgba(59, 130, 246, ' + (0.12 + 0.65 * t).toFixed(2) + ')';
+      };
+      const head = '<thead><tr><th></th>' + prios.map((p) => '<th class="hm-h">' + p + '</th>').join('') + '<th class="hm-h">total</th></tr></thead>';
+      const rowSums = projs.map((p) => prios.reduce((s, pr) => s + matrix[p][pr], 0));
+      const body = projs.map((p, i) => {
+        return '<tr>' +
+          '<th class="hm-row-label">' + ESC(p) + '</th>' +
+          prios.map((pr) => {
+            const n = matrix[p][pr];
+            return '<td class="hm-cell" data-pid="' + ESC(p) + '" data-prio="' + pr + '" ' +
+                   'style="background:' + cellColor(n) + '">' + (n || '') + '</td>';
+          }).join('') +
+          '<td class="hm-total">' + rowSums[i] + '</td>' +
+          '</tr>';
+      }).join('');
+      $('#view-heatmap').innerHTML =
+        '<div class="hm-help">Open tasks per project × priority. Darker = more.</div>' +
+        '<table class="hm-table">' + head + '<tbody>' + body + '</tbody></table>';
+      $('#view-heatmap').querySelectorAll('.hm-cell').forEach((c) => c.addEventListener('click', () => {
+        const pid = c.dataset.pid, prio = c.dataset.prio;
+        const t = tasks.find((x) => x.project_id === pid && prioOf(x) === prio && x.status !== 'done');
+        if (t) openDrawer(t.id);
+      }));
+    }
+
+    function render() {
+      if (!tasks.length) {
+        statusEl.hidden = false;
+        statusEl.textContent = filters.section || filters.status || filters.priority
+          ? 'No tasks match the current filters.' : 'No tasks in this project yet.';
+        ['list', 'cards', 'kanban'].forEach((k) => $('#view-' + k).innerHTML = '');
+        return;
+      }
+      statusEl.hidden = true;
+      if (view === 'list') renderList();
+      else if (view === 'cards') renderCards();
+      else if (view === 'kanban') renderKanban();
+      else if (view === 'bullseye') renderBullseye();
+      else if (view === 'heatmap') renderHeatmap();
+    }
+
+    // ---- Drawer ----
+    async function openDrawer(id) {
+      drawer.hidden = false; drawerBody.innerHTML = 'Loading…';
+      try {
+        const [tRes, cRes] = await Promise.all([
+          fetch('/api/dashboard/tasks/' + id),
+          fetch('/api/dashboard/tasks/' + id + '/comments'),
+        ]);
+        const wrap = await tRes.json();
+        const cd = await cRes.json();
+        const t = wrap.task || wrap; // orchestrator wraps single-task GET
+        renderDrawer(t, cd.comments || []);
+      } catch (e) {
+        drawerBody.textContent = "Couldn't load this task.";
+      }
+    }
+    function renderDrawer(t, comments) {
+      const tags = (t.tags || []).map((tg) => '<span class="tag">' + ESC(tg) + '</span>').join('');
+      const refs = (t.refs || []).map((r) => '<li><code>' + ESC(r.kind) + ':</code> ' + ESC(r.value) + (r.label ? ' — ' + ESC(r.label) : '') + '</li>').join('');
+      const cmtList = comments.map((c) =>
+        '<div class="cmt"><div class="cmt-head"><strong>' + ESC(c.author_label || 'someone') + '</strong> <span class="cmt-date">' + ESC(c.created_at || '') + '</span></div>' +
+        '<div class="cmt-body">' + MD(c.body) + '</div></div>').join('');
+      const ownerControls = viewer.is_owner
+        ? '<div class="owner-ctrls">' +
+            (t.status !== 'done' ? '<button data-act="complete">Mark done</button>' : '') +
+            '<button data-act="status-toggle">' + (t.status === 'blocked' ? 'Unblock' : 'Block') + '</button>' +
+            '<button data-act="delete" class="danger">Delete</button>' +
+          '</div>' : '';
+      const writeForm = viewer.can_write
+        ? '<form id="cmt-form" class="cmt-form"><textarea name="body" rows="2" placeholder="Add a comment, append context, ask a question…" required maxlength="4000"></textarea><button type="submit">Post</button></form>'
+        : '<div class="cmt-locked">Sign in with email to comment. <a href="/unlock?next=/dashboard">Sign in →</a></div>';
+      drawerBody.innerHTML =
+        '<div class="d-tags-top">' + (t.priority ? '<span class="pill pr-' + t.priority + '">' + ESC(t.priority) + '</span>' : '') +
+        '<span class="pill st-' + t.status + '">' + ESC(t.status) + '</span>' +
+        (t.section ? '<span class="d-section">' + ESC(t.section) + '</span>' : '') + '</div>' +
+        '<h2 class="d-title">' + ESC(t.title) + '</h2>' +
+        (t.description ? '<div class="d-desc">' + MD(t.description) + '</div>' : '') +
+        (tags ? '<div class="d-tags">' + tags + '</div>' : '') +
+        (refs ? '<div class="d-refs"><h4>Refs</h4><ul>' + refs + '</ul></div>' : '') +
+        '<div class="d-meta"><span>Created ' + ESC((t.created_at || '').slice(0, 10)) + '</span>' +
+        (t.created_by ? '<span>by ' + ESC(t.created_by) + '</span>' : '') + '</div>' +
+        ownerControls +
+        '<h4 class="d-cmt-h">Comments <span class="muted">(' + comments.length + ')</span></h4>' +
+        '<div class="cmts">' + cmtList + '</div>' +
+        writeForm;
+      // wire owner buttons
+      drawerBody.querySelectorAll('[data-act]').forEach((b) => b.addEventListener('click', async () => {
+        const act = b.dataset.act;
+        if (act === 'complete') await ownerAction(t.id, 'complete');
+        else if (act === 'delete') {
+          if (!confirm('Delete this task?')) return;
+          await ownerAction(t.id, 'delete');
+          closeDrawer(); await load();
+          return;
+        } else if (act === 'status-toggle') {
+          const next = t.status === 'blocked' ? 'open' : 'blocked';
+          await fetch('/api/dashboard/tasks/' + t.id + '/update', {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ status: next }),
+          });
+        }
+        await load();
+        openDrawer(t.id);
+      }));
+      // wire comment form
+      const cf = drawerBody.querySelector('#cmt-form');
+      if (cf) cf.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const body = cf.querySelector('textarea').value.trim();
+        if (!body) return;
+        const r = await fetch('/api/dashboard/tasks/' + t.id + '/comment', {
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ body }),
+        });
+        if (r.ok) { await load(); openDrawer(t.id); }
+        else alert('Could not post comment.');
+      });
+    }
+    async function ownerAction(id, kind) {
+      const r = await fetch('/api/dashboard/tasks/' + id + '/' + kind, { method: 'POST' });
+      if (!r.ok) alert('Action failed.');
+    }
+    function closeDrawer() { drawer.hidden = true; }
+    drawer.addEventListener('click', (e) => { if (e.target.dataset.close !== undefined) closeDrawer(); });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeDrawer(); });
+
+    // ---- Add modal ----
+    function openAdd() { addModal.hidden = false; addStatus.textContent = ''; addForm.querySelector('input[name="title"]').focus(); }
+    function closeAdd() { addModal.hidden = true; addForm.reset(); }
+    addBtn.addEventListener('click', openAdd);
+    addModal.addEventListener('click', (e) => { if (e.target.dataset.closeAdd !== undefined) closeAdd(); });
+    addForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const fd = new FormData(addForm);
+      const body = { project_id: project, title: (fd.get('title') || '').trim() };
+      ['section', 'description', 'priority'].forEach((k) => { const v = (fd.get(k) || '').trim(); if (v) body[k] = v; });
+      addStatus.textContent = 'Adding…';
+      const r = await fetch('/api/dashboard/tasks', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+      });
+      const d = await r.json().catch(() => ({}));
+      if (!r.ok) { addStatus.textContent = d.error || 'Failed.'; return; }
+      addStatus.textContent = 'Added ✓';
+      await load();
+      setTimeout(closeAdd, 350);
+    });
+
+    // ---- Load ----
+    async function loadProjects() {
+      try {
+        const r = await fetch('/api/dashboard/projects');
+        const arr = await r.json();
+        const items = Array.isArray(arr) ? arr : (arr.projects || []);
+        const allOpt = '<option value="ALL"' + (project === 'ALL' ? ' selected' : '') + '>All projects</option>';
+        projSel.innerHTML = allOpt + items.map((p) =>
+          '<option value="' + ESC(p.id) + '"' + (p.id === project ? ' selected' : '') + '>' + ESC(p.name || p.id) + '</option>').join('');
+        if (project !== 'ALL' && !items.find((p) => p.id === project)) project = (items[0] && items[0].id) || project;
+        projSel.value = project;
+      } catch {}
+    }
+    async function load() {
+      statusEl.hidden = false; statusEl.textContent = 'Loading…';
+      try {
+        const r = await fetch('/api/dashboard/tasks?project=' + encodeURIComponent(project));
+        const d = await r.json();
+        tasks = d.tasks || [];
+        viewer = d.viewer || { actor: null, can_write: false, is_owner: false };
+        // who am I pill + add button visibility
+        addBtn.hidden = !viewer.can_write;
+        if (viewer.is_owner) {
+          authPill.hidden = false; authPill.textContent = 'You’re signed in as Lucas (owner).';
+          authPill.className = 'auth-pill owner';
+        } else if (viewer.can_write) {
+          authPill.hidden = false; authPill.textContent = 'Signed in — you can add tasks and comment.';
+          authPill.className = 'auth-pill subscriber';
+        } else {
+          authPill.hidden = false; authPill.className = 'auth-pill anon';
+          authPill.innerHTML = 'Read-only. <a href="/unlock?next=/dashboard">Sign in with email</a> to add tasks or comment.';
+        }
+        // Reveal/hide owner-only fields
+        document.querySelectorAll('[data-owner-only]').forEach((el) => el.hidden = !viewer.is_owner);
+        buildFilters();
+        render();
+      } catch (e) {
+        statusEl.textContent = "Couldn't reach the task API.";
+      }
+    }
+    projSel.addEventListener('change', () => {
+      project = projSel.value; localStorage.setItem('dashProject', project);
+      load();
+    });
+    setView(view);
+    (async () => { await loadProjects(); await load(); })();
+
+    // ---- Live updates (polite polling, 25s) ----
+    // SSE upgrade path: the orchestrator has `/api/tasks/stream`; for now we
+    // poll. Skips when the tab is hidden, when a modal/drawer is open, or
+    // when the user is mid-typing — so it never interrupts work.
+    function shouldRefresh() {
+      if (document.visibilityState !== 'visible') return false;
+      if (!drawer.hidden || !addModal.hidden) return false;
+      const a = document.activeElement;
+      if (a && a.matches && a.matches('input, textarea, select')) return false;
+      return true;
+    }
+    setInterval(() => { if (shouldRefresh()) load(); }, 25000);
+    // Catch up immediately when the tab regains focus.
+    document.addEventListener('visibilitychange', () => { if (shouldRefresh()) load(); });
+  })();
+</script>
+
+<style is:global>
+  /* is:global because we inject HTML via innerHTML (drawer, cards, list rows);
+     scoped Astro CSS only matches statically-rendered elements with the cid.
+     Class names below are dashboard-specific (.dash-*, .kb-*, .vt, .d-*, etc.). */
+  .dash { padding: 3rem 0 5rem; }
+  .dash-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 1.5rem; flex-wrap: wrap; margin-bottom: 1.25rem; }
+  .dash-titles h1 { font-size: 2rem; font-weight: 800; letter-spacing: -0.8px; margin-bottom: 0.35rem; }
+  .dash-sub { font-size: 0.9375rem; color: var(--text-secondary); line-height: 1.55; max-width: 480px; }
+  .dash-actions { display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap; }
+  .proj { display: flex; align-items: center; gap: 0.4rem; font-size: 0.8125rem; color: var(--text-tertiary); }
+  .proj select {
+    font-family: var(--font-mono); font-size: 0.8125rem; color: var(--text-primary);
+    background: var(--surface-1); border: 1px solid var(--border); border-radius: var(--radius-sm);
+    padding: 0.4rem 0.6rem; cursor: pointer;
+  }
+  .view-toggle { display: inline-flex; background: var(--surface-1); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 2px; }
+  .vt {
+    font-family: inherit; font-size: 0.8125rem; font-weight: 500;
+    color: var(--text-secondary); background: transparent;
+    border: none; border-radius: 6px; padding: 0.4rem 0.75rem; cursor: pointer;
+  }
+  .vt:hover { color: var(--text-primary); }
+  .vt.active { color: var(--text-primary); background: var(--surface-2); }
+  .add-btn {
+    font-family: inherit; font-weight: 600; font-size: 0.8125rem;
+    color: #fff; background: var(--accent);
+    border: none; border-radius: var(--radius-sm); padding: 0.5rem 0.95rem; cursor: pointer;
+  }
+  .add-btn:hover { background: var(--accent-hover); }
+
+  .dash-filters { display: flex; flex-wrap: wrap; gap: 0.85rem; padding: 0.85rem 0.5rem 1rem; }
+  .filter-grp { display: flex; flex-wrap: wrap; gap: 0.25rem; align-items: center; }
+  .fg-label {
+    font-family: var(--font-mono); font-size: 0.6875rem; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 0.06em;
+    color: var(--text-tertiary); margin-right: 0.3rem;
+  }
+  .fp {
+    font-family: inherit; font-size: 0.75rem; font-weight: 500;
+    color: var(--text-secondary); background: var(--surface-1);
+    border: 1px solid var(--border); border-radius: 9999px;
+    padding: 0.2rem 0.65rem; cursor: pointer;
+  }
+  .fp:hover { color: var(--text-primary); border-color: var(--border-hover); }
+  .fp.on { color: var(--accent-text); background: var(--accent-soft); border-color: var(--accent-soft); }
+
+  .auth-pill {
+    font-size: 0.8125rem; color: var(--text-secondary);
+    background: var(--surface-1); border: 1px solid var(--border);
+    border-radius: var(--radius-sm); padding: 0.5rem 0.85rem; margin-bottom: 1rem;
+  }
+  .auth-pill a { color: var(--accent-text); }
+  .auth-pill.owner { color: var(--accent-text); border-color: var(--accent-soft); background: var(--accent-soft); }
+  .auth-pill.subscriber { color: var(--status-active-text); border-color: var(--status-active-bg); background: var(--status-active-bg); }
+
+  .dash-status { font-size: 0.875rem; color: var(--text-tertiary); padding: 1.5rem 0; }
+
+  .pill {
+    display: inline-block; font-family: var(--font-mono);
+    font-size: 0.625rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em;
+    padding: 0.18rem 0.5rem; border-radius: 9999px;
+    background: var(--surface-2); color: var(--text-secondary);
+  }
+  .pill.st-open     { background: var(--status-building-bg); color: var(--status-building-text); }
+  .pill.st-blocked  { background: var(--status-exploring-bg); color: var(--status-exploring-text); }
+  .pill.st-done     { background: var(--status-active-bg); color: var(--status-active-text); }
+  .pill.st-deferred { background: var(--surface-2); color: var(--text-tertiary); }
+  .pill.st-cancelled { background: var(--surface-2); color: var(--text-tertiary); text-decoration: line-through; }
+  .pill.pr-critical { background: rgba(248, 113, 113, 0.14); color: #f87171; }
+  .pill.pr-high     { background: rgba(251, 191, 36, 0.14); color: #fbbf24; }
+  .pill.pr-normal   { background: var(--surface-2); color: var(--text-tertiary); }
+  .pill.pr-low      { background: var(--surface-2); color: var(--text-tertiary); }
+
+  .cmt-badge {
+    display: inline-flex; align-items: center; justify-content: center;
+    margin-left: 0.4rem; font-family: var(--font-mono); font-size: 0.625rem; font-weight: 600;
+    background: var(--accent-soft); color: var(--accent-text);
+    border-radius: 9999px; padding: 0.1rem 0.45rem; min-width: 1.25rem;
+  }
+  .tag {
+    font-family: var(--font-mono); font-size: 0.625rem; font-weight: 500;
+    color: var(--text-tertiary); background: var(--surface-2);
+    border-radius: var(--radius-xs); padding: 0.1rem 0.4rem;
+  }
+
+  /* List */
+  .list-table { width: 100%; border-collapse: collapse; }
+  .list-table th {
+    text-align: left; font-size: 0.6875rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em;
+    color: var(--text-tertiary); padding: 0.6rem 0.5rem; border-bottom: 1px solid var(--border);
+  }
+  .list-table td { padding: 0.7rem 0.5rem; border-bottom: 1px solid var(--border); font-size: 0.875rem; vertical-align: middle; }
+  .list-row { cursor: pointer; transition: background-color 0.12s ease; }
+  .list-row:hover { background: var(--surface-1); }
+  .lr-title { font-weight: 500; color: var(--text-primary); }
+  .lr-section { font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-tertiary); }
+  .lr-tags { display: flex; gap: 0.25rem; flex-wrap: wrap; }
+  .lr-project { font-family: var(--font-mono); font-size: 0.6875rem; color: var(--accent-text); }
+
+  /* Group-by header rows */
+  .lr-group td {
+    background: var(--surface-2); border-bottom: 1px solid var(--border-hover);
+    padding: 0.55rem 0.6rem; font-family: var(--font-mono);
+    font-size: 0.6875rem; text-transform: uppercase; letter-spacing: 0.08em;
+    color: var(--text-tertiary);
+  }
+  .lr-group-name { color: var(--text-primary); font-weight: 700; }
+  .lr-group-count {
+    margin-left: 0.5rem; color: var(--accent-text);
+    background: var(--accent-soft); padding: 0.1rem 0.5rem; border-radius: 9999px;
+  }
+
+  /* Inline-editable pills (owner only) */
+  .lr-editable .pill {
+    cursor: pointer;
+    border: 1px solid transparent;
+    transition: border-color 0.12s ease, transform 0.12s ease;
+  }
+  .lr-editable .pill:hover {
+    border-color: var(--border-hover);
+    transform: scale(1.05);
+  }
+
+  /* Untriaged pill — neutral gray, dashed border, signals "needs review" */
+  .pill.pr-untriaged {
+    background: transparent; color: var(--text-tertiary);
+    border: 1px dashed var(--border); padding: 0.16rem 0.45rem;
+  }
+
+  /* Filter dropdown (overflow protection) */
+  .fp-select {
+    font-family: inherit; font-size: 0.75rem; font-weight: 500;
+    color: var(--text-secondary); background: var(--surface-1);
+    border: 1px solid var(--border); border-radius: 9999px;
+    padding: 0.2rem 0.55rem; cursor: pointer; outline: none;
+    max-width: 240px;
+  }
+  .fp-select:focus { border-color: var(--accent); }
+
+  /* Cards */
+  .cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 0.85rem; }
+  .task-card {
+    background: var(--surface-1); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 1rem; cursor: pointer;
+    display: flex; flex-direction: column; gap: 0.5rem;
+    transition: border-color 0.12s ease, transform 0.12s ease;
+  }
+  .task-card:hover { border-color: var(--border-hover); }
+  .card-top { display: flex; align-items: center; gap: 0.3rem; flex-wrap: wrap; }
+  .card-title { font-size: 0.9375rem; font-weight: 600; color: var(--text-primary); letter-spacing: -0.1px; line-height: 1.35; }
+  .card-desc { font-size: 0.8125rem; color: var(--text-secondary); line-height: 1.55; }
+  .card-section { font-family: var(--font-mono); font-size: 0.6875rem; color: var(--text-tertiary); }
+  .card-tags { display: flex; gap: 0.25rem; flex-wrap: wrap; }
+
+  /* Kanban */
+  .kb-board { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.85rem; }
+  .kb-col { background: var(--surface-1); border: 1px solid var(--border); border-radius: var(--radius); padding: 0.75rem; }
+  .kb-head { display: flex; justify-content: space-between; align-items: center; padding: 0.1rem 0.35rem 0.6rem; border-bottom: 1px solid var(--border); margin-bottom: 0.6rem; }
+  .kb-name { font-family: var(--font-mono); font-size: 0.6875rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-secondary); }
+  .kb-count { font-family: var(--font-mono); font-size: 0.6875rem; color: var(--text-tertiary); }
+  .kb-body { display: flex; flex-direction: column; gap: 0.6rem; }
+  .kb-body .task-card { padding: 0.75rem; }
+
+  /* Group-by picker */
+  .group-pick { display: flex; align-items: center; gap: 0.4rem; font-size: 0.8125rem; color: var(--text-tertiary); }
+  .group-pick[hidden] { display: none; }
+  .group-pick select {
+    font-family: var(--font-mono); font-size: 0.8125rem; color: var(--text-primary);
+    background: var(--surface-1); border: 1px solid var(--border); border-radius: var(--radius-sm);
+    padding: 0.4rem 0.6rem; cursor: pointer;
+  }
+
+  /* Bullseye */
+  .be-wrap {
+    display: grid; grid-template-columns: 1fr 220px; gap: 1.25rem;
+    align-items: center; background: var(--surface-1);
+    border: 1px solid var(--border); border-radius: var(--radius); padding: 1.25rem;
+  }
+  .be-svg-wrap { min-width: 0; }
+  .be-svg-wrap svg { width: 100%; height: auto; display: block; }
+  .be-sector { cursor: pointer; transition: filter 0.15s ease, opacity 0.15s ease; }
+  .be-sector:hover { filter: brightness(1.15); }
+  .be-label {
+    font-family: var(--font-mono); font-size: 11px; font-weight: 600;
+    fill: var(--text-secondary);
+  }
+  .be-count { font-family: var(--font-mono); font-size: 13px; font-weight: 700; }
+  .be-center { font-family: var(--font-mono); font-size: 26px; font-weight: 800; fill: var(--text-primary); }
+  .be-center-sub {
+    font-family: var(--font-mono); font-size: 9px; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 0.1em; fill: var(--text-tertiary);
+  }
+  .be-legend { display: flex; flex-direction: column; gap: 1rem; font-size: 0.8125rem; color: var(--text-secondary); }
+  .be-ring-key { display: flex; flex-direction: column; gap: 0.35rem; }
+  .be-r-row { display: flex; align-items: center; gap: 0.5rem; font-family: var(--font-mono); font-size: 0.75rem; }
+  .be-r-dot { width: 14px; height: 14px; border-radius: 50%; border: 1px solid var(--border); }
+  .be-help { font-size: 0.75rem; color: var(--text-tertiary); line-height: 1.5; }
+  @media (max-width: 740px) { .be-wrap { grid-template-columns: 1fr; } }
+
+  /* Heatmap */
+  .hm-help { font-size: 0.8125rem; color: var(--text-tertiary); margin-bottom: 0.75rem; }
+  .hm-table { border-collapse: separate; border-spacing: 4px; width: 100%; }
+  .hm-table th {
+    font-family: var(--font-mono); font-size: 0.6875rem; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 0.06em;
+    color: var(--text-tertiary); text-align: left; padding: 0.4rem 0.5rem;
+  }
+  .hm-row-label { font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-secondary); white-space: nowrap; }
+  .hm-cell {
+    text-align: center; font-family: var(--font-mono); font-size: 0.8125rem; font-weight: 600;
+    color: var(--text-primary); cursor: pointer; border-radius: var(--radius-sm);
+    padding: 0.85rem 0.5rem; min-width: 60px;
+    transition: outline 0.12s ease;
+  }
+  .hm-cell:hover { outline: 1px solid var(--accent); }
+  .hm-total {
+    font-family: var(--font-mono); font-size: 0.75rem; font-weight: 600;
+    color: var(--text-tertiary); text-align: center;
+  }
+
+  /* Drawer */
+  .drawer { position: fixed; inset: 0; z-index: 250; }
+  .drawer-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.55); -webkit-backdrop-filter: blur(2px); backdrop-filter: blur(2px); }
+  .drawer-panel {
+    position: absolute; right: 0; top: 0; bottom: 0; width: min(560px, 95vw);
+    background: var(--surface-1); border-left: 1px solid var(--border);
+    box-shadow: -20px 0 40px rgba(0,0,0,0.4);
+    padding: 1.75rem 1.5rem; overflow-y: auto;
+  }
+  .drawer-close {
+    position: absolute; top: 0.65rem; right: 0.8rem;
+    font-size: 1.6rem; line-height: 1; background: none; border: none;
+    color: var(--text-tertiary); cursor: pointer;
+  }
+  .drawer-close:hover { color: var(--text-primary); }
+  .d-tags-top { display: flex; flex-wrap: wrap; gap: 0.3rem; margin-bottom: 0.65rem; }
+  .d-section { font-family: var(--font-mono); font-size: 0.6875rem; color: var(--text-tertiary); padding: 0.18rem 0.5rem; }
+  .d-title { font-size: 1.4rem; font-weight: 700; letter-spacing: -0.4px; line-height: 1.25; margin-bottom: 0.9rem; }
+  .d-desc { font-size: 0.9375rem; color: var(--text-secondary); line-height: 1.65; margin-bottom: 1rem; }
+  .d-tags { display: flex; flex-wrap: wrap; gap: 0.3rem; margin-bottom: 1rem; }
+  .d-refs h4, .d-cmt-h { font-size: 0.875rem; margin: 1.2rem 0 0.5rem; }
+  .d-refs ul { list-style: none; padding: 0; font-size: 0.8125rem; color: var(--text-secondary); }
+  .d-refs li { padding: 0.2rem 0; }
+  .d-meta { display: flex; gap: 0.85rem; font-size: 0.75rem; color: var(--text-tertiary); margin-bottom: 1rem; }
+  .owner-ctrls { display: flex; gap: 0.4rem; flex-wrap: wrap; margin-bottom: 1rem; }
+  .owner-ctrls button {
+    font-family: inherit; font-size: 0.8125rem; font-weight: 500;
+    color: var(--text-secondary); background: var(--surface-2);
+    border: 1px solid var(--border); border-radius: var(--radius-sm);
+    padding: 0.4rem 0.85rem; cursor: pointer;
+  }
+  .owner-ctrls button:hover { color: var(--text-primary); border-color: var(--border-hover); }
+  .owner-ctrls .danger:hover { color: #f87171; border-color: rgba(248,113,113,0.4); }
+
+  .cmts { display: flex; flex-direction: column; gap: 0.85rem; margin-bottom: 1rem; }
+  .cmt { background: var(--surface-2); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 0.75rem 0.85rem; }
+  .cmt-head { display: flex; gap: 0.5rem; font-size: 0.75rem; margin-bottom: 0.35rem; color: var(--text-tertiary); }
+  .cmt-head strong { color: var(--text-primary); font-weight: 600; }
+  .cmt-date { font-family: var(--font-mono); font-size: 0.6875rem; }
+  .cmt-body { font-size: 0.875rem; color: var(--text-secondary); line-height: 1.55; }
+  .muted { color: var(--text-tertiary); font-weight: 400; }
+
+  .cmt-form { display: flex; flex-direction: column; gap: 0.5rem; }
+  .cmt-form textarea {
+    font-family: inherit; font-size: 0.875rem; line-height: 1.5;
+    background: var(--bg); color: var(--text-primary);
+    border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 0.55rem 0.7rem;
+    resize: vertical; outline: none;
+  }
+  .cmt-form textarea:focus { border-color: var(--accent); }
+  .cmt-form button {
+    align-self: flex-end; font-family: inherit; font-weight: 600; font-size: 0.8125rem;
+    color: #fff; background: var(--accent); border: none; border-radius: var(--radius-sm);
+    padding: 0.5rem 1rem; cursor: pointer;
+  }
+  .cmt-locked { font-size: 0.8125rem; color: var(--text-tertiary); padding: 0.6rem 0; }
+  .cmt-locked a { color: var(--accent-text); }
+
+  /* Add modal */
+  .modal { position: fixed; inset: 0; z-index: 260; display: flex; align-items: center; justify-content: center; padding: 1rem; }
+  /* The display: rules above beat the [hidden] attribute on specificity —
+     re-assert hidden = none for the elements that set their own display. */
+  .modal[hidden], .drawer[hidden], .auth-pill[hidden], .add-btn[hidden],
+  .dash-status[hidden], .view[hidden], [data-owner-only][hidden] { display: none !important; }
+  .modal-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.55); -webkit-backdrop-filter: blur(2px); backdrop-filter: blur(2px); }
+  .modal-panel {
+    position: relative; width: min(520px, 100%);
+    background: var(--surface-1); border: 1px solid var(--border-hover);
+    border-radius: var(--radius); padding: 1.75rem 1.5rem;
+  }
+  .modal-panel h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: 1rem; }
+  .modal-panel label { display: flex; flex-direction: column; gap: 0.3rem; font-size: 0.8125rem; color: var(--text-secondary); margin-bottom: 0.85rem; }
+  .modal-panel input, .modal-panel textarea, .modal-panel select {
+    font-family: inherit; font-size: 0.9375rem;
+    color: var(--text-primary); background: var(--bg);
+    border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 0.55rem 0.7rem; outline: none;
+  }
+  .modal-panel input:focus, .modal-panel textarea:focus, .modal-panel select:focus { border-color: var(--accent); }
+  .add-priority { display: flex; align-items: center; gap: 0.5rem; font-size: 0.8125rem; color: var(--text-secondary); margin-bottom: 1rem; }
+  .modal-actions { display: flex; align-items: center; gap: 0.85rem; }
+  #add-status { font-size: 0.8125rem; color: var(--text-tertiary); }
+
+  @media (max-width: 740px) {
+    .kb-board { grid-template-columns: 1fr; }
+    .list-table { font-size: 0.8125rem; }
+    .lr-section, .lr-tags { display: none; }
+  }
+</style>

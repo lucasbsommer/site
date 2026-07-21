@@ -1,0 +1,107 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="Halem Heights — Lucas Sommer" description="The estate wine brand and hospitality side of the Chehalem Valley property — boutique Pinot Noir and Chardonnay by Jacques Tardy, plus an Airbnb on the hill.">
+
+  <article class="project-detail container">
+
+    <a href="/projects" class="back-link">&larr; All Projects</a>
+
+    <div class="project-hero">
+      <div class="project-icon-lg" style="background:rgba(168,85,247,0.12); color:#c084fc;">HH</div>
+      <div>
+        <h1>Halem Heights</h1>
+        <span class="project-status status-active">Active</span>
+      </div>
+    </div>
+
+    <p class="project-lede">
+      The estate wine brand and hospitality side of the Chehalem Valley property — boutique Pinot Noir and Chardonnay by Jacques Tardy, plus an Airbnb on the hill. The consumer-facing half of the same land that <a href="/projects/grove-vineyard">Grove Vineyard</a> farms.
+    </p>
+
+    <div class="project-tags-lg">
+      <span class="tag">Wine Brand</span>
+      <span class="tag">Hospitality</span>
+      <span class="tag">Willamette Valley</span>
+      <span class="tag">halemheights.com</span>
+    </div>
+
+    <div class="detail-grid">
+
+      <section class="detail-section">
+        <h2>What is Halem Heights?</h2>
+        <p>Two things in one: a wine brand and an Airbnb, both sitting on the same Chehalem Valley estate that <a href="/projects/grove-vineyard">Grove Vineyard</a> farms. Grove is the land — the rows, the soil, the agriculture. Halem Heights is the bottle on the table and the door you walk through when you stay the night.</p>
+        <p>The brand is trademarked under Lucas Sommer Inc. Wine has been produced and sold, including Pinot Noir and Chardonnay distributed through Vinoshipper.</p>
+      </section>
+
+      <section class="detail-section">
+        <h2>The Wine</h2>
+        <p>Crafted by <strong>Jacques Tardy</strong> — 8th-generation Burgundian winemaker. Jacques was born into wine: studied Viticulture and Enology at Lycée Viticole de Beaune, moved to California in 1982, and made his way to the Willamette Valley by 1990. He previously served as head winemaker at Torii Mor, where his focus on structure and balance helped brand the winery as one of the top-ranked Pinot Noir producers in the United States.</p>
+        <p>For Halem Heights he produces wines of elegance, balance, and intention, using estate fruit plus sourcing from prestigious Dundee Hills vineyards and other AVAs within the Willamette Valley.</p>
+        <ul>
+          <li><strong>Varietals</strong> — Pinot Noir, Chardonnay</li>
+          <li><strong>Style</strong> — Burgundian sensibility: restraint, structure, terroir-forward</li>
+          <li><strong>Sourcing</strong> — Estate fruit + select Willamette Valley vineyards (Dundee Hills AVA and others)</li>
+          <li><strong>Distribution</strong> — Direct to consumer via Vinoshipper</li>
+        </ul>
+      </section>
+
+      <section class="detail-section">
+        <h2>The Estate &amp; Airbnb</h2>
+        <p>The property sits in a remote area of the Chehalem Valley at the end of a winding gravel road, on a hillside nestled in a forest of Douglas Fir. The estate hosts an Airbnb rental — guests get the same view the vines grow into. Hospitality as a second product line, the same land monetized twice.</p>
+      </section>
+
+      <section class="detail-section">
+        <h2>Why a Separate Brand?</h2>
+        <p>Grove Vineyard and Halem Heights are deliberately split. Grove is the farming operation: rows, soil, agricultural revenue, post-mortems on each harvest. Halem Heights is the consumer-facing identity: the label on the bottle, the listing on Airbnb, the story a guest reads when they pour a glass on the porch.</p>
+        <p>Splitting them keeps the agricultural P&amp;L clean and the consumer brand free to evolve — the wine can grow into a national label without dragging vineyard ops along, and the property can be a destination without the visitor needing to understand farming.</p>
+      </section>
+
+      <section class="detail-section">
+        <h2>The Vision</h2>
+        <p>Build the Halem Heights brand into a name Willamette Valley wine drinkers know — small enough to stay personal, distinctive enough to stand out in a crowded AVA. Wine is one of the few products where the land itself becomes the brand; this is the long game on that compound.</p>
+      </section>
+
+    </div>
+
+    <div class="updates-section">
+      <h2>Updates</h2>
+      <div class="update-item">
+        <div class="update-date">2026</div>
+        <div class="update-title">Brand + Airbnb live alongside vineyard ops</div>
+        <p class="update-body">Wine in market via Vinoshipper. Airbnb hosting guests on the estate. Grove Vineyard continues the agricultural side; Halem Heights handles the brand and hospitality.</p>
+      </div>
+    </div>
+
+    <div class="email-capture">
+      <h3>Follow the brand</h3>
+      <p class="capture-sub">Get updates on releases, the estate, and what it's like building a wine brand on the long arc.</p>
+      <form class="email-form">
+        <input type="email" placeholder="you@example.com" required />
+        <button type="submit">Get updates</button>
+      </form>
+    </div>
+
+    <!-- Related Projects -->
+    <div class="related-projects">
+      <h2>Related Projects</h2>
+      <div class="related-grid">
+        <a href="/projects/grove-vineyard" class="related-card">
+          <div class="related-icon" style="background:var(--status-active-bg); color:var(--status-active-text);">GV</div>
+          <div><div class="related-name">Grove Vineyard</div><div class="related-desc">The agricultural side of the same land — farming, harvests, post-mortems</div></div>
+        </a>
+        <a href="/projects/boss-pdx" class="related-card">
+          <div class="related-icon" style="background:var(--status-exploring-bg); color:var(--status-exploring-text);">BP</div>
+          <div><div class="related-name">Boss PDX</div><div class="related-desc">Another asset — Portland general contractor and construction software</div></div>
+        </a>
+      </div>
+    </div>
+
+  </article>
+
+</BaseLayout>
+
+<style>
+  @import '../../styles/project-detail.css';
+</style>

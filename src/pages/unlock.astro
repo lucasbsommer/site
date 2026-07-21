@@ -1,0 +1,184 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="Unlock — Lucas Sommer" description="Drop your email, get a 6-digit code, unlock the content. Free.">
+  <section class="unlock container">
+    <div class="unlock-card">
+      <div class="unlock-badge">Free</div>
+      <h1>Unlock <span id="page-name">the content</span></h1>
+      <p class="unlock-sub">Drop your email — I'll send you a 6-digit code. Enter it here and you're in.</p>
+
+      <form id="email-form" novalidate>
+        <input id="email" type="email" inputmode="email" autocomplete="email" required placeholder="you@example.com" />
+        <button type="submit">Send me a code</button>
+      </form>
+
+      <form id="code-form" hidden novalidate>
+        <p class="code-hint">Sent to <strong id="sent-to"></strong>. Check your inbox.</p>
+        <input id="code" type="text" inputmode="numeric" autocomplete="one-time-code" pattern="[0-9]{6}" maxlength="6" required placeholder="000000" />
+        <button type="submit">Unlock</button>
+        <button type="button" class="link-btn" id="back-to-email">Use a different email</button>
+      </form>
+
+      <div id="msg" hidden></div>
+
+      <p class="unlock-foot">I'll occasionally email you when I ship something good. Unsubscribe whenever.</p>
+    </div>
+  </section>
+</BaseLayout>
+
+<script is:inline>
+  (function () {
+    const qs = new URLSearchParams(location.search);
+    const nextRaw = qs.get('next') || '/';
+    const next = nextRaw.startsWith('/') ? nextRaw : '/';
+
+    const pageName = document.getElementById('page-name');
+    const emailForm = document.getElementById('email-form');
+    const codeForm = document.getElementById('code-form');
+    const emailIn = document.getElementById('email');
+    const codeIn = document.getElementById('code');
+    const sentTo = document.getElementById('sent-to');
+    const msg = document.getElementById('msg');
+    const backBtn = document.getElementById('back-to-email');
+
+    // What are they unlocking?
+    fetch('/api/unlock-info?next=' + encodeURIComponent(next))
+      .then((r) => r.json())
+      .then((d) => { if (d.label) pageName.textContent = d.label; })
+      .catch(() => {});
+
+    function setMsg(text, kind) {
+      if (!text) { msg.hidden = true; msg.textContent = ''; return; }
+      msg.hidden = false;
+      msg.className = kind === 'error' ? 'msg msg-error' : (kind === 'ok' ? 'msg msg-ok' : 'msg');
+      msg.textContent = text;
+    }
+
+    function disable(form, on) {
+      form.querySelectorAll('input, button').forEach((el) => { el.disabled = on; });
+    }
+
+    emailForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = emailIn.value.trim();
+      if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { setMsg('Enter a valid email.', 'error'); return; }
+      setMsg('Sending…');
+      disable(emailForm, true);
+      try {
+        const r = await fetch('/api/access/request', {
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, next }),
+        });
+        const d = await r.json().catch(() => ({}));
+        disable(emailForm, false);
+        if (!r.ok) { setMsg(d.error || 'Something went wrong.', 'error'); return; }
+        emailForm.hidden = true;
+        codeForm.hidden = false;
+        sentTo.textContent = email;
+        setMsg('');
+        setTimeout(() => codeIn.focus(), 80);
+      } catch {
+        disable(emailForm, false);
+        setMsg('Network hiccup — try again.', 'error');
+      }
+    });
+
+    codeForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const code = codeIn.value.replace(/\D/g, '');
+      if (code.length !== 6) { setMsg('Enter the 6-digit code.', 'error'); return; }
+      const email = emailIn.value.trim();
+      setMsg('Checking…');
+      disable(codeForm, true);
+      try {
+        const r = await fetch('/api/access/verify', {
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, code, next }),
+        });
+        const d = await r.json().catch(() => ({}));
+        disable(codeForm, false);
+        if (!r.ok) { setMsg(d.error || 'Wrong code.', 'error'); codeIn.select(); return; }
+        setMsg('Unlocked — taking you there…', 'ok');
+        setTimeout(() => { location.href = d.next || next; }, 350);
+      } catch {
+        disable(codeForm, false);
+        setMsg('Network hiccup — try again.', 'error');
+      }
+    });
+
+    backBtn.addEventListener('click', () => {
+      codeForm.hidden = true; emailForm.hidden = false; setMsg(''); emailIn.focus();
+    });
+  })();
+</script>
+
+<style>
+  .unlock { padding: 5rem 0 6rem; display: flex; justify-content: center; }
+  .unlock-card {
+    max-width: 480px; width: 100%;
+    background: var(--surface-1);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 2.25rem;
+  }
+  .unlock-badge {
+    display: inline-block;
+    font-family: var(--font-mono);
+    font-size: 0.6875rem; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 0.08em;
+    color: var(--status-active-text);
+    background: var(--status-active-bg);
+    padding: 0.2rem 0.65rem;
+    border-radius: 9999px;
+    margin-bottom: 1.25rem;
+  }
+  .unlock h1 {
+    font-size: 1.75rem; font-weight: 800; letter-spacing: -0.7px;
+    margin-bottom: 0.6rem;
+  }
+  .unlock h1 #page-name { color: var(--accent-text); }
+  .unlock-sub { font-size: 0.9375rem; color: var(--text-secondary); line-height: 1.6; margin-bottom: 1.5rem; }
+  .unlock form { display: flex; flex-direction: column; gap: 0.6rem; margin-bottom: 0.85rem; }
+  .unlock form[hidden], .unlock div[hidden] { display: none; }
+  .unlock input {
+    font-family: inherit; font-size: 16px;
+    padding: 0.7rem 0.85rem;
+    background: var(--bg);
+    color: var(--text-primary);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    outline: none;
+  }
+  .unlock input:focus { border-color: var(--accent); }
+  .unlock input::placeholder { color: var(--text-tertiary); }
+  #code { font-family: var(--font-mono); font-size: 1.25rem; letter-spacing: 0.4em; text-align: center; }
+  .unlock button[type="submit"] {
+    font-family: inherit; font-weight: 600; font-size: 0.9375rem;
+    color: #fff; background: var(--accent);
+    border: none; border-radius: var(--radius-sm);
+    padding: 0.7rem 1rem; cursor: pointer;
+    transition: background-color 0.15s ease;
+  }
+  .unlock button[type="submit"]:hover:not([disabled]) { background: var(--accent-hover); }
+  .unlock button[disabled] { opacity: 0.55; cursor: default; }
+  .link-btn {
+    font-family: inherit; font-size: 0.8125rem;
+    color: var(--text-tertiary);
+    background: none; border: none; cursor: pointer;
+    padding: 0.4rem 0; margin-top: 0.1rem;
+  }
+  .link-btn:hover { color: var(--text-primary); }
+  .code-hint { font-size: 0.875rem; color: var(--text-secondary); margin: 0 0 0.2rem; }
+  .code-hint strong { color: var(--text-primary); }
+  .msg {
+    font-size: 0.8125rem; padding: 0.5rem 0.75rem;
+    border-radius: var(--radius-sm); margin: 0.5rem 0 0.85rem;
+    background: var(--surface-2); color: var(--text-secondary);
+  }
+  .msg-error { color: #f87171; background: rgba(248, 113, 113, 0.08); }
+  .msg-ok { color: var(--status-active-text); background: var(--status-active-bg); }
+  .unlock-foot { font-size: 0.75rem; color: var(--text-tertiary); margin-top: 0.5rem; line-height: 1.5; }
+  @media (max-width: 640px) { .unlock { padding: 3rem 0 4rem; } .unlock-card { padding: 1.75rem; } }
+</style>

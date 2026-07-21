@@ -1,0 +1,600 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+/* Eras — owner picks one per story. Update here to change the dropdown + filters.
+   Each entry: { key, label, color, soft }                                        */
+const ERAS = [
+  { key: 'childhood', label: 'Childhood',        color: '#a855f7', soft: 'rgba(168,85,247,0.10)' },
+  { key: 'newberg',   label: 'Newberg / HS',     color: '#22c55e', soft: 'rgba(34,197,94,0.10)'  },
+  { key: 'miami',     label: 'Miami years',      color: '#f472b6', soft: 'rgba(244,114,182,0.10)' },
+  { key: 'oregon',    label: 'Back in Oregon',   color: '#38bdf8', soft: 'rgba(56,189,248,0.10)'  },
+  { key: 'business',  label: 'Business / Build', color: '#f43f5e', soft: 'rgba(244,63,94,0.10)'   },
+  { key: 'road',      label: 'Road / Travel',    color: '#06b6d4', soft: 'rgba(6,182,212,0.10)'   },
+  { key: 'people',    label: 'People',           color: '#fbbf24', soft: 'rgba(251,191,36,0.10)'  },
+  { key: 'other',     label: 'Other',            color: '#94a3b8', soft: 'rgba(148,163,184,0.10)' },
+];
+---
+
+<BaseLayout title="Stories — Lucas Sommer" description="A running collection of stories I want to write down, remember, and accumulate.">
+
+  <section class="stories container">
+
+    <header class="st-hero">
+      <h1>Stories</h1>
+      <p class="st-sub">
+        A running collection. Bits of my life I want to write down before they fade. Some I'll keep private, some I'll publish. Always accumulating.
+      </p>
+    </header>
+
+    <!-- ── Owner-only composer (curator.js shows .curator-ui blocks) ── -->
+    <div class="st-composer curator-ui" hidden>
+      <div class="st-comp-row">
+        <input class="st-comp-title" type="text" placeholder="Title (optional)" />
+        <select class="st-comp-era">
+          <option value="">— era —</option>
+          {ERAS.map(e => <option value={e.key}>{e.label}</option>)}
+        </select>
+      </div>
+      <textarea class="st-comp-body" rows="5"
+        placeholder="The story. Markdown-light: **bold**, *italic*, blank line for paragraph break."></textarea>
+      <div class="st-comp-row">
+        <input class="st-comp-tags" type="text" placeholder="tags, comma, separated" />
+        <input class="st-comp-when" type="text" placeholder="when? ('2007', 'summer 2014', 'around 6th grade')" />
+      </div>
+      <div class="st-comp-actions">
+        <label class="st-vis-toggle">
+          <input class="st-comp-vis" type="checkbox" />
+          <span>Public</span>
+        </label>
+        <label class="st-vis-toggle">
+          <input class="st-comp-pin" type="checkbox" />
+          <span>Pin</span>
+        </label>
+        <span class="st-comp-spacer"></span>
+        <button class="st-comp-cancel" type="button" hidden>Cancel edit</button>
+        <button class="st-comp-save" type="button">Add story</button>
+      </div>
+      <div class="st-comp-status" aria-live="polite"></div>
+    </div>
+
+    <!-- ── Filter chips ─────────────────────────────────────── -->
+    <div class="st-filters">
+      <button class="st-chip is-active" data-era="" type="button">All <span class="st-chip-count" data-count="all">0</span></button>
+      {ERAS.map(e => (
+        <button class="st-chip" data-era={e.key} type="button"
+                style={`--c:${e.color}; --soft:${e.soft};`}>
+          <span class="st-chip-dot"></span>{e.label}
+          <span class="st-chip-count" data-count={e.key}>0</span>
+        </button>
+      ))}
+    </div>
+
+    <!-- ── Story list (populated by JS) ─────────────────────── -->
+    <div class="st-list" data-empty-msg="No stories yet. Owner: add one above.">
+      <div class="st-empty">Loading…</div>
+    </div>
+
+  </section>
+
+  <!-- era colors as a JSON island the script reads -->
+  <script type="application/json" id="st-eras" set:html={JSON.stringify(ERAS)}></script>
+</BaseLayout>
+
+<style is:global>
+  .stories { padding-top: 4rem; padding-bottom: 6rem; max-width: 880px; }
+
+  /* ── Hero ────────────────────────────────────────────────────────── */
+  .st-hero { margin-bottom: 2rem; }
+  .st-hero h1 {
+    font-size: 2.75rem;
+    font-weight: 800;
+    letter-spacing: -1.5px;
+    margin-bottom: 0.75rem;
+  }
+  .st-sub {
+    font-size: 1.075rem;
+    color: var(--text-secondary);
+    line-height: 1.7;
+    max-width: 660px;
+  }
+
+  /* ── Composer ────────────────────────────────────────────────────── */
+  .st-composer {
+    margin: 2rem 0 2.5rem 0;
+    padding: 1.25rem;
+    background: var(--surface-1);
+    border: 1px dashed var(--border-hover);
+    border-radius: var(--radius);
+    display: flex; flex-direction: column; gap: 0.75rem;
+  }
+  .st-comp-row {
+    display: grid;
+    grid-template-columns: 1fr 200px;
+    gap: 0.6rem;
+  }
+  .st-comp-title, .st-comp-tags, .st-comp-when, .st-comp-body, .st-comp-era {
+    font-family: var(--font-sans);
+    font-size: 0.95rem;
+    padding: 0.6rem 0.8rem;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--text-primary);
+    width: 100%;
+  }
+  .st-comp-body {
+    font-family: var(--font-mono);
+    font-size: 0.88rem;
+    line-height: 1.55;
+    resize: vertical;
+    min-height: 6rem;
+  }
+  .st-comp-title:focus, .st-comp-tags:focus, .st-comp-when:focus,
+  .st-comp-body:focus, .st-comp-era:focus {
+    outline: 1px solid var(--accent-text);
+    border-color: var(--accent-text);
+  }
+  .st-comp-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+    flex-wrap: wrap;
+  }
+  .st-comp-spacer { flex: 1; }
+  .st-vis-toggle {
+    display: inline-flex; align-items: center; gap: 0.35rem;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    cursor: pointer;
+    user-select: none;
+  }
+  .st-vis-toggle input { accent-color: var(--accent-text); }
+  .st-comp-save, .st-comp-cancel {
+    font-family: var(--font-sans);
+    font-size: 0.85rem;
+    font-weight: 600;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    border: 1px solid var(--border-hover);
+    background: var(--surface-2);
+    color: var(--text-primary);
+    cursor: pointer;
+    transition: background 0.12s ease, border-color 0.12s ease;
+  }
+  .st-comp-save {
+    background: var(--accent-text);
+    color: #0a0a0f;
+    border-color: var(--accent-text);
+  }
+  .st-comp-save:hover { opacity: 0.9; }
+  .st-comp-cancel:hover { border-color: var(--text-secondary); }
+  .st-comp-status {
+    font-size: 0.78rem;
+    color: var(--text-tertiary);
+    min-height: 1em;
+  }
+  .st-comp-status.is-err { color: #ef4444; }
+  .st-comp-status.is-ok  { color: #4ade80; }
+
+  /* ── Filter chips ────────────────────────────────────────────────── */
+  .st-filters {
+    display: flex; flex-wrap: wrap; gap: 0.4rem;
+    margin-bottom: 1.5rem;
+  }
+  .st-chip {
+    --c: var(--text-secondary);
+    --soft: var(--surface-1);
+    display: inline-flex; align-items: center; gap: 0.4rem;
+    padding: 0.4rem 0.85rem;
+    font-family: var(--font-mono);
+    font-size: 0.74rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    background: var(--soft);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    cursor: pointer;
+    transition: background 0.12s ease, border-color 0.12s ease;
+  }
+  .st-chip:hover {
+    border-color: var(--c);
+    color: var(--text-primary);
+  }
+  .st-chip.is-active {
+    border-color: var(--c);
+    color: var(--text-primary);
+    background: color-mix(in srgb, var(--soft) 60%, var(--surface-2) 40%);
+  }
+  .st-chip-dot {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: var(--c);
+  }
+  .st-chip-count {
+    font-size: 0.66rem;
+    color: var(--text-tertiary);
+    background: var(--surface-2);
+    padding: 0.05rem 0.4rem;
+    border-radius: 999px;
+  }
+
+  /* ── Story cards ─────────────────────────────────────────────────── */
+  .st-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+  }
+  .st-empty {
+    padding: 2rem;
+    text-align: center;
+    color: var(--text-tertiary);
+    font-style: italic;
+    border: 1px dashed var(--border);
+    border-radius: var(--radius);
+  }
+  .st-card {
+    --c: var(--text-secondary);
+    --soft: var(--surface-1);
+    position: relative;
+    padding: 1.25rem 1.5rem;
+    background: var(--surface-1);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--c);
+    border-radius: var(--radius);
+    transition: border-color 0.15s ease, background 0.15s ease;
+  }
+  .st-card:hover { border-color: var(--border-hover); border-left-color: var(--c); }
+  .st-card.is-private { border-style: dashed; }
+  .st-card.is-pinned::before {
+    content: '★';
+    position: absolute;
+    top: 0.55rem; right: 0.7rem;
+    font-size: 0.85rem;
+    color: #fbbf24;
+  }
+  .st-card-head {
+    display: flex; align-items: baseline; gap: 0.6rem; flex-wrap: wrap;
+    margin-bottom: 0.6rem;
+  }
+  .st-card-era {
+    display: inline-block;
+    font-family: var(--font-mono);
+    font-size: 0.66rem;
+    font-weight: 700;
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    background: var(--soft);
+    color: var(--c);
+    border: 1px solid var(--c);
+  }
+  .st-card-when {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    color: var(--text-tertiary);
+  }
+  .st-card-title {
+    font-size: 1.15rem;
+    font-weight: 700;
+    letter-spacing: -0.3px;
+    color: var(--text-primary);
+    margin: 0.3rem 0 0.6rem 0;
+  }
+  .st-card-body {
+    font-size: 0.94rem;
+    color: var(--text-primary);
+    line-height: 1.72;
+  }
+  .st-card-body p { margin: 0 0 0.7rem 0; }
+  .st-card-body p:last-child { margin-bottom: 0; }
+  .st-card-body strong { color: var(--text-primary); font-weight: 700; }
+  .st-card-body em { color: var(--text-secondary); }
+
+  .st-card-foot {
+    display: flex; align-items: center; gap: 0.65rem;
+    margin-top: 0.85rem;
+    flex-wrap: wrap;
+  }
+  .st-card-tags {
+    display: flex; flex-wrap: wrap; gap: 0.3rem;
+  }
+  .st-card-tag {
+    font-family: var(--font-mono);
+    font-size: 0.66rem;
+    color: var(--text-secondary);
+    background: var(--surface-2);
+    padding: 0.12rem 0.45rem;
+    border-radius: 3px;
+  }
+  .st-card-meta {
+    margin-left: auto;
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    color: var(--text-tertiary);
+  }
+  .st-card-vis {
+    font-family: var(--font-mono);
+    font-size: 0.66rem;
+    font-weight: 600;
+    padding: 0.12rem 0.45rem;
+    border-radius: 3px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+  .st-card-vis.is-private {
+    color: #fb7185;
+    background: rgba(251,113,133,0.08);
+    border: 1px solid rgba(251,113,133,0.2);
+  }
+  .st-card-vis.is-public {
+    color: #4ade80;
+    background: rgba(74,222,128,0.08);
+    border: 1px solid rgba(74,222,128,0.2);
+  }
+
+  .st-card-actions {
+    display: flex; gap: 0.3rem;
+    margin-top: 0.85rem;
+  }
+  .st-card-actions button {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    font-weight: 600;
+    padding: 0.3rem 0.7rem;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: background 0.12s ease, color 0.12s ease;
+  }
+  .st-card-actions button:hover { color: var(--text-primary); background: var(--surface-1); }
+  .st-card-actions .st-act-delete:hover { color: #fb7185; border-color: #fb7185; }
+
+  /* ── Mobile ──────────────────────────────────────────────────────── */
+  @media (max-width: 700px) {
+    .stories { padding-top: 2.5rem; }
+    .st-hero h1 { font-size: 2rem; letter-spacing: -1px; }
+    .st-sub { font-size: 1rem; }
+    .st-comp-row { grid-template-columns: 1fr; }
+    .st-comp-actions { gap: 0.5rem; }
+    .st-card { padding: 1rem 1.1rem; }
+  }
+</style>
+
+<script is:inline>
+(function () {
+  'use strict';
+
+  const ERAS = JSON.parse(document.getElementById('st-eras').textContent);
+  const ERA_MAP = Object.fromEntries(ERAS.map(e => [e.key, e]));
+  const TOKEN = localStorage.getItem('curatorToken') || '';
+  const HDRS = TOKEN
+    ? { 'Content-Type': 'application/json', 'X-Curator-Token': TOKEN }
+    : { 'Content-Type': 'application/json' };
+
+  const $list = document.querySelector('.st-list');
+  const $composer = document.querySelector('.st-composer');
+  const $chips = document.querySelectorAll('.st-chip');
+
+  const $title = document.querySelector('.st-comp-title');
+  const $body  = document.querySelector('.st-comp-body');
+  const $era   = document.querySelector('.st-comp-era');
+  const $tags  = document.querySelector('.st-comp-tags');
+  const $when  = document.querySelector('.st-comp-when');
+  const $vis   = document.querySelector('.st-comp-vis');
+  const $pin   = document.querySelector('.st-comp-pin');
+  const $save  = document.querySelector('.st-comp-save');
+  const $cancel = document.querySelector('.st-comp-cancel');
+  const $status = document.querySelector('.st-comp-status');
+
+  let stories = [];
+  let owner = false;
+  let editingId = null;
+  let activeEra = '';
+
+  function flash(msg, kind) {
+    $status.textContent = msg;
+    $status.className = 'st-comp-status' + (kind ? ' is-' + kind : '');
+    if (kind === 'ok') setTimeout(() => { if ($status.textContent === msg) { $status.textContent = ''; $status.className = 'st-comp-status'; } }, 2500);
+  }
+
+  function escapeHtml(s) {
+    return String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+  }
+
+  // very light markdown: **bold**, *italic*, paragraphs by blank line
+  function renderBody(text) {
+    const paras = String(text || '').split(/\n\n+/).map(p => p.trim()).filter(Boolean);
+    return paras.map(p => {
+      let html = escapeHtml(p)
+        .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+        .replace(/(^|[^*])\*(?!\s)([^*]+?)\*/g, '$1<em>$2</em>')
+        .replace(/\n/g, '<br/>');
+      return '<p>' + html + '</p>';
+    }).join('');
+  }
+
+  function relTime(iso) {
+    const t = new Date(iso.replace(' ', 'T') + 'Z').getTime();
+    const diff = Date.now() - t;
+    const s = Math.floor(diff / 1000);
+    if (s < 60) return 'just now';
+    const m = Math.floor(s / 60);
+    if (m < 60) return m + 'm ago';
+    const h = Math.floor(m / 60);
+    if (h < 24) return h + 'h ago';
+    const d = Math.floor(h / 24);
+    if (d < 30) return d + 'd ago';
+    const mo = Math.floor(d / 30);
+    if (mo < 12) return mo + 'mo ago';
+    return Math.floor(mo / 12) + 'y ago';
+  }
+
+  function load() {
+    fetch('/api/stories', { credentials: 'include', headers: HDRS })
+      .then(r => r.json())
+      .then(j => {
+        stories = j.stories || [];
+        owner = !!j.owner;
+        if (owner) $composer.hidden = false;
+        render();
+      })
+      .catch(err => { $list.innerHTML = '<div class="st-empty">Couldn\'t load stories: ' + escapeHtml(err.message) + '</div>'; });
+  }
+
+  function render() {
+    const counts = { all: stories.length };
+    ERAS.forEach(e => { counts[e.key] = 0; });
+    stories.forEach(s => { if (counts[s.era] !== undefined) counts[s.era]++; });
+    document.querySelectorAll('.st-chip-count').forEach(el => {
+      el.textContent = counts[el.dataset.count] || 0;
+    });
+
+    const items = activeEra ? stories.filter(s => s.era === activeEra) : stories;
+
+    if (!items.length) {
+      const msg = $list.dataset.emptyMsg;
+      $list.innerHTML = '<div class="st-empty">' + escapeHtml(msg) + '</div>';
+      return;
+    }
+
+    $list.innerHTML = items.map(s => {
+      const e = ERA_MAP[s.era] || { label: s.era || 'Other', color: '#94a3b8', soft: 'rgba(148,163,184,0.10)' };
+      const styleVars = '--c:' + e.color + '; --soft:' + e.soft + ';';
+      const tagsHtml = (s.tags || '').split(',').map(t => t.trim()).filter(Boolean)
+        .map(t => '<span class="st-card-tag">' + escapeHtml(t) + '</span>').join('');
+      const visHtml = owner
+        ? '<span class="st-card-vis is-' + s.visibility + '">' + s.visibility + '</span>'
+        : '';
+      const ownerActions = owner ? (
+        '<div class="st-card-actions">' +
+          '<button class="st-act-edit"   data-id="' + s.id + '" type="button">Edit</button>' +
+          '<button class="st-act-pin"    data-id="' + s.id + '" type="button">' + (s.pinned ? 'Unpin' : 'Pin') + '</button>' +
+          '<button class="st-act-toggle" data-id="' + s.id + '" type="button">Make ' + (s.visibility === 'public' ? 'private' : 'public') + '</button>' +
+          '<button class="st-act-delete" data-id="' + s.id + '" type="button">Delete</button>' +
+        '</div>'
+      ) : '';
+
+      return (
+        '<article class="st-card ' + (s.visibility === 'private' ? 'is-private' : '') + ' ' + (s.pinned ? 'is-pinned' : '') + '" style="' + styleVars + '" data-era="' + escapeHtml(s.era) + '">' +
+          '<div class="st-card-head">' +
+            (s.era ? '<span class="st-card-era">' + escapeHtml(e.label) + '</span>' : '') +
+            (s.happened_at ? '<span class="st-card-when">' + escapeHtml(s.happened_at) + '</span>' : '') +
+          '</div>' +
+          (s.title ? '<h3 class="st-card-title">' + escapeHtml(s.title) + '</h3>' : '') +
+          '<div class="st-card-body">' + renderBody(s.body) + '</div>' +
+          '<div class="st-card-foot">' +
+            '<div class="st-card-tags">' + tagsHtml + '</div>' +
+            visHtml +
+            '<span class="st-card-meta">added ' + relTime(s.created_at) + '</span>' +
+          '</div>' +
+          ownerActions +
+        '</article>'
+      );
+    }).join('');
+
+    // wire owner actions
+    if (owner) {
+      $list.querySelectorAll('.st-act-edit').forEach(b => b.addEventListener('click', () => beginEdit(b.dataset.id)));
+      $list.querySelectorAll('.st-act-delete').forEach(b => b.addEventListener('click', () => doDelete(b.dataset.id)));
+      $list.querySelectorAll('.st-act-toggle').forEach(b => b.addEventListener('click', () => toggleVis(b.dataset.id)));
+      $list.querySelectorAll('.st-act-pin').forEach(b => b.addEventListener('click', () => togglePin(b.dataset.id)));
+    }
+  }
+
+  function clearComposer() {
+    $title.value = ''; $body.value = ''; $era.value = '';
+    $tags.value = '';  $when.value = '';
+    $vis.checked = false; $pin.checked = false;
+    editingId = null;
+    $save.textContent = 'Add story';
+    $cancel.hidden = true;
+  }
+
+  function beginEdit(id) {
+    const s = stories.find(x => x.id === id);
+    if (!s) return;
+    editingId = id;
+    $title.value = s.title || '';
+    $body.value = s.body || '';
+    $era.value = s.era || '';
+    $tags.value = s.tags || '';
+    $when.value = s.happened_at || '';
+    $vis.checked = s.visibility === 'public';
+    $pin.checked = !!s.pinned;
+    $save.textContent = 'Save edits';
+    $cancel.hidden = false;
+    $composer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  function doSave() {
+    const body = ($body.value || '').trim();
+    if (!body) { flash('Body required.', 'err'); return; }
+    const payload = {
+      id: editingId || undefined,
+      title: $title.value.trim(),
+      body,
+      era: $era.value,
+      tags: $tags.value.trim(),
+      happened_at: $when.value.trim(),
+      visibility: $vis.checked ? 'public' : 'private',
+      pinned: $pin.checked ? 1 : 0,
+    };
+    $save.disabled = true; flash('Saving…');
+    fetch('/api/stories', {
+      method: 'POST', credentials: 'include',
+      headers: HDRS, body: JSON.stringify(payload)
+    }).then(r => r.json()).then(j => {
+      $save.disabled = false;
+      if (j.error) { flash(j.error, 'err'); return; }
+      flash(editingId ? 'Updated.' : 'Added.', 'ok');
+      clearComposer();
+      load();
+    }).catch(err => { $save.disabled = false; flash(err.message, 'err'); });
+  }
+
+  function doDelete(id) {
+    if (!confirm('Delete this story?')) return;
+    fetch('/api/stories/delete', {
+      method: 'POST', credentials: 'include',
+      headers: HDRS, body: JSON.stringify({ id })
+    }).then(r => r.json()).then(j => {
+      if (j.error) { alert(j.error); return; }
+      load();
+    });
+  }
+
+  function toggleVis(id) {
+    const s = stories.find(x => x.id === id);
+    if (!s) return;
+    s.visibility = s.visibility === 'public' ? 'private' : 'public';
+    fetch('/api/stories', {
+      method: 'POST', credentials: 'include',
+      headers: HDRS, body: JSON.stringify(s)
+    }).then(r => r.json()).then(() => load());
+  }
+
+  function togglePin(id) {
+    const s = stories.find(x => x.id === id);
+    if (!s) return;
+    s.pinned = s.pinned ? 0 : 1;
+    fetch('/api/stories', {
+      method: 'POST', credentials: 'include',
+      headers: HDRS, body: JSON.stringify(s)
+    }).then(r => r.json()).then(() => load());
+  }
+
+  $save.addEventListener('click', doSave);
+  $cancel.addEventListener('click', clearComposer);
+  $chips.forEach(c => c.addEventListener('click', () => {
+    $chips.forEach(x => x.classList.remove('is-active'));
+    c.classList.add('is-active');
+    activeEra = c.dataset.era;
+    render();
+  }));
+
+  load();
+})();
+</script>
