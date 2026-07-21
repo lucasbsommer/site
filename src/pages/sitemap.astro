@@ -1,0 +1,109 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="Sitemap — Lucas Sommer" description="Owner-only route review — every page on lucassommer.com and its current visibility.">
+
+  <section class="container sitemap-page">
+    <div class="sitemap-hero">
+      <h1>Sitemap</h1>
+      <p class="sitemap-sub">Every route on the site and its current gate. Owner-only — this list itself is not public. Visibility changes live in the curator layer; this is a snapshot for review, not an editor.</p>
+    </div>
+
+    <div id="sitemap-locked" class="sitemap-locked">
+      Sign in as owner to view.
+    </div>
+
+    <div id="sitemap-body" class="sitemap-body" hidden>
+      <table class="sitemap-table">
+        <thead>
+          <tr>
+            <th>Route</th>
+            <th>Label</th>
+            <th>Visibility</th>
+            <th>In nav</th>
+          </tr>
+        </thead>
+        <tbody id="sitemap-rows"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <script is:inline>
+    (function () {
+      function cookieToken() {
+        var m = document.cookie.match(/(?:^|;\s*)cur=([^;]+)/);
+        return m ? decodeURIComponent(m[1]) : '';
+      }
+      var token = cookieToken();
+      if (!token) return; // stay locked
+
+      fetch('/api/site', { headers: { 'X-Curator-Token': token } })
+        .then(function (r) { if (!r.ok) throw new Error('unauthorized'); return r.json(); })
+        .then(function (data) {
+          var rows = data.pages || [];
+          var tbody = document.getElementById('sitemap-rows');
+          rows.forEach(function (p) {
+            var tr = document.createElement('tr');
+            tr.className = 'vis-' + p.visibility;
+
+            var routeTd = document.createElement('td');
+            routeTd.className = 'route-cell';
+            routeTd.textContent = p.path;
+            tr.appendChild(routeTd);
+
+            var labelTd = document.createElement('td');
+            labelTd.textContent = p.label || '';
+            tr.appendChild(labelTd);
+
+            var visTd = document.createElement('td');
+            var badge = document.createElement('span');
+            badge.className = 'vis-badge vis-badge-' + p.visibility;
+            badge.textContent = p.visibility;
+            visTd.appendChild(badge);
+            tr.appendChild(visTd);
+
+            var navTd = document.createElement('td');
+            navTd.textContent = p.in_nav ? 'yes' : '';
+            tr.appendChild(navTd);
+
+            tbody.appendChild(tr);
+          });
+          document.getElementById('sitemap-locked').hidden = true;
+          document.getElementById('sitemap-body').hidden = false;
+        })
+        .catch(function () { /* stay locked */ });
+    })();
+  </script>
+
+  <style>
+    .sitemap-page { padding-top: 4rem; padding-bottom: 4rem; }
+    .sitemap-hero h1 { font-size: 2.25rem; font-weight: 800; letter-spacing: -1.2px; margin-bottom: 0.75rem; }
+    .sitemap-sub { font-size: 1rem; color: var(--text-secondary); max-width: 640px; line-height: 1.65; margin-bottom: 2rem; }
+
+    .sitemap-locked {
+      background: var(--surface-1); border: 1px solid var(--border); border-radius: var(--radius);
+      padding: 2rem; text-align: center; color: var(--text-tertiary); font-size: 0.9375rem;
+    }
+
+    .sitemap-table { width: 100%; border-collapse: collapse; font-size: 0.875rem; }
+    .sitemap-table th {
+      text-align: left; padding: 0.6rem 0.75rem; color: var(--text-tertiary);
+      font-weight: 600; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.04em;
+      border-bottom: 1px solid var(--border);
+    }
+    .sitemap-table td {
+      padding: 0.6rem 0.75rem; border-bottom: 1px solid var(--border); color: var(--text-secondary);
+    }
+    .route-cell { font-family: var(--font-mono); color: var(--text-primary); }
+
+    .vis-badge {
+      font-size: 0.6875rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;
+      padding: 0.15rem 0.5rem; border-radius: 9999px;
+    }
+    .vis-badge-public  { background: var(--status-active-bg); color: var(--status-active-text); }
+    .vis-badge-gated   { background: var(--status-exploring-bg); color: var(--status-exploring-text); }
+    .vis-badge-private { background: var(--surface-2); color: var(--text-tertiary); }
+  </style>
+
+</BaseLayout>
