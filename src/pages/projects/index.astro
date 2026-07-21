@@ -7,121 +7,88 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
   <section class="container">
     <div class="projects-hero">
       <h1>Projects</h1>
-      <p class="projects-intro">Companies I've built, am building, or am exploring. Some are active businesses, some are side projects, some are ideas in motion.</p>
+      <p class="projects-intro">Companies I've built, am building, or am exploring — across marketing, construction, wine, fintech, and AI. Full profiles, numbers, and case studies are gated for now.</p>
+      <p class="projects-gate-note"><a href="/unlock/?next=/projects/">Get access</a> to the deep dives.</p>
     </div>
 
     <div class="projects-grid">
 
-      <a class="project-card" href="/projects/carcin">
+      <div class="project-card">
         <div class="project-icon" style="background:var(--status-building-bg); color:var(--status-building-text);">Ca</div>
         <div class="project-body">
           <div class="project-top">
             <div class="project-name">Carcin.ai</div>
             <span class="project-status status-building">Building</span>
           </div>
-          <p class="project-desc">AI-powered marketing platform that handles strategy, execution, and reporting. Chat-based onboarding, 103-channel framework, built for scale.</p>
-          <div class="project-tags">
-            <span class="tag">AI</span>
-            <span class="tag">Marketing</span>
-            <span class="tag">SaaS</span>
-          </div>
+          <p class="project-desc">An AI platform for how small businesses show up online.</p>
         </div>
-      </a>
+      </div>
 
-      <a class="project-card" href="/projects/ad-apt">
+      <div class="project-card">
         <div class="project-icon" style="background:rgba(124,58,237,0.12); color:#a78bfa;">Aa</div>
         <div class="project-body">
           <div class="project-top">
             <div class="project-name">Ad-Apt</div>
             <span class="project-status status-active">Active</span>
           </div>
-          <p class="project-desc">Digital marketing agency delivering 400% ROAS for Payless, 7.2x ROAS for Teton Gravity Research, $1M+ new sales for True Blue Car Wash. Clients include Netflix, Circle K, Timberline Lodge, and Benchmade.</p>
-          <div class="project-tags">
-            <span class="tag">Agency</span>
-            <span class="tag">Digital Marketing</span>
-          </div>
+          <p class="project-desc">A digital marketing shop working with a short list of consumer brands.</p>
         </div>
-      </a>
+      </div>
 
-      <a class="project-card" href="/projects/boss-pdx">
+      <div class="project-card">
         <div class="project-icon" style="background:var(--status-exploring-bg); color:var(--status-exploring-text);">BP</div>
         <div class="project-body">
           <div class="project-top">
             <div class="project-name">Boss PDX</div>
             <span class="project-status status-active">Active</span>
           </div>
-          <p class="project-desc">Licensed Portland general contractor with 17+ years experience. Custom homes, ADUs, commercial concrete, excavation, hardscaping, and full remodels — powered by AI-assisted estimating.</p>
-          <div class="project-tags">
-            <span class="tag">Construction</span>
-            <span class="tag">Portland</span>
-            <span class="tag">Operations</span>
-          </div>
+          <p class="project-desc">A Portland-based residential + commercial builder, run with modern tooling.</p>
         </div>
-      </a>
+      </div>
 
-      <a class="project-card" href="/projects/grove-vineyard">
+      <div class="project-card">
         <div class="project-icon" style="background:var(--status-active-bg); color:var(--status-active-text);">GV</div>
         <div class="project-body">
           <div class="project-top">
             <div class="project-name">Grove Vineyard</div>
             <span class="project-status status-active">Active</span>
           </div>
-          <p class="project-desc">Estate vineyard in the Chehalem Valley at 750ft elevation. Pinot Noir and Chardonnay crafted by Jacques Tardy, 8th generation Burgundian winemaker. Organic farming, Salmon Safe certified.</p>
-          <div class="project-tags">
-            <span class="tag">Wine</span>
-            <span class="tag">Agriculture</span>
-            <span class="tag">Willamette Valley</span>
-          </div>
+          <p class="project-desc">An estate vineyard in the Willamette Valley.</p>
         </div>
-      </a>
+      </div>
 
-      <a class="project-card" href="/projects/halem-heights">
+      <div class="project-card">
         <div class="project-icon" style="background:rgba(168,85,247,0.12); color:#c084fc;">HH</div>
         <div class="project-body">
           <div class="project-top">
             <div class="project-name">Halem Heights</div>
             <span class="project-status status-active">Active</span>
           </div>
-          <p class="project-desc">The estate wine brand and Airbnb side of the same Chehalem Valley land. Pinot Noir and Chardonnay by Jacques Tardy, distributed via Vinoshipper. Grove farms it; Halem Heights sells it.</p>
-          <div class="project-tags">
-            <span class="tag">Wine Brand</span>
-            <span class="tag">Hospitality</span>
-            <span class="tag">Willamette Valley</span>
-          </div>
+          <p class="project-desc">A wine brand and hospitality property tied to the same land.</p>
         </div>
-      </a>
+      </div>
 
-      <a class="project-card" href="/projects/intraalpha">
+      <div class="project-card">
         <div class="project-icon" style="background:rgba(219,39,119,0.12); color:#f472b6;">IA</div>
         <div class="project-body">
           <div class="project-top">
             <div class="project-name">IntraAlpha</div>
             <span class="project-status status-exploring">Transitioning</span>
           </div>
-          <p class="project-desc">Options-only trading platform with proprietary screeners, historical data going back 7 years, IV analysis, and daily algorithmic reports on 400+ stocks. Powered by ThetaData, TradingView, and Google Cloud.</p>
-          <div class="project-tags">
-            <span class="tag">Finance</span>
-            <span class="tag">Algo Trading</span>
-            <span class="tag">Discord</span>
-          </div>
+          <p class="project-desc">A market-data + trading tooling project. Shape currently shifting.</p>
         </div>
-      </a>
+      </div>
 
-      <a class="project-card" href="/projects/monkey-business">
+      <div class="project-card">
         <div class="project-icon" style="background:var(--surface-2); font-size:1.35rem;">&#x1F412;</div>
         <div class="project-body">
           <div class="project-top">
             <div class="project-name">Monkey Business</div>
             <span class="project-status status-building">Writing</span>
           </div>
-          <p class="project-desc">A book on the entrepreneurial mindset. Why your brain is wired for survival, not business — and how to override the defaults. 20 chapters, from experience.</p>
-          <div class="project-tags">
-            <span class="tag">Book</span>
-            <span class="tag">Mindset</span>
-            <span class="tag">Entrepreneurship</span>
-          </div>
+          <p class="project-desc">A book, in progress. On why running a business is harder than it should be.</p>
         </div>
-      </a>
+      </div>
 
     </div>
 
@@ -133,15 +100,15 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
       <div class="past-grid">
         <div class="past-card">
           <div class="past-name">Socialated</div>
-          <div class="past-detail">Social media agency. Built from $1K to 13 employees. Acquired by Virsocom Ventures, 2014.</div>
+          <div class="past-detail">A social media agency, built and later exited.</div>
         </div>
         <div class="past-card">
           <div class="past-name">Audimated</div>
-          <div class="past-detail">Music marketplace. 10,000+ artists. Won WeMedia Pitch It! ($25K). Featured in Forbes, NBC News.</div>
+          <div class="past-detail">A music-industry platform. Won a national pitch competition. Coverage in Forbes and NBC News.</div>
         </div>
         <div class="past-card">
           <div class="past-name">Del Toro Shoes</div>
-          <div class="past-detail">Luxury handmade Italian shoes. Partner role in Miami, securing investment and running operations.</div>
+          <div class="past-detail">A footwear brand out of Miami, partner role.</div>
         </div>
       </div>
     </div>
@@ -168,6 +135,22 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
     color: var(--text-secondary);
     max-width: 600px;
     line-height: 1.7;
+  }
+
+  .projects-gate-note {
+    font-size: 0.875rem;
+    color: var(--text-tertiary);
+    margin-top: 0.5rem;
+  }
+
+  .projects-gate-note a {
+    color: var(--text-secondary);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .projects-gate-note a:hover {
+    color: var(--text-primary);
+    border-bottom-color: var(--text-primary);
   }
 
   /* Section Headers */
@@ -198,15 +181,6 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
     padding: 1.35rem;
     display: flex;
     gap: 1.15rem;
-    cursor: pointer;
-    text-decoration: none;
-    color: inherit;
-    transition: border-color 0.15s ease, background-color 0.15s ease;
-  }
-
-  .project-card:hover {
-    border-color: var(--border-hover);
-    background: var(--surface-2);
     color: inherit;
   }
 
@@ -259,18 +233,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
     font-size: 0.875rem;
     color: var(--text-secondary);
     line-height: 1.55;
-    margin-bottom: 0.75rem;
-  }
-
-  .project-tags { display: flex; gap: 0.35rem; flex-wrap: wrap; }
-
-  .tag {
-    font-size: 0.6875rem;
-    font-weight: 500;
-    color: var(--text-tertiary);
-    background: var(--surface-2);
-    padding: 0.1rem 0.45rem;
-    border-radius: var(--radius-xs);
+    margin-bottom: 0;
   }
 
   /* Past Ventures */

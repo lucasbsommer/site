@@ -12,16 +12,13 @@ const drafts   = sorted.filter((i) => i.depth === 'draft');
 const sketches = sorted.filter((i) => i.depth === 'sketch');
 const oneliners= sorted.filter((i) => i.depth === 'oneliner');
 
-function renderParagraphs(text: string): string[] {
-  return text.split(/\n\n+/).map((p) => p.trim()).filter(Boolean);
-}
-
-// Very light markdown: **bold** only. Keep safe by escaping first.
-function escapeHtml(s: string): string {
-  return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-}
-function md(text: string): string {
-  return escapeHtml(text).replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+// Public teaser: keep only the label part of an idea's name (everything before
+// the first em-dash, hyphen, or colon), truncate long names to a few words.
+function maskName(name: string): string {
+  const cut = name.split(/\s+[—\-–]\s+|:\s+/, 1)[0] || name;
+  const words = cut.trim().split(/\s+/);
+  if (words.length <= 5) return words.join(' ');
+  return words.slice(0, 5).join(' ') + '…';
 }
 
 const totalShown = visible.length;
@@ -34,10 +31,10 @@ const totalShown = visible.length;
     <div class="ideas-hero">
       <h1>Business Ideas</h1>
       <p class="ideas-intro">
-        A running list — {totalShown} ideas I've collected, evaluated, or jotted down over the years. Some are fully fleshed out. Most are one-liners. All are free to steal. If you want to riff on one, <a href="https://twitter.com/lucasbsommer" target="_blank" rel="noopener">hit me up</a>.
+        A running list — {totalShown} ideas I've collected, evaluated, or jotted down over the years. Some are fully fleshed out. Most are one-liners.
       </p>
       <p class="ideas-sub">
-        This replaces the spreadsheet I used to keep in the cloud. Maintained here, in public. You can also browse <a href="/domains">the domains I own</a> if you're hunting for a name for something you're building.
+        Titles are shown as teasers. Write-ups, references, and the ones I'm actively developing are behind a light gate. <a href="/unlock/?next=/ideas/">Drop your email</a> to see the details, or <a href="https://twitter.com/lucasbsommer" target="_blank" rel="noopener">hit me up</a> if one catches your eye.
       </p>
     </div>
 
@@ -52,30 +49,17 @@ const totalShown = visible.length;
 
     {detailed.length > 0 && (
       <section class="depth-block" data-depth="detailed">
-        <h2 class="depth-heading">Detailed</h2>
+        <h2 class="depth-heading">Detailed <span class="heading-meta">— full write-ups (gated)</span></h2>
         <div class="ideas-grid">
           {detailed.map((idea, n) => (
-            <article class="idea-card" data-depth="detailed" id={`i-${idea.id}`}>
+            <article class="idea-card idea-card-compact" data-depth="detailed">
               <div class="idea-top">
-                <div class="idea-number">{String(n + 1).padStart(2, '0')}</div>
+                <div class="idea-title-row">
+                  <span class="idea-number">{String(n + 1).padStart(2, '0')}</span>
+                  <h3 class="idea-title idea-title-sm">{maskName(idea.name)}</h3>
+                </div>
                 <span class={`idea-status idea-status-${idea.status}`}>{idea.status}</span>
               </div>
-              <h3 class="idea-title">{idea.name}</h3>
-              {idea.tags && idea.tags.length > 0 && (
-                <div class="idea-tags">
-                  {idea.tags.map((t) => <span class="tag">{t}</span>)}
-                </div>
-              )}
-              {idea.description && (
-                <div class="idea-body">
-                  {renderParagraphs(idea.description).map((p) => (
-                    <p set:html={md(p)}></p>
-                  ))}
-                </div>
-              )}
-              {idea.link && (
-                <a class="idea-link" href={idea.link} target="_blank" rel="noopener">Reference &rarr;</a>
-              )}
             </article>
           ))}
         </div>
@@ -84,24 +68,14 @@ const totalShown = visible.length;
 
     {drafts.length > 0 && (
       <section class="depth-block" data-depth="draft">
-        <h2 class="depth-heading">Drafts <span class="heading-meta">— partially fleshed out</span></h2>
+        <h2 class="depth-heading">Drafts <span class="heading-meta">— partial write-ups (gated)</span></h2>
         <div class="ideas-grid">
           {drafts.map((idea) => (
-            <article class="idea-card idea-card-compact" data-depth="draft" id={`i-${idea.id}`}>
+            <article class="idea-card idea-card-compact" data-depth="draft">
               <div class="idea-top">
-                <h3 class="idea-title idea-title-sm">{idea.name}</h3>
+                <h3 class="idea-title idea-title-sm">{maskName(idea.name)}</h3>
                 <span class={`idea-status idea-status-${idea.status}`}>{idea.status}</span>
               </div>
-              {idea.description && (
-                <div class="idea-body">
-                  {renderParagraphs(idea.description).map((p) => (
-                    <p set:html={md(p)}></p>
-                  ))}
-                </div>
-              )}
-              {idea.link && (
-                <a class="idea-link" href={idea.link} target="_blank" rel="noopener">Reference &rarr;</a>
-              )}
             </article>
           ))}
         </div>
@@ -110,13 +84,11 @@ const totalShown = visible.length;
 
     {sketches.length > 0 && (
       <section class="depth-block" data-depth="sketch">
-        <h2 class="depth-heading">Sketches <span class="heading-meta">— a sentence or two</span></h2>
+        <h2 class="depth-heading">Sketches <span class="heading-meta">— a sentence or two (gated)</span></h2>
         <div class="sketches-grid">
           {sketches.map((idea) => (
-            <article class="idea-sketch" data-depth="sketch" id={`i-${idea.id}`}>
-              <div class="sketch-name">{idea.name}</div>
-              {idea.description && <p class="sketch-desc">{idea.description}</p>}
-              {idea.link && <a class="idea-link" href={idea.link} target="_blank" rel="noopener">Reference &rarr;</a>}
+            <article class="idea-sketch" data-depth="sketch">
+              <div class="sketch-name">{maskName(idea.name)}</div>
             </article>
           ))}
         </div>
@@ -125,19 +97,19 @@ const totalShown = visible.length;
 
     {oneliners.length > 0 && (
       <section class="depth-block depth-block-seeds" data-depth="oneliner">
-        <h2 class="depth-heading depth-heading-muted">Seeds <span class="heading-meta">— one-liners, unvetted</span></h2>
-        <p class="seeds-note">Raw thoughts from the spreadsheet. Most need work. A few are probably great. If one catches your eye, <a href="https://twitter.com/lucasbsommer" target="_blank" rel="noopener">tell me</a> and I'll promote it.</p>
+        <h2 class="depth-heading depth-heading-muted">Seeds <span class="heading-meta">— raw prompts</span></h2>
+        <p class="seeds-note">Sketched thoughts from the spreadsheet. Titles shown as teasers. If one catches your eye, <a href="https://twitter.com/lucasbsommer" target="_blank" rel="noopener">tell me</a>.</p>
         <ul class="seeds-list">
           {oneliners.map((idea) => (
-            <li class="seed" data-depth="oneliner" id={`i-${idea.id}`}>{idea.name}</li>
+            <li class="seed" data-depth="oneliner">{maskName(idea.name)}</li>
           ))}
         </ul>
       </section>
     )}
 
     <div class="ideas-cta">
-      <h3>Have an idea to add?</h3>
-      <p>I collect ideas from conversations, problems I run into, and gaps I notice. Want to riff on one of these — or share your own? <a href="https://twitter.com/lucasbsommer" target="_blank" rel="noopener">Hit me up on Twitter</a>.</p>
+      <h3>Want the full list?</h3>
+      <p>Descriptions, references, and the ones I'm actively developing are gated. <a href="/unlock/?next=/ideas/">Drop your email</a> and you're in — or riff on one with me on <a href="https://twitter.com/lucasbsommer" target="_blank" rel="noopener">Twitter</a>.</p>
     </div>
 
   </article>
@@ -213,23 +185,26 @@ const totalShown = visible.length;
     letter-spacing: 0; margin-left: 0.35rem;
   }
 
-  /* Detailed + Draft cards */
-  .ideas-grid { display: flex; flex-direction: column; gap: 0.85rem; }
+  /* Detailed + Draft cards — compact single-row look */
+  .ideas-grid { display: flex; flex-direction: column; gap: 0.5rem; }
   .idea-card {
     background: var(--surface-1); border: 1px solid var(--border);
-    border-radius: var(--radius); padding: 1.75rem;
+    border-radius: var(--radius); padding: 1rem 1.25rem;
     transition: border-color 0.15s ease, background-color 0.15s ease;
   }
-  .idea-card:hover { border-color: var(--border-hover); }
-  .idea-card-compact { padding: 1.35rem 1.5rem; }
+  .idea-card-compact { padding: 0.9rem 1.15rem; }
 
   .idea-top {
     display: flex; align-items: center; justify-content: space-between;
-    gap: 1rem; margin-bottom: 0.75rem;
+    gap: 1rem;
+  }
+  .idea-title-row {
+    display: flex; align-items: center; gap: 0.75rem; min-width: 0;
   }
   .idea-number {
     font-family: var(--font-mono); font-size: 0.75rem; font-weight: 600;
     color: var(--text-tertiary); letter-spacing: 0.05em;
+    flex-shrink: 0;
   }
   .idea-status {
     font-size: 0.6875rem; font-weight: 600; text-transform: uppercase;
@@ -242,45 +217,25 @@ const totalShown = visible.length;
   .idea-status-parked    { background: var(--surface-2);           color: var(--text-tertiary); }
 
   .idea-title {
-    font-size: 1.35rem; font-weight: 700; letter-spacing: -0.5px;
-    margin-bottom: 0.5rem; color: var(--text-primary); line-height: 1.25;
+    font-size: 1rem; font-weight: 600; letter-spacing: -0.2px;
+    color: var(--text-primary); line-height: 1.35;
+    overflow: hidden; text-overflow: ellipsis;
   }
-  .idea-title-sm { font-size: 1.05rem; margin-bottom: 0; }
-  .idea-card-compact .idea-top { margin-bottom: 0.65rem; }
-
-  .idea-tags { display: flex; gap: 0.35rem; flex-wrap: wrap; margin-bottom: 1rem; }
-  .idea-tags .tag {
-    font-size: 0.6875rem; font-weight: 500; color: var(--text-tertiary);
-    background: var(--surface-2); padding: 0.15rem 0.55rem; border-radius: var(--radius-xs);
-  }
-
-  .idea-body { font-size: 0.9375rem; color: var(--text-secondary); line-height: 1.65; }
-  .idea-card-compact .idea-body { font-size: 0.875rem; }
-  .idea-body p + p { margin-top: 0.85rem; }
-  .idea-body strong { color: var(--text-primary); font-weight: 600; }
-
-  .idea-link {
-    display: inline-block; margin-top: 0.75rem;
-    font-size: 0.75rem; font-weight: 600; color: var(--accent-text);
-  }
+  .idea-title-sm { font-size: 0.95rem; }
 
   /* Sketches — denser grid */
   .sketches-grid {
-    display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 0.75rem;
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 0.5rem;
   }
   .idea-sketch {
     background: var(--surface-1); border: 1px solid var(--border);
-    border-radius: var(--radius); padding: 1.1rem 1.25rem;
+    border-radius: var(--radius); padding: 0.75rem 1rem;
     transition: border-color 0.15s ease;
   }
-  .idea-sketch:hover { border-color: var(--border-hover); }
   .sketch-name {
-    font-size: 0.95rem; font-weight: 600; color: var(--text-primary);
-    letter-spacing: -0.2px; margin-bottom: 0.35rem; line-height: 1.35;
-  }
-  .sketch-desc {
-    font-size: 0.8125rem; color: var(--text-secondary); line-height: 1.55;
+    font-size: 0.9rem; font-weight: 500; color: var(--text-primary);
+    letter-spacing: -0.15px; line-height: 1.35;
   }
 
   /* Seeds — greyed-out one-liners */
@@ -293,15 +248,13 @@ const totalShown = visible.length;
   }
   .seeds-list {
     list-style: none; padding: 0; margin: 0;
-    display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-    gap: 0.25rem 1.5rem;
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 0.15rem 1.5rem;
   }
   .seed {
     font-size: 0.8125rem; color: var(--text-tertiary); line-height: 1.55;
-    padding: 0.4rem 0; border-bottom: 1px solid transparent;
-    transition: color 0.15s ease, border-color 0.15s ease;
+    padding: 0.35rem 0;
   }
-  .seed:hover { color: var(--text-secondary); border-bottom-color: var(--border); }
   .seed::first-letter { text-transform: uppercase; }
 
   /* CTA */
@@ -317,9 +270,10 @@ const totalShown = visible.length;
     .ideas-hero { padding-top: 3rem; }
     .ideas-hero h1 { font-size: 1.75rem; }
     .ideas-intro { font-size: 1rem; }
-    .idea-card { padding: 1.35rem; }
-    .idea-card-compact { padding: 1.15rem; }
-    .idea-title { font-size: 1.15rem; }
+    .idea-card { padding: 0.85rem 1rem; }
+    .idea-card-compact { padding: 0.85rem 1rem; }
+    .idea-title { font-size: 0.9rem; }
+    .idea-title-row { gap: 0.5rem; }
     .sketches-grid { grid-template-columns: 1fr; }
     .seeds-list { grid-template-columns: 1fr; }
   }
